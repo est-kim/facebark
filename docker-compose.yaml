@@ -1,26 +1,79 @@
-# volumes:
+volumes:
+  facebark-data:
+    external: true
+  pg-admin:
+    external: true
 services:
-  fastapi:
-    build:
-      context: sample_service
-      dockerfile: Dockerfile.dev
-    ports:
-      - 8000:8000
+  pg-admin:
+    image: dpage/pgadmin4
     volumes:
-      - ./sample_service:/app
-      
-  ghi:
+      - pg-admin:/var/lib/pgadmin
+    ports:
+      - 8082:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: email@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: password
+      PGADMIN_DISABLE_POSTFIX: 1
+  react:
     image: node:lts-bullseye
     command: /bin/bash run.sh
     working_dir: /app
     volumes:
-      - ./ghi:/app
+      - ./ghi/app:/app
     ports:
       - "3000:3000"
     environment:
       HOST_OS: ${OS}
       NODE_ENV: development
       HOST: "0.0.0.0"
-      PUBLIC_URL: http://localhost:3000
-      REACT_APP_SAMPLE_SERVICE_API_HOST: http://localhost:8000
-            
+  database:
+    image: postgres:14.2-bullseye
+    volumes:
+      - facebark-data:/var/lib/postgresql/data
+      - ./db:/docker-entrypoint-initdb.d
+    environment:
+      - POSTGRES_MULTIPLE_DATABASES=monolith,ms
+      - POSTGRES_PASSWORD=test-databases
+    ports:
+      - 15432:5432
+  monolith-api:
+    build:
+      context: ./monolith/api
+      dockerfile: ./Dockerfile.dev
+    ports:
+      - "8100:8000"
+    volumes:
+      - ./monolith/api:/app
+    depends_on:
+      - database
+    environment:
+      DATABASE_URL: postgres://monolith:password@database:5432/monolith
+      WAIT_HOSTS: database:5432
+      WAIT_TIMEOUT: 240
+  ms-api:
+    build:
+      context: ./ms/api
+      dockerfile: ./Dockerfile.dev
+    ports:
+      - "8080:8000"
+    volumes:
+      - ./ms/api:/app
+    depends_on:
+      - database
+    environment:
+      DATABASE_URL: postgres://ms:password@database:5432/ms
+      WAIT_HOSTS: database:5432
+      WAIT_TIMEOUT: 240
+  ms-poller:
+    build:
+      context: ./ms/poll
+      dockerfile: ./Dockerfile.dev
+    volumes:
+      - ./ms/poll:/app
+    depends_on:
+      - database
+      - ms-api
+    environment:
+      DATABASE_URL: postgres://service:password@database:5432/ms
+      WAIT_HOSTS: database:5432,ms-api:8000
+      WAIT_TIMEOUT: 240
