@@ -9,15 +9,19 @@ class Error(BaseModel):
 
 class StatusIn(BaseModel):
     status: str
-    timestamp: datetime.fromtimestamp()
+    timestamp: datetime
 
 
 class StatusOut(BaseModel):
     id: int
     status: str
-    timestamp: datetime.fromtimestamp()
+    time_stamp: datetime
     account_id: int
     comment_id: int
+
+
+class StatusesOut(BaseModel):
+    statuses: list[StatusOut]
 
 
 class StatusRepository:
@@ -33,7 +37,7 @@ class StatusRepository:
                         SELECT
                             id,
                             status,
-                            timestamp,
+                            time_stamp,
                             account_id,
                             comment_id
                         FROM statuses;
