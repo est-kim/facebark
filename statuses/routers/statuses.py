@@ -17,7 +17,7 @@ def get_statuses(
     return repo.get_all()
 
 
-@router.post("/statuses", response_model=Union[StatusesOut, Error])
+@router.post("/statuses", response_model=Union[StatusOut, Error])
 def create_status(
     status: StatusIn,
     response: Response,
