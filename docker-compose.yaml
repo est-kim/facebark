@@ -12,6 +12,7 @@ services:
       - postgres-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_MULTIPLE_DATABASES=accounts, events, statuses
+      - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=password
     ports:
       - 15432:5432
