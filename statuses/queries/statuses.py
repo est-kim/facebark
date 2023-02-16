@@ -18,7 +18,9 @@ def get_pst_time() -> datetime:
     utc_time = datetime.utcnow()
     pst_offset = timedelta(hours=-8)
     pst_time = utc_time.replace(tzinfo=timezone.utc) + pst_offset
-    pst_time = pst_time.replace(tzinfo=None) # remove timezone info to avoid ambiguity
+    pst_time = pst_time.replace(
+        tzinfo=None
+    )  # remove timezone info to avoid ambiguity
     return pst_time
 
 
@@ -57,7 +59,9 @@ class StatusRepository:
                     statuses = []
                     rows = db.fetchall()
                     for row in rows:
-                        status = self.status_record_to_dict(row, db.description)
+                        status = self.status_record_to_dict(
+                            row, db.description
+                        )
                         statuses.append(status)
                     return statuses
         except Exception as e:
@@ -80,17 +84,13 @@ class StatusRepository:
                     RETURNING id, status_text, time_stamp, account_id, comment_id;
                     """,
                     # to pass in values to our SQL statement
-                    [
-                        status.status_text,
-                        status.account_id,
-                        status.comment_id
-                    ]
+                    [status.status_text, status.account_id, status.comment_id],
                 )
                 row = result.fetchone()
                 id = row[0]
                 return self.status_in_to_out(id, status)
 
-    def delete(self, status_id:int) -> bool:
+    def delete(self, status_id: int) -> bool:
         try:
             # connect the database
             with pool.connection() as conn:
@@ -101,19 +101,18 @@ class StatusRepository:
                         DELETE FROM statuses
                         WHERE id = %s
                         """,
-                        [status_id]
+                        [status_id],
                     )
                     return True
         except Exception as e:
             return {"message": "Could not delete status"}
 
-
-    def status_in_to_out(self, id:int, status: StatusIn):
+    def status_in_to_out(self, id: int, status: StatusIn):
         old_data = status.dict()
         return StatusOut(id=id, **old_data)
 
     def record_to_status_out(self, record):
-        time_stamp = datetime.strptime(record[2], '%Y-%m-%d %H:%M:%S')
+        time_stamp = datetime.strptime(record[2], "%Y-%m-%d %H:%M:%S")
         return StatusOut(
             id=record[0],
             status_text=record[1],
