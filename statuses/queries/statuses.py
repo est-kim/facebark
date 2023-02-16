@@ -90,8 +90,7 @@ class StatusRepository:
                 id = row[0]
                 return self.status_in_to_out(id, status)
 
-
-    def status_in_to_out(self, id:int, status: StatusIn):
+    def status_in_to_out(self, id: int, status: StatusIn):
         old_data = status.dict()
         return StatusOut(id=id, **old_data)
 
