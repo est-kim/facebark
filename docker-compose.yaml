@@ -13,6 +13,7 @@ services:
     environment:
       - POSTGRES_MULTIPLE_DATABASES=accounts, events, statuses
       - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=admin
     ports:
       - 15432:5432
   pg-admin:
