@@ -59,10 +59,8 @@ class StatusRepository:
                     for row in rows:
                         status = self.status_record_to_dict(row, db.description)
                         statuses.append(status)
-                    print(statuses)
                     return statuses
         except Exception as e:
-            print(e)
             return {"message": "Could not get all statuses"}
 
     ##add try and except after fixing post
@@ -90,11 +88,6 @@ class StatusRepository:
                 )
                 row = result.fetchone()
                 id = row[0]
-                time_stamp = row[2]
-                # Return our new data
-                # old_data = vacation.dict()
-                # Splats old_data so we don't have to type
-                # old_data["name"] etc...
                 return self.status_in_to_out(id, status)
 
     def delete(self, status_id:int) -> bool:
@@ -112,8 +105,7 @@ class StatusRepository:
                     )
                     return True
         except Exception as e:
-            print(e)
-            return False
+            return {"message": "Could not delete status"}
 
 
     def status_in_to_out(self, id:int, status: StatusIn):
