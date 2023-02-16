@@ -60,11 +60,8 @@ steps = [
 
         ;
         """,
-
         """
         SELECT setval('states_id_seq', (SELECT MAX(id) + 1 FROM states));
-        """
-
+        """,
     ]
-
 ]

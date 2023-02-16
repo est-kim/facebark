@@ -7669,11 +7669,8 @@ steps = [
 
         ;
         """,
-
         """
         SELECT setval('cities_id_seq', (SELECT MAX(id) + 1 FROM cities));
-        """
-
+        """,
     ]
-
 ]

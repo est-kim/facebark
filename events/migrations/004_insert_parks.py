@@ -4555,11 +4555,8 @@ steps = [
 
         ;
         """,
-
         """
         SELECT setval('dog_parks_id_seq', (SELECT MAX(id) + 1 FROM dog_parks));
-        """
-
+        """,
     ]
-
 ]

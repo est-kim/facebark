@@ -10,7 +10,7 @@ steps = [
         # "Down" SQL statement
         """
         DROP TABLE states;
-        """
+        """,
     ],
     [
         # "Up" SQL statement
@@ -25,7 +25,7 @@ steps = [
         # "Down" SQL statement
         """
         DROP TABLE cities;
-        """
+        """,
     ],
     [
         # "Up" SQL statement
@@ -39,6 +39,6 @@ steps = [
         # "Down" SQL statement
         """
         DROP TABLE dog_parks;
-        """
-    ]
+        """,
+    ],
 ]

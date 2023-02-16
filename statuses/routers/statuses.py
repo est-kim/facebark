@@ -5,22 +5,19 @@ from queries.statuses import (
     StatusIn,
     StatusOut,
     StatusesOut,
-    StatusRepository
+    StatusRepository,
 )
 
 router = APIRouter()
 
+
 @router.get("/statuses", response_model=Union[StatusesOut, Error])
-def get_statuses(
-    repo: StatusRepository = Depends()
-):
+def get_statuses(repo: StatusRepository = Depends()):
     return {"statuses": repo.get_all()}
 
 
 @router.post("/statuses", response_model=Union[StatusOut, Error])
 def create_status(
-    status: StatusIn,
-    response: Response,
-    repo: StatusRepository = Depends()
+    status: StatusIn, response: Response, repo: StatusRepository = Depends()
 ):
     return repo.create(status)

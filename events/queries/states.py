@@ -1,21 +1,23 @@
 from pydantic import BaseModel
 from queries.pool import pool
 
+
 class StateIn(BaseModel):
-    name:str
+    name: str
+
 
 class StateOut(BaseModel):
-    id:int
-    name:str
+    id: int
+    name: str
 
 
 class StateRepository:
-    def create(self, state:StateIn) -> StateOut:
-        #connect the database
+    def create(self, state: StateIn) -> StateOut:
+        # connect the database
         with pool.connection() as conn:
-            #get a cursor
+            # get a cursor
             with conn.cursor() as db:
-                #run INSERT statement
+                # run INSERT statement
                 result = db.execute(
                     """
                     INSERT INTO states
@@ -24,9 +26,9 @@ class StateRepository:
                         (%s)
                     RETURNING id;
                     """,
-                    [state.name]
+                    [state.name],
                 )
                 id = result.fetchone()[0]
-                #return new data
+                # return new data
                 old_data = state.dict()
                 return StateOut(id=id, **old_data)
