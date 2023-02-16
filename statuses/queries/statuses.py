@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import Optional, List, Union
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from queries.pool import pool
 
 
@@ -14,10 +14,18 @@ class StatusIn(BaseModel):
     comment_id: int
 
 
+def get_pst_time() -> datetime:
+    utc_time = datetime.utcnow()
+    pst_offset = timedelta(hours=-8)
+    pst_time = utc_time.replace(tzinfo=timezone.utc) + pst_offset
+    pst_time = pst_time.replace(tzinfo=None) # remove timezone info to avoid ambiguity
+    return pst_time
+
+
 class StatusOut(BaseModel):
     id: int
     status_text: str
-    time_stamp: datetime = Field(default_factory=datetime.utcnow)
+    time_stamp: datetime = Field(default_factory=lambda: get_pst_time())
     account_id: int
     comment_id: Optional[int]
 
