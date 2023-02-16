@@ -90,24 +90,8 @@ class StatusRepository:
                 id = row[0]
                 return self.status_in_to_out(id, status)
 
-    def delete(self, status_id: int) -> bool:
-        try:
-            # connect the database
-            with pool.connection() as conn:
-                # get a cursor (something to run SQL with)
-                with conn.cursor() as db:
-                    db.execute(
-                        """
-                        DELETE FROM statuses
-                        WHERE id = %s
-                        """,
-                        [status_id],
-                    )
-                    return True
-        except Exception as e:
-            return {"message": "Could not delete status"}
 
-    def status_in_to_out(self, id: int, status: StatusIn):
+    def status_in_to_out(self, id:int, status: StatusIn):
         old_data = status.dict()
         return StatusOut(id=id, **old_data)
 
