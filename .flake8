@@ -1,2 +1,2 @@
 [flake8]
-exclude = ghi,docs,journals,events/migrations,statues/migrations,accounts/migrations
+exclude = ghi,docs,journals,events/migrations,statuses,accounts/migrations
