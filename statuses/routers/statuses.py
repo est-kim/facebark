@@ -20,7 +20,14 @@ def get_statuses(
 @router.post("/statuses", response_model=Union[StatusOut, Error])
 def create_status(
     status: StatusIn,
-    response: Response,
     repo: StatusRepository = Depends()
 ):
     return repo.create(status)
+
+
+@router.delete("/statuses/{status_id}", response_model=bool)
+def delete_status(
+    status_id: int,
+    repo: StatusRepository = Depends()
+) -> bool:
+    return repo.delete(status_id)

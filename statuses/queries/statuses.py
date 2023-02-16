@@ -35,7 +35,6 @@ class StatusesOut(BaseModel):
 
 
 class StatusRepository:
-    # def get_all(self) -> Union[List[StatusOut], Error]:
     def get_all(self):
         try:
             # connect the database by creating pool of connections
@@ -97,6 +96,24 @@ class StatusRepository:
                 # Splats old_data so we don't have to type
                 # old_data["name"] etc...
                 return self.status_in_to_out(id, status)
+
+    def delete(self, status_id:int) -> bool:
+        try:
+            # connect the database
+            with pool.connection() as conn:
+                # get a cursor (something to run SQL with)
+                with conn.cursor() as db:
+                    db.execute(
+                        """
+                        DELETE FROM statuses
+                        WHERE id = %s
+                        """,
+                        [status_id]
+                    )
+                    return True
+        except Exception as e:
+            print(e)
+            return False
 
 
     def status_in_to_out(self, id:int, status: StatusIn):
