@@ -101,12 +101,11 @@ class StatusRepository:
                         DELETE FROM statuses
                         WHERE id = %s
                         """,
-                        [status_id]
+                        [status_id],
                     )
                     return True
         except Exception:
             return {"message": "Could not delete status"}
-
 
     def status_in_to_out(self, id: int, status: StatusIn):
         old_data = status.dict()
