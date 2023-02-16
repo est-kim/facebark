@@ -27,7 +27,8 @@ class StatusesOut(BaseModel):
 
 
 class StatusRepository:
-    def get_all(self) -> Union[List[StatusOut], Error]:
+    # def get_all(self) -> Union[List[StatusOut], Error]:
+    def get_all(self):
         try:
             # connect the database by creating pool of connections
             with pool.connection() as conn:
@@ -43,13 +44,16 @@ class StatusRepository:
                             account_id,
                             comment_id
                         FROM statuses;
-                        """
+                        """,
                     )
                     # creating a new statusOut object
-                    return [
-                        self.record_to_status_out(record)
-                        for record in result
-                    ]
+                    statuses = []
+                    rows = db.fetchall()
+                    for row in rows:
+                        status = self.status_record_to_dict(row, db.description)
+                        statuses.append(status)
+                    print(statuses)
+                    return statuses
         except Exception as e:
             print(e)
             return {"message": "Could not get all statuses"}
@@ -92,10 +96,28 @@ class StatusRepository:
         return StatusOut(id=id, **old_data)
 
     def record_to_status_out(self, record):
+        time_stamp = datetime.strptime(record[2], '%Y-%m-%d %H:%M:%S')
         return StatusOut(
             id=record[0],
             status_text=record[1],
-            time_stamp=record[2],
+            time_stamp=time_stamp,
             account_id=record[3],
             comment_id=record[4],
         )
+
+    def status_record_to_dict(self, row, description):
+        status = None
+        if row is not None:
+            status = {}
+            status_fields = [
+                "id",
+                "status_text",
+                "website",
+                "time_stamp",
+                "account_id",
+                "comment_id",
+            ]
+            for i, column in enumerate(description):
+                if column.name in status_fields:
+                    status[column.name] = row[i]
+        return status
