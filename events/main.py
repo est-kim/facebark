@@ -1,10 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import os
-from routers import states
+from routers import states, events
 
 app = FastAPI()
 app.include_router(states.router)
+app.include_router(events.router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -24,6 +25,6 @@ def launch_details():
             "day": "9",
             "hour": 19,
             "min": 0,
-            "tz:": "PST",
+            "tz:": "PST"
         }
     }
