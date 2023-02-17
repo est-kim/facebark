@@ -19,6 +19,6 @@ steps = [
         # "Down" SQL statement
         """
         DROP TABLE accounts;
-        """
+        """,
     ]
 ]

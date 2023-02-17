@@ -51,8 +51,7 @@ class AccountRepository:
                         """
                     )
                     return [
-                        self.record_to_account_out(record)
-                        for record in result
+                        self.record_to_account_out(record) for record in result
                     ]
 
         except Exception as e:

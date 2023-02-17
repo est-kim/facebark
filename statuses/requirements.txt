@@ -1,6 +1,0 @@
-fastapi[all]==0.78.0
-uvicorn[standard]==0.17.6
-pytest
-psycopg[binary,pool]==3.0.14
-flake8==6.0.0
-flake8-black==0.3.6

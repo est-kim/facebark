@@ -5,14 +5,12 @@ volumes:
     external: true
 services:
   postgres:
-    build:
-      context: ./relational-data
-      dockerfile: ./Dockerfile.dev
+    image: postgres:14.2-bullseye
     volumes:
       - postgres-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_MULTIPLE_DATABASES=accounts, events, statuses
-      - POSTGRES_USER=admin
+      - POSTGRES_DB=facebark
+      - POSTGRES_USER=facebark
       - POSTGRES_PASSWORD=password
     ports:
       - 15432:5432
@@ -26,38 +24,16 @@ services:
       PGADMIN_DEFAULT_EMAIL: facebark@gmail.com
       PGADMIN_DEFAULT_PASSWORD: password
       PGADMIN_DISABLE_POSTFIX: 1
-  accounts:
+  facebark:
     build:
-        context: ./accounts
+        context: ./facebark
         dockerfile: ./Dockerfile.dev
     ports:
-        - "8010:8000"
+        - "8000:8000"
     volumes:
-        - ./accounts:/app
+        - ./facebark:/app
     environment:
-      DATABASE_URL: postgresql://accounts:password@postgres/accounts
-      WAIT_HOSTS: postgres:5432
-  events:
-    build:
-        context: ./events
-        dockerfile: ./Dockerfile.dev
-    ports:
-        - "8020:8000"
-    volumes:
-        - ./events:/app
-    environment:
-      DATABASE_URL: postgresql://events:password@postgres/events
-      WAIT_HOSTS: postgres:5432
-  statuses:
-    build:
-        context: ./statuses
-        dockerfile: ./Dockerfile.dev
-    ports:
-        - "8030:8000"
-    volumes:
-        - ./statuses:/app
-    environment:
-      DATABASE_URL: postgresql://statuses:password@postgres/statuses
+      DATABASE_URL: postgresql://facebark:password@postgres/facebark
       WAIT_HOSTS: postgres:5432
   ghi:
     image: node:lts-bullseye
@@ -72,93 +48,4 @@ services:
       NODE_ENV: development
       HOST: "0.0.0.0"
       PUBLIC_URL: http://localhost:3000
-      REACT_APP_ACCOUNTS_API_HOST: http://localhost:8010
-      REACT_APP_EVENTS_API_HOST: http://localhost:8020
-      REACT_APP_STATUSES_API_HOST: http://localhost:8030
-
-
-
-
-
-
-
-
-
-
-
-
-  # pg-admin:
-  #   image: dpage/pgadmin4
-  #   volumes:
-  #     - pg-admin:/var/lib/pgadmin
-  #   ports:
-  #     - 8082:80
-  #   environment:
-  #     PGADMIN_DEFAULT_EMAIL: email@gmail.com
-  #     PGADMIN_DEFAULT_PASSWORD: password
-  #     PGADMIN_DISABLE_POSTFIX: 1
-  # react:
-  #   image: node:lts-bullseye
-  #   command: /bin/bash run.sh
-  #   working_dir: /app
-  #   volumes:
-  #     - ./ghi/app:/app
-  #   ports:
-  #     - "3000:3000"
-  #   environment:
-  #     HOST_OS: ${OS}
-  #     NODE_ENV: development
-  #     HOST: "0.0.0.0"
-  # postgres:
-  #   build:
-  #     context: ./relational-data
-  #     dockerfile: ./Dockerfile.dev
-  #   volumes:
-  #     - postgres-data:/var/lib/postgresql/data
-  #   environment:
-  #       - POSTGRES_MULTIPLE_DATABASES=monolith,ms
-  #       - POSTGRES_USER=admin
-  #       - POSTGRES_PASSWORD=password
-  #   ports:
-  #       - 15432:5432
-  # monolith:
-  #   build:
-  #     context: ./monolith/api
-  #     dockerfile: ./Dockerfile.dev
-  #   ports:
-  #     - "8100:8000"
-  #   volumes:
-  #     - ./monolith/api:/app
-  #   # depends_on:
-  #   #   - database
-  #   environment:
-  #     DATABASE_URL: postgresql://monolith:password@postgres:5432/monolith
-  #     WAIT_HOSTS: postgres:5432
-  #     WAIT_TIMEOUT: 240
-  # ms:
-  #   build:
-  #     context: ./ms/api
-  #     dockerfile: ./Dockerfile.dev
-  #   ports:
-  #     - "8080:8000"
-  #   volumes:
-  #     - ./ms/api:/app
-  #   # depends_on:
-  #   #   - database
-  #   environment:
-  #     DATABASE_URL: postgresql://ms:password@postgres:5432/ms
-  #     WAIT_HOSTS: database:5432
-  #     WAIT_TIMEOUT: 240
-  # ms-poller:
-  #   build:
-  #     context: ./ms/poll
-  #     dockerfile: ./Dockerfile.dev
-  #   volumes:
-  #     - ./ms/poll:/app
-  #   depends_on:
-  #     - postgres
-  #     - ms
-  #   environment:
-  #     DATABASE_URL: postgresql://ms:password@postgres:5432/ms
-  #     WAIT_HOSTS: database:5432,ms-api:8000
-  #     WAIT_TIMEOUT: 240
+      REACT_APP_FACEBARK_API_HOST: http://localhost:8000
