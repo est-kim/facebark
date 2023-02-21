@@ -2,15 +2,16 @@ from pydantic import BaseModel
 from queries.pool import pool
 from typing import List, Union
 
-class StateOut(BaseModel):
+class CityOut(BaseModel):
     id: int
     name: str
+    state_id: int
 
 class Error(BaseModel):
     message: str
 
-class StateRepository:
-    def get_all(self) -> Union[Error, List[StateOut]]:
+class CityRepository:
+    def get_all(self) -> Union[Error, List[CityOut]]:
         try:
                 # connect the database
             with pool.connection() as conn:
@@ -19,19 +20,20 @@ class StateRepository:
                     # run SELECT statement
                     db.execute(
                         """
-                        SELECT id, name
-                        FROM states
+                        SELECT id, name, state_id
+                        FROM cities
                         ORDER BY id;
                         """
                     )
                     result = []
                     for record in db:
-                        state = StateOut(
+                        city = CityOut(
                             id = record[0],
                             name = record[1],
+                            state_id = record[2]
                         )
-                        result.append(state)
+                        result.append(city)
                     return result
         except Exception as e:
             print(e)
-            return {"message": "Could not get all states"}
+            return {"message": "Could not get all cities"}

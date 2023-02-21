@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends
-from queries.states import StateIn, StateRepository
+from fastapi import APIRouter, Depends, Response
+from queries.states import StateRepository, StateOut, Error
+from typing import Union, List
 
 router = APIRouter()
 
-
-@router.post("/states")
-def create_state(state: StateIn, repo: StateRepository = Depends()):
-
-    return repo.create(state)
+@router.get("/states", response_model=Union[Error, List[StateOut]])
+def get_all(
+    repo:StateRepository = Depends(),
+):
+    return repo.get_all()
