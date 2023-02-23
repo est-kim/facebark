@@ -3,6 +3,8 @@ volumes:
     external: true
   pg-admin:
     external: true
+  jwtdown-db-data:
+    external: true
 services:
   postgres:
     image: postgres:14.2-bullseye
@@ -33,10 +35,11 @@ services:
     volumes:
         - ./facebark:/app
     environment:
+      SIGNING_KEY: eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY3NjkzMDc5MSwiaWF0IjoxNjc2OTMwNzkxfQ.IS0uv-T4hBkH_Jn2JtVe7zKu0FiiOYYSotKxLTfWKmE
       DATABASE_URL: postgresql://facebark:password@postgres/facebark
       WAIT_HOSTS: postgres:5432
-      SIGNING_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
-
+      WAIT_BEFORE: 5
+      WAIT_TIMEOUT: 60
   ghi:
     image: node:lts-bullseye
     command: /bin/bash run.sh

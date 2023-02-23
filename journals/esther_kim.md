@@ -14,4 +14,13 @@
 - Worked on merge requesting my updates to Statuses
 
 2/16/23
-- Created Issue #8 
+- Created Issue #8
+- Merged Issue #8 to main
+
+2/17/23
+- Converted all existing code in main to monolith
+- Reformatted Dockerfiles to one monolith
+
+2/20/23
+- Created all MVP, Feature, and Story/Issue labels for team to use
+
