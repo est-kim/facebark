@@ -20,9 +20,10 @@ class CityRepository:
                     # run SELECT statement
                     db.execute(
                         """
-                        SELECT id, name, state_id
+                        SELECT cities.id, cities.name, cities.state_id
                         FROM cities
-                        ORDER BY id;
+                        LEFT JOIN states
+                            ON (states.id = cities.state_id)
                         """
                     )
                     result = []

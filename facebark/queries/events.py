@@ -6,9 +6,9 @@ from queries.pool import pool
 
 class EventsIn(BaseModel):
     title: str
-    state: str
-    city: str
-    park: Optional[str]
+    state: int
+    city: int
+    park: Optional[int]
     address: str
     date: date
     start_time: str
@@ -20,7 +20,7 @@ class EventsIn(BaseModel):
 class EventsOut(BaseModel):
     id: int
     title: str
-    state: str
+    state: int
     city: str
     park: Optional[str]
     address: str
@@ -30,6 +30,8 @@ class EventsOut(BaseModel):
     description: str
     picture: str
 
+class Error(BaseModel):
+    message: str
 
 class EventsRepository:
     def delete(self, event_id: int) -> bool:
@@ -87,22 +89,25 @@ class EventsRepository:
         except Exception as e:
             return {"message": "could not update events"}
 
-    def get_all(self) -> List[EventsOut]:
+    def get_all(self) -> Union[Error, List[EventsOut]]:
         try:
             # connect the database
             with pool.connection() as conn:
                 # get a cursor(something to run sql with)
                 with conn.cursor() as db:
-                    # run our insert statement
-                    result = db.execute(
+                    # run our select statement
+                    db.execute(
                         """
-                        SELECT 
-                        id, title, state, city, park, address, date, start_time, end_time, description, picture
-                        FROM events;
-                        """,
+                        SELECT
+                        id, title, states.name, city, park, address, date, start_time, end_time, description, picture
+                        FROM events
+                        INNER JOIN states
+                            ON (events.state = states.id);
+                        """
                     )
-                    return [
-                        EventsOut(
+                    result = []
+                    for record in db:
+                        event = EventsOut(
                             id=record[0],
                             title=record[1],
                             state=record[2],
@@ -115,9 +120,10 @@ class EventsRepository:
                             description=record[9],
                             picture=record[10],
                         )
-                        for record in db
-                    ]
+                        result.append(event)
+                    return result
         except Exception as e:
+            print(e)
             return {"message": "could not get all events"}
 
     def create(self, event: EventsIn) -> EventsOut:
@@ -127,7 +133,7 @@ class EventsRepository:
             with conn.cursor() as db:
                 # run our insert statement
                 result = db.execute(  # stuff we want to insert/create
-                    """    
+                    """
                     INSERT INTO events
                         (title, state, city, park, address, date, start_time, end_time, description, picture)
                     VALUES
