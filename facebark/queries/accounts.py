@@ -34,9 +34,11 @@ class AccountOut(BaseModel):
     owner_name: str
     description: str
 
+class AccountOutWithPassword(AccountOut):
+    hashed_password: str
 
 class AccountRepository:
-    def get_all(self) -> Union[Error, List[AccountOut]]:
+    def get_all(self) -> Union[Error, List[AccountOutWithPassword]]:
         try:
             # connect to the database
             with pool.connection() as conn:

@@ -1,24 +1,28 @@
-from fastapi import APIRouter, Depends
-from queries.events import EventsIn, EventsRepository, EventsOut
+from fastapi import APIRouter, Depends, Response
+from queries.events import EventsIn, EventsRepository, EventsOut, Error
 from typing import Union, List, Optional
 
 router = APIRouter()
 
 
-@router.post("/events", response_model=EventsOut)
-def create_events(event: EventsIn, repo: EventsRepository = Depends()):
-
+@router.post("/events", response_model=Union[EventsOut, Error])
+def create_events(
+    event: EventsIn, 
+    response: Response,
+    repo: EventsRepository = Depends(),
+    ):
+    response.status_code =400
     return repo.create(event)
 
 
-@router.get("/events", response_model=List[EventsOut])
+@router.get("/events", response_model=Union[Error, List[EventsOut]])
 def get_all(
     repo: EventsRepository = Depends(),
 ):
     return repo.get_all()
 
 
-@router.put("/events/{event_id}", response_model=EventsOut)
+@router.put("/events/{event_id}", response_model=Union[EventsOut, Error])
 def update_event(
     event_id: int,
     event: EventsIn,
@@ -35,9 +39,9 @@ def delete_event(
     return repo.delete(event_id)
 
 
-# @router.get("/events/{event_id}", response_model=Optional)
-# def get_one_event(
-#     event_id: int,
-#     repo: EventsRepository = Depends(),
-# )-> EventsOut:
-#     return repo.get_one(event_id)
+@router.get("/events/{event_id}", response_model=Optional[EventsOut])
+def get_one_event(
+    event_id: int,
+    repo: EventsRepository = Depends(),
+)-> EventsOut:
+    return repo.get_one(event_id)

@@ -3,7 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 from routers import states, accounts, events, statuses, cities, dog_parks
 
+
 app = FastAPI()
+#app.include_router(authenticator.router)
+
 
 app.include_router(accounts.router)
 app.include_router(states.router)

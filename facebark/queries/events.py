@@ -3,12 +3,14 @@ from typing import Optional, List, Union
 from datetime import date, time
 from queries.pool import pool
 
+class Error(BaseModel):
+    message: str
 
 class EventsIn(BaseModel):
     title: str
-    state: int
-    city: int
-    park: Optional[int]
+    states_id: int
+    cities_id: int
+    dog_parks_id: Optional[int]
     address: str
     date: date
     start_time: str
@@ -20,9 +22,9 @@ class EventsIn(BaseModel):
 class EventsOut(BaseModel):
     id: int
     title: str
-    state: int
-    city: str
-    park: Optional[str]
+    states_id: str
+    cities_id: str
+    dog_parks_id: Optional[str]
     address: str
     date: date
     start_time: str
@@ -34,6 +36,47 @@ class Error(BaseModel):
     message: str
 
 class EventsRepository:
+    def get_one(self, event_id: int) -> Optional[EventsOut]:
+        try:
+            # connect the database
+            with pool.connection() as conn:
+                # get a cursor (something to run SQL with)
+                with conn.cursor() as db:
+                    # Run our SELECT statement
+                    result = db.execute(
+                        """
+                        SELECT 
+                        e.id, 
+                        e.title, 
+                        s.name, 
+                        c.name, 
+                        d.name, 
+                        e.address, 
+                        e.date, 
+                        e.start_time, 
+                        e.end_time, 
+                        e.description, 
+                        e.picture
+                        FROM events e
+                        LEFT JOIN states s
+                            ON (s.id= e.states_id)
+                        LEFT JOIN cities c
+                            ON (c.id= e.cities_id)
+                        LEFT JOIN dog_parks d
+                        ON (d.id= e.dog_parks_id)
+                        WHERE e.id = %s
+                        """,
+                        [event_id]
+                    )
+                    record = result.fetchone()
+                    if record is None:
+                        return None
+                    return self.record_to_event_out(record)
+        except Exception as e:
+            print(e)
+            return {"message": "Could not get that event"}
+
+
     def delete(self, event_id: int) -> bool:
         try:
             with pool.connection() as conn:
@@ -58,11 +101,11 @@ class EventsRepository:
                 with conn.cursor() as db:
                     db.execute(
                         """
-                        UPDATE event
+                        UPDATE events
                         SET title=%s
-                            , state=%s
-                            , city=%s
-                            , park=%s
+                            , states_id=%s
+                            , cities_id=%s
+                            , dog_parks_id=%s
                             , address=%s
                             , date=%s
                             , start_time=%s
@@ -73,9 +116,9 @@ class EventsRepository:
                         """,
                         [
                             event.title,  # these represent the %s
-                            event.state,
-                            event.city,
-                            event.park,
+                            event.states_id,
+                            event.cities_id,
+                            event.dog_parks_id,
                             event.address,
                             event.date,
                             event.start_time,
@@ -98,30 +141,48 @@ class EventsRepository:
                     # run our select statement
                     db.execute(
                         """
-                        SELECT
-                        id, title, states.name, city, park, address, date, start_time, end_time, description, picture
-                        FROM events
-                        INNER JOIN states
-                            ON (events.state = states.id);
-                        """
+                        SELECT 
+                        e.id, 
+                        e.title, 
+                        s.name, 
+                        c.name, 
+                        d.name, 
+                        e.address, 
+                        e.date, 
+                        e.start_time, 
+                        e.end_time, 
+                        e.description, 
+                        e.picture
+                        FROM events e
+                        LEFT JOIN states s
+                            ON (s.id= e.states_id)
+                        LEFT JOIN cities c
+                            ON (c.id= e.cities_id)
+                        LEFT JOIN dog_parks d
+                        ON (d.id= e.dog_parks_id);
+
+                        """,
                     )
-                    result = []
-                    for record in db:
-                        event = EventsOut(
-                            id=record[0],
-                            title=record[1],
-                            state=record[2],
-                            city=record[3],
-                            park=record[4],
-                            address=record[5],
-                            date=record[6],
-                            start_time=record[7],
-                            end_time=record[8],
-                            description=record[9],
-                            picture=record[10],
-                        )
-                        result.append(event)
-                    return result
+                    # return [
+                    #     EventsOut(
+                    #         id=record[0],
+                    #         title=record[1],
+                    #         states_id=record[2],
+                    #         cities_id=record[3],
+                    #         dog_parks_id=record[4],
+                    #         address=record[5],
+                    #         date=record[6],
+                    #         start_time=record[7],
+                    #         end_time=record[8],
+                    #         description=record[9],
+                    #         picture=record[10],
+                    #     )
+                    #     for record in db
+                    # ]
+                    return[ 
+                        self.record_to_event_out(record)
+                        for record in result
+                    ]
         except Exception as e:
             print(e)
             return {"message": "could not get all events"}
@@ -135,16 +196,16 @@ class EventsRepository:
                 result = db.execute(  # stuff we want to insert/create
                     """
                     INSERT INTO events
-                        (title, state, city, park, address, date, start_time, end_time, description, picture)
+                        (title, states_id, cities_id, dog_parks_id, address, date, start_time, end_time, description, picture)
                     VALUES
                         (%s, %s, %s, %s, %s, %s, %s,%s, %s, %s)
-                    RETURNING id, title, state, city, park, address, date, start_time, end_time, description, picture;
+                    RETURNING id;
                     """,
                     [
                         event.title,  # these represent the %s
-                        event.state,
-                        event.city,
-                        event.park,
+                        event.states_id,
+                        event.cities_id,
+                        event.dog_parks_id,
                         event.address,
                         event.date,
                         event.start_time,
@@ -162,3 +223,18 @@ class EventsRepository:
     def event_in_to_out(self, id: int, event: EventsIn):
         old_data = event.dict()
         return EventsOut(id=id, **old_data)
+
+    def record_to_event_out(self, record):
+        return EventsOut(
+            id=record[0],
+            title=record[1],
+            states_id=record[2],
+            cities_id=record[3],
+            dog_parks_id=record[4],
+            address=record[5],
+            date=record[6],
+            start_time=record[7],
+            end_time=record[8],
+            description=record[9],
+            picture=record[10],
+        )

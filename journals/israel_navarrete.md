@@ -13,3 +13,10 @@ create file and configured to our project.
 
     2/16
     finshing up end points 
+
+    2/17
+    Edited tables and redid enpoints 
+    2/21
+    got end points to return name of states 
+    2/22
+    fixed all endponts to return  names of endpoints
