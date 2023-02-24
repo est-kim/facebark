@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 from authenticator import authenticator
 from fastapi import APIRouter
-from routers import states, accounts, events, statuses, cities, dog_parks
+from routers import states, accounts, events, statuses, cities, dog_parks, breeds
 
 
 app = FastAPI()
@@ -17,6 +17,7 @@ app.include_router(statuses.router)
 app.include_router(events.router)
 app.include_router(cities.router)
 app.include_router(dog_parks.router)
+app.include_router(breeds.router)
 
 app.add_middleware(
     CORSMiddleware,
