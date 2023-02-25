@@ -4,8 +4,9 @@ from typing import Union, List
 
 router = APIRouter()
 
+
 @router.get("/dog_parks", response_model=Union[Error, List[DogParkOut]])
 def get_all(
-    repo:DogParkRepository = Depends(),
+    repo: DogParkRepository = Depends(),
 ):
     return repo.get_all()

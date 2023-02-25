@@ -1,6 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Union, Optional
-from datetime import date
+from typing import List, Optional
 from queries.pool import pool
 from pydantic import BaseModel
 
@@ -20,9 +19,9 @@ class AccountIn(BaseModel):
     phone_number: str
     name: str
     image_url: str
-    breed: str
+    breed: int
     sex: str
-    dob: date
+    dob: str
     owner_name: str
     description: str
     city_id: int
@@ -32,13 +31,14 @@ class AccountIn(BaseModel):
 class AccountOut(BaseModel):
     id: int
     username: str
+    hashed_password: str
     email: str
     phone_number: str
     name: str
     image_url: str
-    breed: str
+    breed: int
     sex: str
-    dob: date
+    dob: str
     owner_name: str
     description: str
     city_id: int
@@ -52,8 +52,10 @@ class AccountOutWithPassword(AccountOut):
 class AccountsOut(BaseModel):
     accounts: List[AccountOut]
 
+
 class AccountOutWithPassword(AccountOut):
     hashed_password: str
+
 
 class AccountRepository:
     def record_to_account_out(self, record) -> AccountOutWithPassword:
@@ -63,8 +65,16 @@ class AccountRepository:
             "hashed_password": record[2],
             "email": record[3],
             "phone_number": record[4],
+            "name": record[5],
+            "image_url": record[6],
+            "breed": record[7],
+            "sex": record[8],
+            "dob": record[9],
+            "owner_name": record[10],
+            "description": record[11],
+            "city_id": record[12],
+            "state_id": record[13],
         }
-        print("THIS IS THE ACCOUNT_DICT!!!", account_dict)
         return account_dict
 
     def get(self, username: str) -> AccountOutWithPassword:
@@ -92,16 +102,14 @@ class AccountRepository:
 
     def get_all_accounts(self) -> List[AccountOut]:
         try:
-            # connect to the database
             with pool.connection() as conn:
-                # get a cursor (something to run SQL with)
                 with conn.cursor() as db:
-                    # Run our SELECT statement
                     db.execute(
                         """
                         SELECT
                         a.id,
                         a.username,
+                        a.hashed_password,
                         a.email,
                         a.phone_number,
                         a.name,
@@ -117,24 +125,27 @@ class AccountRepository:
                         LEFT JOIN states s
                             ON (s.id = a.state_id)
                         LEFT JOIN cities c
-                            ON (c.id = a.city_id);
+                            ON (c.id = a.city_id)
+                        LEFT JOIN breeds b
+                            ON (b.id = a.breed);
                         """,
                     )
                     return [
                         AccountOut(
                             id=record[0],
                             username=record[1],
-                            email=record[2],
-                            phone_number=record[3],
-                            name=record[4],
-                            image_url=record[5],
-                            breed=record[6],
-                            sex=record[7],
-                            dob=record[8],
-                            owner_name=record[9],
-                            description=record[10],
-                            city_id=record[11],
-                            state_id=record[12]
+                            hashed_password=record[2],
+                            email=record[3],
+                            phone_number=record[4],
+                            name=record[5],
+                            image_url=record[6],
+                            breed=record[7],
+                            sex=record[8],
+                            dob=record[9],
+                            owner_name=record[10],
+                            description=record[11],
+                            city_id=record[12],
+                            state_id=record[13],
                         )
                         for record in db
                     ]
@@ -142,7 +153,7 @@ class AccountRepository:
             print(e)
             return {"message": "Could not get all accounts"}
 
-    def get_account_by_id(self, id:int) -> Optional[AccountOut]:
+    def get_account_by_id(self, id: int) -> Optional[AccountOut]:
         try:
             with pool.connection() as conn:
                 with conn.cursor() as db:
@@ -151,6 +162,7 @@ class AccountRepository:
                         SELECT
                         a.id,
                         a.username,
+                        a.hashed_password,
                         a.email,
                         a.phone_number,
                         a.name,
@@ -167,6 +179,8 @@ class AccountRepository:
                             ON (s.id = a.state_id)
                         LEFT JOIN cities c
                             ON (c.id = a.city_id)
+                        LEFT JOIN breeds b
+                            ON (b.id = a.breed)
                         WHERE a.id = %s
                         """,
                         [id],

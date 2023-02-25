@@ -24,3 +24,13 @@
 2/20/23
 - Created all MVP, Feature, and Story/Issue labels for team to use
 
+2/21/23
+- Building out backend authentication for accounts
+
+2/22/23
+- Fixing bugs to get 200 response from creating account and login backend
+- Successful 200 response for creating account and login
+- Pulled and merged all updated code
+
+2/23/23
+- Beginning to build out sign in form for front-end with authentication

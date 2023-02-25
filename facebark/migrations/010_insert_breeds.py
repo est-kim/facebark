@@ -86,7 +86,7 @@ steps = [
             (80,'Chinese Shar-Pei'),
             (81,'Chinook'),
             (82,'Chow Chow'),
-            (83,'Cirneco dell’Etna'),
+            (83,'Cirneco dell Etna'),
             (84,'Clumber Spaniel'),
             (85,'Cocker Spaniel'),
             (86,'Collie'),

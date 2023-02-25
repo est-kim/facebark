@@ -2,18 +2,21 @@ from pydantic import BaseModel
 from queries.pool import pool
 from typing import List, Union
 
+
 class DogParkOut(BaseModel):
     id: int
     name: str
     city_id: int
 
+
 class Error(BaseModel):
     message: str
+
 
 class DogParkRepository:
     def get_all(self) -> Union[Error, List[DogParkOut]]:
         try:
-                # connect the database
+            # connect the database
             with pool.connection() as conn:
                 # get a cursor
                 with conn.cursor() as db:
@@ -28,9 +31,7 @@ class DogParkRepository:
                     result = []
                     for record in db:
                         dog_park = DogParkOut(
-                            id = record[0],
-                            name = record[1],
-                            city_id = record[2]
+                            id=record[0], name=record[1], city_id=record[2]
                         )
                         result.append(dog_park)
                     return result

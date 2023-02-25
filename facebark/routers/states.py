@@ -4,8 +4,9 @@ from typing import Union, List
 
 router = APIRouter()
 
+
 @router.get("/states", response_model=Union[Error, List[StateOut]])
 def get_all(
-    repo:StateRepository = Depends(),
+    repo: StateRepository = Depends(),
 ):
     return repo.get_all()

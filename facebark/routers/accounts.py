@@ -8,7 +8,6 @@ from fastapi import (
     status,
 )
 from jwtdown_fastapi.authentication import Token
-from passlib.hash import bcrypt
 from authenticator import authenticator
 from pydantic import BaseModel
 from typing import Union, List, Optional
@@ -42,9 +41,12 @@ router = APIRouter()
 @router.get("/token", response_model=AccountToken | None)
 async def get_token(
     request: Request,
-    account: AccountOutWithPassword = Depends(authenticator.try_get_current_account_data),
+    account: AccountOutWithPassword = Depends(
+        authenticator.try_get_current_account_data
+    ),
 ) -> AccountToken | None:
     if account and authenticator.cookie_name in request.cookies:
+        print(account, " THIS IS ACCOUNT FROM TOKEN!!!!!", account)
         return {
             "access_token": request.cookies[authenticator.cookie_name],
             "type": "Bearer",
@@ -52,11 +54,12 @@ async def get_token(
         }
 
 
-@router.get("/accounts", response_model=Union[List[AccountOut], Error])
+@router.get(
+    "/accounts", response_model=Union[List[AccountOutWithPassword], Error]
+)
 def get_all(
     repo: AccountRepository = Depends(),
 ):
-    # return {"accounts": repo.get_all_accounts()}
     return repo.get_all_accounts()
 
 
@@ -81,11 +84,6 @@ async def create_account(
     response: Response,
     accounts: AccountRepository = Depends(),
 ):
-    print("this is the info: ", info)
-    print("this is the password: ", info.password)
-    print("this the repo: ", accounts)
-    print("this the request: ", request)
-    print("this the response: ", response)
     hashed_password = authenticator.hash_password(info.password)
     print("this is the hashed pwd", hashed_password)
     print(isinstance(hashed_password, str))
@@ -100,4 +98,5 @@ async def create_account(
     form = AccountForm(username=info.username, password=info.password)
     print("this is the form: ", form)
     token = await authenticator.login(response, request, form, accounts)
+    print("this is the TOKEN: ", token)
     return AccountToken(account=account, **token.dict())

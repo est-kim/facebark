@@ -3,8 +3,10 @@ from typing import Optional, List, Union
 from datetime import date, time
 from queries.pool import pool
 
+
 class Error(BaseModel):
     message: str
+
 
 class EventsIn(BaseModel):
     title: str
@@ -32,8 +34,10 @@ class EventsOut(BaseModel):
     description: str
     picture: str
 
+
 class Error(BaseModel):
     message: str
+
 
 class EventsRepository:
     def get_one(self, event_id: int) -> Optional[EventsOut]:
@@ -66,7 +70,7 @@ class EventsRepository:
                         ON (d.id= e.dog_parks_id)
                         WHERE e.id = %s
                         """,
-                        [event_id]
+                        [event_id],
                     )
                     record = result.fetchone()
                     if record is None:
@@ -75,7 +79,6 @@ class EventsRepository:
         except Exception as e:
             print(e)
             return {"message": "Could not get that event"}
-
 
     def delete(self, event_id: int) -> bool:
         try:
@@ -179,9 +182,8 @@ class EventsRepository:
                     #     )
                     #     for record in db
                     # ]
-                    return[ 
-                        self.record_to_event_out(record)
-                        for record in result
+                    return [
+                        self.record_to_event_out(record) for record in result
                     ]
         except Exception as e:
             print(e)

@@ -7,11 +7,11 @@ router = APIRouter()
 
 @router.post("/events", response_model=Union[EventsOut, Error])
 def create_events(
-    event: EventsIn, 
+    event: EventsIn,
     response: Response,
     repo: EventsRepository = Depends(),
-    ):
-    response.status_code =400
+):
+    response.status_code = 400
     return repo.create(event)
 
 
@@ -43,5 +43,5 @@ def delete_event(
 def get_one_event(
     event_id: int,
     repo: EventsRepository = Depends(),
-)-> EventsOut:
+) -> EventsOut:
     return repo.get_one(event_id)
