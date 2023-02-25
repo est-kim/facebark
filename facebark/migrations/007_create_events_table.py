@@ -13,7 +13,8 @@ steps = [
             start_time VARCHAR(100) NOT NULL,
             end_time VARCHAR(100) NOT NULL,
             description TEXT NOT NULL,
-            picture VARCHAR(1000) NOT NULL
+            picture VARCHAR(1000) NOT NULL,
+            account_id INT NOT NULL REFERENCES accounts(id)
         );
         """,
         # "Down" SQL statement

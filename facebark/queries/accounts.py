@@ -201,7 +201,7 @@ class AccountRepository:
     def create(
         self, account: AccountIn, hashed_password: str
     ) -> AccountOutWithPassword:
-        try:
+
             with pool.connection() as conn:
                 with conn.cursor() as db:
                     params = [
@@ -231,15 +231,15 @@ class AccountRepository:
                         """,
                         params,
                     )
+
                     record = None
                     row = db.fetchone()
                     if row is not None:
                         record = {}
                         for i, column in enumerate(db.description):
                             record[column.name] = row[i]
+
                     return record
-        except Exception:
-            return {"message": "Could not create an account"}
 
     def account_in_to_out(
         self, id: int, account: AccountIn, hashed_password: str

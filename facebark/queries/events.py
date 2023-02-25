@@ -49,17 +49,17 @@ class EventsRepository:
                     # Run our SELECT statement
                     result = db.execute(
                         """
-                        SELECT 
-                        e.id, 
-                        e.title, 
-                        s.name, 
-                        c.name, 
-                        d.name, 
-                        e.address, 
-                        e.date, 
-                        e.start_time, 
-                        e.end_time, 
-                        e.description, 
+                        SELECT
+                        e.id,
+                        e.title,
+                        s.name,
+                        c.name,
+                        d.name,
+                        e.address,
+                        e.date,
+                        e.start_time,
+                        e.end_time,
+                        e.description,
                         e.picture
                         FROM events e
                         LEFT JOIN states s
@@ -142,19 +142,19 @@ class EventsRepository:
                 # get a cursor(something to run sql with)
                 with conn.cursor() as db:
                     # run our select statement
-                    db.execute(
+                    result=db.execute(
                         """
-                        SELECT 
-                        e.id, 
-                        e.title, 
-                        s.name, 
-                        c.name, 
-                        d.name, 
-                        e.address, 
-                        e.date, 
-                        e.start_time, 
-                        e.end_time, 
-                        e.description, 
+                        SELECT
+                        e.id,
+                        e.title,
+                        s.name,
+                        c.name,
+                        d.name,
+                        e.address,
+                        e.date,
+                        e.start_time,
+                        e.end_time,
+                        e.description,
                         e.picture
                         FROM events e
                         LEFT JOIN states s
@@ -185,6 +185,10 @@ class EventsRepository:
                     return [
                         self.record_to_event_out(record) for record in result
                     ]
+                    # return[
+                    #     self.record_to_event_out(record)
+                    #     for record in result
+
         except Exception as e:
             print(e)
             return {"message": "could not get all events"}
