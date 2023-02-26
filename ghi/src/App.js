@@ -3,7 +3,10 @@ import React, { BrowserRouter, Routes, Route } from "react-router-dom";
 import Construct from './Construct.js';
 import ErrorNotification from './ErrorNotification';
 import './App.css';
+import Nav from "./Nav";
+import SignUpForm from "./SignUpForm"
 import LoginForm from "./LoginForm";
+import Footer from "./Footer";
 import { AuthProvider, useToken } from "./Authentication";
 
 function GetToken() {
@@ -38,9 +41,12 @@ function App() {
   return (
     <div>
       <BrowserRouter>
+        <Nav/>
         <Routes>
           <Route path="/login" element={<LoginForm />} />
+          <Route path="/signup" element={<SignUpForm />} />
         </Routes>
+        <Footer/>
       </BrowserRouter>
       {/* <ErrorNotification error={error} />
       <Construct info={launch_info} /> */}
