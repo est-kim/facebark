@@ -20,3 +20,13 @@ create file and configured to our project.
     got end points to return name of states 
     2/22
     fixed all endponts to return  names of endpoints
+    2/23
+    worked on creating the form for events 
+    2/24
+    finishing up the form for events
+    2/25 
+    added accounts_id to form. workeed on getting methods to work with the new data
+    2/26
+    finished event forn got post to work from front end
+    2/27
+    gonna work on detail event form

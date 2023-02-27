@@ -48,6 +48,8 @@ class AccountOut(BaseModel):
 class AccountOutWithPassword(AccountOut):
     hashed_password: str
 
+class AccountOutWithPassword(AccountOut):
+    hashed_password: str
 
 class AccountsOut(BaseModel):
     accounts: List[AccountOut]

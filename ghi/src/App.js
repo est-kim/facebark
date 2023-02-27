@@ -8,6 +8,8 @@ import SignUpForm from "./SignUpForm"
 import LoginForm from "./LoginForm";
 import Footer from "./Footer";
 import { AuthProvider, useToken } from "./Authentication";
+import EventForm from './EventForm';
+
 
 function GetToken() {
   // Get token from JWT cookie (if already logged in)
@@ -17,16 +19,26 @@ function GetToken() {
 
 function App() {
   // const [launch_info, setLaunchInfo] = useState([]);
-  // const [error, setError] = useState(null);
+  // const [error, setError] = useState(null);  
 
   // useEffect(() => {
   //   async function getData() {
-  //     let url = `${process.env.REACT_APP_FACEBARK_API_HOST}/api/launch-details`;
+  //     let url = `${process.env.REACT_APP_SAMPLE_SERVICE_API_HOST}/api/launch-details`;
   //     console.log('fastapi url: ', url);
   //     let response = await fetch(url);
   //     console.log("------- hello? -------");
   //     let data = await response.json();
 
+  //     if (response.ok) {
+  //       console.log("got launch data!");
+  //       setLaunchInfo(data.launch_details);
+  //     } else {
+  //       console.log("drat! something happened");
+  //       setError(data.message);
+  //     }
+  //   }
+  //   getData();
+  // }, [])
   //     if (response.ok) {
   //       console.log("got launch data!");
   //       setLaunchInfo(data.launch_details);
@@ -45,6 +57,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<LoginForm />} />
           <Route path="/signup" element={<SignUpForm />} />
+          <Route path="/events" element={<EventForm />} />
         </Routes>
         <Footer/>
       </BrowserRouter>

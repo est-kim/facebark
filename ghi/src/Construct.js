@@ -8,7 +8,7 @@ function Construct(props) {
                 <h1>Under construction hurray </h1>
                 <h2>Coming on (Sometime In the near future which is comming soon )</h2>
                 <h2>{props.info.year}-{pad2(props.info.month)}-{pad2(props.info.day)}</h2>
-                <h2>by or <strong>WELL BEFORE</strong> {pad2(props.info.hour)}:{pad2(props.info.min)}</h2>
+                <h2>by or <strong>WELL BEFORE maybe</strong> {pad2(props.info.hour)}:{pad2(props.info.min)}</h2>
                 
             </header>
         </div>

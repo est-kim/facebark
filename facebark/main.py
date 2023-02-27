@@ -25,6 +25,8 @@ app.include_router(dog_parks.router)
 app.include_router(authenticator.router)
 app.include_router(breeds.router)
 
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[os.environ.get("CORS_HOST", "http://localhost:3000")],

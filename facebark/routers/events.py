@@ -11,7 +11,7 @@ def create_events(
     response: Response,
     repo: EventsRepository = Depends(),
 ):
-    response.status_code = 400
+    
     return repo.create(event)
 
 
@@ -37,7 +37,6 @@ def delete_event(
     repo: EventsRepository = Depends(),
 ) -> bool:
     return repo.delete(event_id)
-
 
 @router.get("/events/{event_id}", response_model=Optional[EventsOut])
 def get_one_event(

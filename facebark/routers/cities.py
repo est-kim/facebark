@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Response
 from queries.cities import CityRepository, CityOut, Error
-from typing import Union, List
+from typing import Union, List, Optional
 
 router = APIRouter()
 

@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from queries.pool import pool
 from typing import List, Union, Optional
+from typing import List, Union, Optional
 
 
 class CityOut(BaseModel):
@@ -57,7 +58,10 @@ class CityRepository:
                     # run SELECT statement
                     db.execute(
                         """
-                        SELECT cities.id, cities.name, cities.state_id
+                        SELECT 
+                        cities.id, 
+                        cities.name, 
+                        cities.state_id
                         FROM cities
                         LEFT JOIN states
                             ON (states.id = cities.state_id)
@@ -73,3 +77,39 @@ class CityRepository:
         except Exception as e:
             print(e)
             return {"message": "Could not get all cities"}
+    
+    def get_cities_by_state_id(self, state_id: int) -> List[CityOut]:
+        try:
+            # connect the database
+            with pool.connection() as conn:
+                # get a cursor (something to run SQL with)
+                with conn.cursor() as db:
+                    # Run our SELECT statement
+                    result = db.execute(
+                        """
+                        SELECT
+                        cities.id,
+                        cities.name,
+                        cities.state_id
+                        FROM cities
+                        LEFT JOIN states
+                            ON (states.id = cities.state_id)
+                        WHERE cities.state_id =%s
+                        """,
+                        [state_id],
+                    )
+                    records = result.fetchall()
+                    cities = [self.record_to_city_out(record) for record in records]
+                    return cities
+        except Exception as e:
+            print(e)
+            return {"message": "Could not get cities for that state"}
+
+        
+    def record_to_city_out(self, record):
+        return CityOut(
+            id=record[0], 
+            name=record[1], 
+            state_id=record[2]
+        )
+    
