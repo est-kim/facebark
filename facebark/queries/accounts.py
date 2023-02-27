@@ -19,7 +19,7 @@ class AccountIn(BaseModel):
     phone_number: str
     name: str
     image_url: str
-    breed: int
+    breed: str
     sex: str
     dob: str
     owner_name: str
@@ -36,7 +36,7 @@ class AccountOut(BaseModel):
     phone_number: str
     name: str
     image_url: str
-    breed: int
+    breed: str
     sex: str
     dob: str
     owner_name: str
@@ -127,7 +127,7 @@ class AccountRepository:
                         LEFT JOIN cities c
                             ON (c.id = a.city_id)
                         LEFT JOIN breeds b
-                            ON (b.id = a.breed);
+                            ON (b.name = a.breed);
                         """,
                     )
                     return [
@@ -180,7 +180,7 @@ class AccountRepository:
                         LEFT JOIN cities c
                             ON (c.id = a.city_id)
                         LEFT JOIN breeds b
-                            ON (b.id = a.breed)
+                            ON (b.name = a.breed)
                         WHERE a.id = %s
                         """,
                         [id],

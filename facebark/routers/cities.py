@@ -10,3 +10,10 @@ def get_all(
     repo: CityRepository = Depends(),
 ):
     return repo.get_all()
+
+@router.get("/cities/{state_id}", response_model=Union[List[CityOut], Error])
+def get_by_state_id(
+    state_id: int,
+    repo: CityRepository = Depends(),
+):
+    return repo.get_cities_by_state_id(state_id)

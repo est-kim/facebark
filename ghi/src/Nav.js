@@ -20,7 +20,6 @@ function Nav() {
     <MDBNavbar
       expand="lg"
       style={{ backgroundColor: "#FFFFFF" }}
-      //   style={{ backgroundColor: "#FFFFFF", borderBottom: "solid black" }}
     >
       <MDBContainer fluid>
         <MDBNavbarBrand href="/">
@@ -51,21 +50,18 @@ function Nav() {
             <MDBNavbarLink
               href="/events"
               style={{ color: "#FFBA00" }}
-              className="fw-bold"
             >
               Events
             </MDBNavbarLink>
             <MDBNavbarLink
               href="/signup"
               style={{ color: "#FFBA00" }}
-              className="fw-bold"
             >
               Sign Up
             </MDBNavbarLink>
             <MDBNavbarLink
               href="/login"
               style={{ color: "#FFBA00" }}
-              className="fw-bold"
             >
               Sign In
             </MDBNavbarLink>

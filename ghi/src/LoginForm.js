@@ -46,14 +46,11 @@ function LoginForm() {
 
     return (
       <MDBContainer className="login-container">
-        {/* <div className="title">
-    <p className="fs-2 fw-bold text-center">Sign in</p>
-  </div> */}
         <br></br>
         <MDBRow>
           <MDBCol className="col-md-12">
             <MDBCard
-              className="p-4 my-4 d-flex flex-column"
+              className="my-4 d-flex flex-column"
               style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.2)" }}
             >
               <MDBRow>
@@ -70,11 +67,9 @@ function LoginForm() {
                     <MDBCardTitle className="text-center fw-bold">Welcome back!</MDBCardTitle>
                     <form onSubmit={handleSubmit}>
                       <MDBContainer>
-                        {/* <MDBContainer className="p-3 my-5 d-flex flex-column w-50"> */}
                         <MDBInput
-                          placeholder="Enter your username"
                           wrapperClass="mb-4 mt-4"
-                          // label="Username"
+                          label="Username"
                           id="form1"
                           type="text"
                           value={username}
@@ -82,12 +77,11 @@ function LoginForm() {
                         />
                         <MDBInput
                           wrapperClass="mb-4"
-                          // label="Password"
+                          label="Password"
                           id="form2"
                           type="password"
                           value={password}
                           onChange={handlePasswordChange}
-                          placeholder="Enter your password"
                         />
 
                         <div className="text-center mt-1 mb-0">

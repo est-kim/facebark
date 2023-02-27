@@ -10,7 +10,7 @@ steps = [
             phone_number VARCHAR(12),
             name VARCHAR(200) NOT NULL,
             image_url TEXT NOT NULL,
-            breed INT NOT NULL REFERENCES breeds(id),
+            breed VARCHAR(100) NOT NULL,
             sex VARCHAR(10) NOT NULL,
             dob VARCHAR(40) NOT NULL,
             owner_name VARCHAR(200) NOT NULL,
