@@ -37,14 +37,14 @@ class StatusesOut(BaseModel):
 
 
 class StatusRepository:
-    def get_all(self):
+    def get_all(self)-> Union[Error, List[StatusOut]]:
         try:
             # connect the database by creating pool of connections
             with pool.connection() as conn:
                 # get a cursor (something to run SQL with)
                 with conn.cursor() as db:
                     # run our SELECT statement
-                    result = db.execute(
+                    db.execute(
                         """
                         SELECT
                             id,
@@ -52,19 +52,23 @@ class StatusRepository:
                             time_stamp,
                             account_id,
                             comment_id
-                        FROM statuses;
-                        """,
+                        FROM statuses
+                        ORDER BY time_stamp DESC;
+                        """
                     )
-                    # creating a new statusOut object
-                    statuses = []
-                    rows = db.fetchall()
-                    for row in rows:
-                        status = self.status_record_to_dict(
-                            row, db.description
+                    result = []
+                    for record in db:
+                        status = StatusOut(
+                            id=record[0],
+                            status_text=record[1],
+                            time_stamp=record[2],
+                            account_id=record[3],
+                            comment_id=record[4],
                         )
-                        statuses.append(status)
-                    return statuses
-        except Exception:
+                        result.append(status)
+                    return result
+        except Exception as e:
+            print(e)
             return {"message": "Could not get all statuses"}
 
     ##add try and except after fixing post

@@ -47,12 +47,12 @@ const formatTime = (timeString) => {
         </MDBCardText>
         <MDBCardTitle>{event.title}</MDBCardTitle>
         <MDBCardText>{event.description}</MDBCardText>
-        <MDBCardText><strong>Date:</strong> {new Date(event.date).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' }).replace(/\//g, '/')}</MDBCardText>
-        <MDBCardText><strong>Time:</strong> {event.start_time && formatTime(event.start_time)} - {event.end_time && formatTime(event.end_time)}</MDBCardText>
-        <MDBCardText><strong>Address:</strong> {event.address}</MDBCardText>
-        <MDBCardText><strong>State:</strong> {event.states_id }</MDBCardText>
-        <MDBCardText><strong>City:</strong> {event.cities_id}</MDBCardText>
-        <MDBCardText><strong>Dog Park:</strong> {event.dog_parks_id}</MDBCardText>
+      <MDBCardText><strong>Date:</strong> {new Date(event.date).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' }).replace(/\//g, '/')}</MDBCardText>
+      <MDBCardText><strong>Time:</strong> {event.start_time && formatTime(event.start_time)} - {event.end_time && formatTime(event.end_time)}</MDBCardText>
+      <MDBCardText><strong>Address:</strong> {event.address}</MDBCardText>
+      <MDBCardText><strong>State:</strong> {event.states_id }</MDBCardText>
+      <MDBCardText><strong>City:</strong> {event.cities_id}</MDBCardText>
+      <MDBCardText><strong>Dog Park:</strong> {event.dog_parks_id}</MDBCardText>
         {/* <MDBCardText>
           Picture: <img src={event.picture} alt={event.title} />
         </MDBCardText> */}
