@@ -25,9 +25,9 @@ class EventsIn(BaseModel):
 class EventsOut(BaseModel):
     id: int
     title: str
-    states_id: int
-    cities_id: int
-    dog_parks_id: Optional[int]
+    states_id: str
+    cities_id: str
+    dog_parks_id: Optional[str]
     address: str
     date: date
     start_time: str
@@ -51,17 +51,17 @@ class EventsRepository:
                     # Run our SELECT statement
                     result = db.execute(
                         """
-                        SELECT 
-                        e.id, 
-                        e.title, 
-                        s.name, 
-                        c.name, 
-                        d.name, 
-                        e.address, 
-                        e.date, 
-                        e.start_time, 
-                        e.end_time, 
-                        e.description, 
+                        SELECT
+                        e.id,
+                        e.title,
+                        s.name,
+                        c.name,
+                        d.name,
+                        e.address,
+                        e.date,
+                        e.start_time,
+                        e.end_time,
+                        e.description,
                         e.picture,
                         e.account_id
                         FROM events e
@@ -149,17 +149,17 @@ class EventsRepository:
                     # run our select statement
                     result = db.execute(
                         """
-                        SELECT 
-                        e.id, 
-                        e.title, 
-                        e.states_id, 
-                        e.cities_id, 
-                        e.dog_parks_id, 
-                        e.address, 
-                        e.date, 
-                        e.start_time, 
-                        e.end_time, 
-                        e.description, 
+                        SELECT
+                        e.id,
+                        e.title,
+                        e.states_id,
+                        e.cities_id,
+                        e.dog_parks_id,
+                        e.address,
+                        e.date,
+                        e.start_time,
+                        e.end_time,
+                        e.description,
                         e.picture,
                         e.account_id
                         FROM events e

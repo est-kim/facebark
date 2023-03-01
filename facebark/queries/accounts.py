@@ -48,16 +48,8 @@ class AccountOut(BaseModel):
 class AccountOutWithPassword(AccountOut):
     hashed_password: str
 
-class AccountOutWithPassword(AccountOut):
-    hashed_password: str
-
 class AccountsOut(BaseModel):
     accounts: List[AccountOut]
-
-
-class AccountOutWithPassword(AccountOut):
-    hashed_password: str
-
 
 class AccountRepository:
     def record_to_account_out(self, record) -> AccountOutWithPassword:

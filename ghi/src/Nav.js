@@ -48,6 +48,12 @@ function Nav() {
               Home
             </MDBNavbarLink> */}
             <MDBNavbarLink
+              href="/accounts"
+              style={{ color: "#FFBA00" }}
+            >
+              Dogs
+            </MDBNavbarLink>
+            <MDBNavbarLink
               href="/events"
               style={{ color: "#FFBA00" }}
             >

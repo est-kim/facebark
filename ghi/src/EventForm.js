@@ -11,7 +11,7 @@ import {
 function EventForm() {
 
     const [title, setTitle] = useState('');
-    const [dog, setDog] = useState('');
+    const [dogPark, setDogPark] = useState('');
     const [address, setAddress] = useState('');
     const [date, setDate] = useState('');
     const [start_time, setStart_time] = useState('');
@@ -21,14 +21,13 @@ function EventForm() {
     const [account_id, setAccount_id] = useState('');
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
+    const [dogParks, setDogParks] = useState([]);
     const [selectedStateId, setSelectedStateId] = useState("");
     const [selectedCityId, setSelectedCityId] = useState("");
+    const [selectedDogParkId, setSelectedDogParkId] = useState("");
 
-    const titleChangeHandler = (event) => { 
+    const titleChangeHandler = (event) => {
         setTitle(event.target.value)
-    }
-    const dogChangeHandler = (event) => {
-        setDog(event.target.value)
     }
     const addressChangeHandler = (event) => {
         setAddress(event.target.value)
@@ -69,13 +68,23 @@ function EventForm() {
     }
     }, [selectedStateId]);
 
+    useEffect(() => {
+    if (selectedCityId !== "") {
+        fetch(`http://localhost:8000/dog_parks/${selectedCityId}`)
+          .then((response) => response.json())
+          .then((data) => setCities(data));
+    } else {
+        setDogParks([]);
+    }
+    }, [selectedCityId]);
+
     const handleSubmit = async (event)=> {
         event.preventDefault();
         const data = {}
         data.title = title
         data.states_id = selectedStateId
         data.cities_id = selectedCityId
-        data.dog_parks_id = dog
+        data.dog_parks_id = selectedDogParkId
         data.address = address
         data.date = date
         data.start_time = start_time
@@ -99,11 +108,11 @@ function EventForm() {
         console.log(response)
         if (response.ok) {
             //const newEvent = await response.json;
-            
+
             setTitle('');
             setSelectedStateId('');
             setSelectedCityId('');
-            setDog('');
+            setDogPark('');
             setAddress('');
             setDate('');
             setStart_time('');
@@ -111,71 +120,80 @@ function EventForm() {
             setDescription('');
             setPicture('');
             setAccount_id('');
-            
+
         }
     }
-    
+
     return (
-        <form onSubmit={handleSubmit} >
-            <div>
+
+    <div className="container" style={{marginTop: "50px"}}>
+        <h1 style={{textAlign: 'center', marginBottom: '20px'}}>Create Event</h1>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div style={{ maxWidth: '400px' }}>
                 <div className="form-floating mb-3">
-                    <input onChange={titleChangeHandler} value={title} placeholder="Title" required type="text" name="title" id="title" className="form-control" />
-                    <label htmlFor="title">Title</label>
-                </div>
-               
-                <div >
-                    <label htmlFor="states" className="form-control">choose your state</label>
-                    <select id="states_id" name="states_id" value={selectedStateId || ""}
-                        onChange={(event) =>setSelectedStateId(parseInt(event.target.value))
-                        }required><option value="" disabled={true}>State</option>
-                        {states.map((state) => ( <option key={state.id} value={state.id}>{state.name}</option>))}
-                      </select>
+                <input onChange={titleChangeHandler} value={title} placeholder="Title" required type="text" name="title" id="title" className="form-control" />
+                <label htmlFor="title">Title</label>
                 </div>
 
-                <div >
-                    <label htmlFor="cities" className="form-control">choose your city</label>
-                    <select id="cities_id" name="cities_id" value={selectedCityId || ""} disabled={cities.length === 0}
-                        onChange={(event) =>setSelectedCityId(parseInt(event.target.value))}><option value="" disabled={true}>
-                        City</option>{cities.map((city) => (<option key={city.id} value={city.id}>{city.name}</option>
-                        ))}
-                      </select>
-                </div>
-                <div >
-                            <input onChange={dogChangeHandler} value={dog} placeholder="Dog Park" type="text" name="dog" id="dog" className="form-control" />
-                            {/* <label htmlFor="dog">dog park</label> */}
-                </div>
-                <div >
-                            <input onChange={addressChangeHandler} value={address} placeholder="address" required type="text" name="address" id="address" className="form-control" />
-                            {/* <label htmlFor="address">Address</label> */}
-                </div>
-                <div >
-                            <input onChange={dateChangeHandler} value={date} placeholder="date" required type="date" name="date" id="date" className="form-control" />
-                            {/* <label htmlFor="date">Date</label> */}
-                </div>
-                <div >
-                            <input onChange={start_timeChangeHandler} value={start_time} placeholder="start_time" required type="text" name="start_time" id="start_time" className="form-control" />
-                            {/* <label htmlFor="start_time">start_time</label> */}
-                </div>
-                <div >
-                            <input onChange={end_timeChangeHandler} value={end_time} placeholder="end_time" required type="text" name="end_time" id="end_time" className="form-control" />
-                            {/* <label htmlFor="end_time">end_time</label> */}
-                </div>
-                <div >
-                            <input onChange={descriptionChangeHandler} value={description} placeholder="description" required type="text" name="description" id="description" className="form-control" />
-                            {/* <label htmlFor="description">Description</label> */}
-                </div>
-                <div >
-                            <input onChange={pictureChangeHandler} value={picture} placeholder="picture" required type="text" name="picture" id="picture" className="form-control" />
-                            {/* <label htmlFor="picture">picture url</label> */}
-                </div>
-                <div >
-                            <input onChange={account_idChangeHandler} value={account_id} placeholder="account_id" type="text" name="account_id" id="account_id" className="form-control" />
-                            {/* <label htmlFor="account_id">account_id</label> */}
-                </div>
+            <div className="form-floating mb-3" style={{width: "100%"}}>
+            <select id="states_id" name="states_id" value={selectedStateId || ""} onChange={(event) => setSelectedStateId(parseInt(event.target.value))} required className="form-control dropdown-arrow" style={{width: "100%"}}>
+                <option value="" disabled={true}>State</option>
+                {states.map((state) => (<option key={state.id} value={state.id}>{state.name}</option>))}
+            </select>
+            <label htmlFor="states_id">State</label>
             </div>
-            <button className="btn btn-primary">Create</button>
-            
-        </form>
+
+            <div className="form-floating mb-3" style={{width: "100%"}}>
+            <select id="cities_id" name="cities_id" value={selectedCityId || ""}  onChange={(event) => setSelectedCityId(parseInt(event.target.value))} className="form-control dropdown-arrow" style={{width: "100%"}}>
+                <option value="" disabled={true}>City</option>
+                {cities.map((city) => (<option key={city.id} value={city.id}>{city.name}</option>))}
+            </select>
+            <label htmlFor="cities_id">City</label>
+            </div>
+
+            <div className="form-floating mb-3" style={{width: "100%"}}>
+            <select onChange={(event) => setSelectedDogParkId(parseInt(event.target.value))} value={selectedDogParkId || ""} required name="dog_park" id="dog_park" className="form-control dropdown-arrow" style={{width: "100%"}}>
+                <option value="" disabled={true}>Dog Park</option>
+                {dogParks.map((dogPark) => (<option key={dogPark.id} value={dogPark.id}>{dogPark.name}</option>))}
+            </select>
+            <label htmlFor="dog_park">Dog Park</label>
+            </div>
+
+            <div className="form-floating mb-3">
+            <input onChange={addressChangeHandler} value={address} placeholder="Address" required type="text" name="address" id="address" className="form-control" />
+            <label htmlFor="address">Address</label>
+            </div>
+
+            <div className="form-floating mb-3">
+            <input onChange={dateChangeHandler} value={date} placeholder="Date" required type="date" name="date" id="date" className="form-control" />
+            <label htmlFor="date">Date</label>
+            </div>
+
+            <div className="form-floating mb-3">
+            <input onChange={start_timeChangeHandler} value={start_time} placeholder="Start Time" required type="time" name="start_time" id="start_time" className="form-control" />
+            <label htmlFor="start_time">Start Time</label>
+            </div>
+
+            <div className="form-floating mb-3">
+            <input onChange={end_timeChangeHandler} value={end_time} placeholder="End Time" required type="time" name="end_time" id="end_time" className="form-control" />
+            <label htmlFor="end_time">End Time</label>
+            </div>
+
+            <div className="form-floating mb-3">
+            <textarea onChange={descriptionChangeHandler} value={description} placeholder="Description" required type="text" name="description" id="description" className="form-control" rows="15"></textarea>
+            <label htmlFor="description">Description</label>
+            </div>
+
+            <div className="form-floating mb-3">
+            <input onChange={pictureChangeHandler} value={picture} placeholder="Picture" required type="text" name="picture" id="picture" className="form-control" />
+            <label htmlFor="picture">Picture</label>
+            </div>
+
+    </div>
+    <button className="btn btn-primary">Create</button>
+
+</form>
+</div>
     )
 }
 export default EventForm;

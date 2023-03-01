@@ -67,11 +67,12 @@ def get_all(
 def get_account(
     id: int,
     repo: AccountRepository = Depends(),
-    account_data: dict = Depends(authenticator.get_current_account_data),
+    # account_data: dict = Depends(authenticator.get_current_account_data),
 ) -> AccountOut:
     try:
         record = repo.get_account_by_id(id)
-        if record is not None and account_data:
+        if record is not None:
+        # if record is not None and account_data:
             return record
     except Exception:
         return status.HTTP_404_NOT_FOUND
