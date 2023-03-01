@@ -1,79 +1,160 @@
-import { NavLink, Link } from "react-router-dom";
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAuthContext, useToken } from "./Authentication";
+import { Link, useNavigate } from "react-router-dom";
 import {
   MDBContainer,
   MDBNavbar,
   MDBNavbarBrand,
-  MDBNavbarToggler,
   MDBNavbarNav,
-  MDBNavbarItem,
   MDBNavbarLink,
-  MDBIcon,
-  MDBCollapse,
+  MDBCollapse
 } from "mdb-react-ui-kit";
 
+
 function Nav() {
-  const [showNavSecond, setShowNavSecond] = useState(false);
   const [showNavRight, setShowNavRight] = useState(false);
+  const [token, , logout] = useToken();
+  const { isLoggedIn, setIsLoggedIn } = useAuthContext();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (token !== null) {
+      setIsLoggedIn(true);
+    }
+  }, [token, setIsLoggedIn]);
+
+  console.log("token:", token);
+  console.log("isLoggedIn:", isLoggedIn);
 
   return (
     <MDBNavbar
       expand="lg"
-      style={{ backgroundColor: "#FFFFFF" }}
+      style={{ backgroundColor: "#FFFFFF", boxShadow: "none" }}
     >
       <MDBContainer fluid>
         <MDBNavbarBrand href="/">
-          <img src="./facebark_logo.png" alt="facebark logo" width="150px" />
+          <img
+            src={process.env.PUBLIC_URL + "/facebark_logo.png"}
+            alt="facebark logo"
+            width="150px"
+          />
         </MDBNavbarBrand>
-        {/* <MDBNavbarToggler
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-          onClick={() => setShowNavSecond(!showNavSecond)}
-        >
-          <MDBIcon icon="bars" fas />
-        </MDBNavbarToggler> */}
-        <MDBNavbarToggler
-          type="button"
-          data-target="#navbarRightAlignExample"
-          aria-controls="navbarRightAlignExample"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-          onClick={() => setShowNavRight(!showNavRight)}
-        >
-          <MDBIcon icon="bars" fas />
-        </MDBNavbarToggler>
         <MDBCollapse navbar show={showNavRight}>
           <MDBNavbarNav right fullWidth={false} className="mb-2 mb-lg-0">
-            {/* <MDBNavbarLink active aria-current="page" href="#">
+            <Link
+              className={isLoggedIn ? "nav-link" : "d-none"}
+              to={{ pathname: "/home", state: { isLoggedIn: isLoggedIn } }}
+              style={{ color: "#FFBA00" }}
+            >
               Home
-            </MDBNavbarLink> */}
+            </Link>
             <MDBNavbarLink
-              href="/accounts"
+              className={isLoggedIn ? "nav-link" : "d-none"}
+              href="/profile"
               style={{ color: "#FFBA00" }}
             >
-              Dogs
+              Profile
             </MDBNavbarLink>
+            <div
+              className="collapse navbar-collapse"
+              id="navbarNavDarkDropdown"
+            >
+              <ul className="navbar-nav">
+                <li className="nav-item dropdown">
+                  <a
+                    className="nav-link dropdown-toggle"
+                    href="#"
+                    id="navbarDarkDropdownMenuLink"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                    style={{ color: "#FFBA00" }}
+                  >
+                    Dogs
+                  </a>
+                  <ul
+                    className="dropdown-menu dropdown-menu-dark"
+                    aria-labelledby="navbarDarkDropdownMenuLink"
+                  >
+                    <li>
+                      <Link className="dropdown-item" to="/accounts">
+                        Following
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/accounts">
+                        View All Dogs
+                      </Link>
+                    </li>
+                  </ul>
+                </li>
+                <li className="nav-item dropdown">
+                  {isLoggedIn ? (
+                    <>
+                      <a
+                        className="nav-link dropdown-toggle"
+                        href="#"
+                        id="navbarDarkDropdownMenuLink"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        style={{ color: "#FFBA00" }}
+                      >
+                        Events
+                      </a>
+                      <ul
+                        className="dropdown-menu dropdown-menu-dark"
+                        aria-labelledby="navbarDarkDropdownMenuLink"
+                      >
+                        <li>
+                          <Link className="dropdown-item" to="/events">
+                            Events
+                          </Link>
+                        </li>
+                        <li>
+                          <Link className="dropdown-item" to="/events/new">
+                            Create An Event
+                          </Link>
+                        </li>
+                      </ul>
+                    </>
+                  ) : (
+                    <Link
+                      className="nav-link"
+                      to="/events"
+                      style={{ color: "#FFBA00" }}
+                    >
+                      Events
+                    </Link>
+                  )}
+                </li>
+              </ul>
+            </div>
             <MDBNavbarLink
-              href="/events"
+              className={isLoggedIn ? "nav-link" : "d-none"}
+              onClick={() => {
+                logout();
+                setIsLoggedIn(false);
+                navigate("/");
+              }}
               style={{ color: "#FFBA00" }}
             >
-              Events
+              Log Out
             </MDBNavbarLink>
             <MDBNavbarLink
+              className={isLoggedIn ? "d-none" : "nav-link"}
               href="/signup"
               style={{ color: "#FFBA00" }}
             >
               Sign Up
             </MDBNavbarLink>
             <MDBNavbarLink
+              className={isLoggedIn ? "d-none" : "nav-link"}
               href="/login"
-              style={{ color: "#FFBA00" }}
+              style={{ color: "#FFBA00", cursor: "pointer" }}
             >
               Sign In
             </MDBNavbarLink>
-            {/* <MDBNavbarLink disabled href="#" tabIndex={-1} aria-disabled="true">
-              Disabled
-            </MDBNavbarLink> */}
           </MDBNavbarNav>
         </MDBCollapse>
       </MDBContainer>

@@ -8,7 +8,6 @@ export function getToken() {
 }
 
 export async function getTokenInternal() {
-    // const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/token`;
     const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/token`;
     try {
         const response = await fetch(url, {
@@ -47,13 +46,19 @@ function handleErrorMessage(error) {
 export const AuthContext = createContext({
     token: null,
     setToken: () => null,
+    user: null,
+    setUser: () => null,
+    isLoggedIn: null,
+    setIsLoggedIn: () => null
 });
 
 export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(null);
+    const [user, setUser] = useState(null);
+    const [isLoggedIn, setIsLoggedIn] = useState(null);
 
     return (
-        <AuthContext.Provider value={{ token, setToken }}>
+        <AuthContext.Provider value={{ token, setToken, user, setUser, isLoggedIn, setIsLoggedIn }}>
             {children}
         </AuthContext.Provider>
     );
@@ -62,7 +67,7 @@ export const AuthProvider = ({ children }) => {
 export const useAuthContext = () => useContext(AuthContext);
 
 export function useToken() {
-    const { token, setToken } = useAuthContext();
+    const { token, setToken, user, setUser, setIsLoggedIn } = useAuthContext();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -77,10 +82,12 @@ export function useToken() {
 
     async function logout() {
         if (token) {
-            const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/api/token`;
+            const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/token`;
             await fetch(url, { method: "delete", credentials: "include" });
+            localStorage.removeItem('token');
             internalToken = null;
             setToken(null);
+            setIsLoggedIn(false);
             navigate("/");
         }
     }
@@ -98,67 +105,48 @@ export function useToken() {
         if (response.ok) {
             const token = await getTokenInternal();
             setToken(token);
+            setIsLoggedIn(true);
+            navigate("/home")
             return;
+        } else {
+            let error = await response.json();
+            setIsLoggedIn(false);
+            return handleErrorMessage(error);
         }
-        let error = await response.json();
-        return handleErrorMessage(error);
-        }
+    }
 
-    // async function signup(
-    //     username,
-    //     password,
-    //     email,
-    //     phoneNumber,
-    //     dogName,
-    //     imageUrl,
-    //     breed,
-    //     sex,
-    //     dob,
-    //     ownerName,
-    //     description,
-    //     city,
-    //     state
-    //     ) {
-    //     const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/accounts`;
-    //     const response = await fetch(url, {
-    //         method: "post",
-    //         body: JSON.stringify({
-    //             username,
-    //             password,
-    //             email,
-    //             first_name: firstName,
-    //             last_name: lastName,
-    //             phone_number: phoneNumber,
-    //             name: dogName,
-    //             image_url: imageUrl,
-    //             breed,
-    //             sex,
-    //             dob,
-    //             owner_name: ownerName,
-    //             description,
-    //             city_id: city,
-    //             state_id: state
-    //         }),
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //         },
-    //     });
-    //     if (response.ok) {
-    //     await login(username, password);
-    //     }
-    //     return false;
-    // }
-
-    async function update(username, password, email, firstName, lastName) { /// fix here
+    async function signup(
+        username,
+        password,
+        email,
+        phoneNumber,
+        dogName,
+        imageUrl,
+        breed,
+        sex,
+        dob,
+        ownerName,
+        description,
+        city,
+        state
+        ) {
         const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/accounts`;
         const response = await fetch(url, {
-            method: "patch", //fix here
+            method: "post",
             body: JSON.stringify({
                 username,
                 password,
                 email,
-                first_name: firstName,
-                last_name: lastName,
+                phone_number: phoneNumber,
+                name: dogName,
+                image_url: imageUrl,
+                breed,
+                sex,
+                dob,
+                owner_name: ownerName,
+                description,
+                city_id: city,
+                state_id: state
             }),
             headers: {
                 "Content-Type": "application/json",
@@ -169,8 +157,26 @@ export function useToken() {
         }
         return false;
     }
-    return { token, login, logout, update };
-    // return { token, login, logout, signup, update };
+
+    async function update(username, password, email) { /// fix here
+        const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/accounts`;
+        const response = await fetch(url, {
+            method: "patch", //fix here
+            body: JSON.stringify({
+                username,
+                password,
+                email,
+            }),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        if (response.ok) {
+        await login(username, password);
+        }
+        return false;
+    }
+    return [ token, login, logout, signup, update ];
 }
 
 /// what is this for and how do we use this?! is it the account by id?
@@ -195,6 +201,6 @@ export const useUser = (token) => {
 
     getUser();
   }, [token]);
-
+  console.log("THIS IS THE USERRRR", user)
   return user;
 };

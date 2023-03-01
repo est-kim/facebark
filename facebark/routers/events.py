@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends, Response, status
 from queries.events import EventsIn, EventsRepository, EventsOut, Error
 from typing import Union, List, Optional
+from authenticator import authenticator
 
 router = APIRouter()
 
@@ -11,7 +12,7 @@ def create_events(
     response: Response,
     repo: EventsRepository = Depends(),
 ):
-    
+
     return repo.create(event)
 
 
@@ -42,5 +43,11 @@ def delete_event(
 def get_one_event(
     event_id: int,
     repo: EventsRepository = Depends(),
+    account_data: dict = Depends(authenticator.get_current_account_data),
 ) -> EventsOut:
-    return repo.get_one(event_id)
+    try:
+        record = repo.get_one(event_id)
+        if record is not None and account_data:
+            return record
+    except Exception:
+        return status.HTTP_404_NOT_FOUND

@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { useAuthContext, useToken, getTokenInternal } from "./Authentication";
 import {
-  MDBInput,
   MDBCol,
   MDBRow,
-  MDBCheckbox,
   MDBBtn,
   MDBIcon,
   MDBCard,
@@ -15,27 +14,59 @@ import {
 } from "mdb-react-ui-kit";
 
 function EventDetailPage() {
-
-
   const { eventId } = useParams();
   const [event, setEvent] = useState("");
   const [events, setEvents] = useState([]);
+  const { isLoggedIn, setIsLoggedIn } = useAuthContext();
+  const [token] = useToken();
 
-  console.log(`http://localhost:8000/events/${eventId}`)
-
+  // console.log(`http://localhost:8000/events/${eventId}`)
   useEffect(() => {
-    fetch(`http://localhost:8000/events/${eventId}`)
-      .then((response) => response.json())
-      .then((data) => setEvent(data))
-      .catch((error) => console.log(error));
+    const fetchToken = async () => {
+      const token = await getTokenInternal();
+      if (token) {
+        setIsLoggedIn(true);
+      }
+    };
+    fetchToken();
   }, []);
 
-const formatTime = (timeString) => {
-  const [time, period] = timeString.split(' ');
-  const [hour, minute] = time.split(':').map(Number);
-  const displayHour = hour % 12 || 12;
-  return `${displayHour}:${minute.toString().padStart(2, '0')} ${period}`;
-};
+  // useEffect(() => {
+  //   fetch(`http://localhost:8000/events/${eventId}`)
+  //     .then((response) => response.json())
+  //     .then((data) => setEvent(data))
+  //     .catch((error) => console.log(error));
+  // }, []);
+
+  useEffect(() => {
+    const url = `http://localhost:8000/events/${eventId}`;
+    const fetchData = async () => {
+      try {
+        const response = await fetch(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setEvent(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const formatTime = (timeString) => {
+    const [time, period] = timeString.split(' ');
+    const [hour, minute] = time.split(':').map(Number);
+    const displayHour = hour % 12 || 12;
+    return `${displayHour}:${minute.toString().padStart(2, '0')} ${period}`;
+  };
 
   return (
 <MDBRow className="mt-4">

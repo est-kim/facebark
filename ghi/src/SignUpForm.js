@@ -11,7 +11,7 @@ import {
 } from "mdb-react-ui-kit";
 
 function SignUpForm() {
-    const [name, setName] = useState("");
+    const [ownerName, setOwnerName] = useState("");
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -33,8 +33,8 @@ function SignUpForm() {
     const [errorMessage, setErrorMessage] = useState("");
 
 
-    const handleNameChange = (event) => {
-      setName(event.target.value);
+    const handleOwnerNameChange = (event) => {
+      setOwnerName(event.target.value);
     };
 
     const handleEmailChange = (event) => {
@@ -114,7 +114,7 @@ function SignUpForm() {
         data.username = username;
         data.password = password;
         data.phone_number = phoneNumber;
-        data.owner_name = name;
+        data.owner_name = ownerName;
         data.breed = selectedBreed;
         data.image_url = dogImage;
         data.dob = birthday;
@@ -134,7 +134,7 @@ function SignUpForm() {
         try {
             const response = await fetch(url, fetchConfig);
             if (response.ok) {
-                setName("");
+                setOwnerName("");
                 setEmail("");
                 setUsername("");
                 setPassword("");
@@ -187,7 +187,7 @@ function SignUpForm() {
                     </h3>
 
                     <MDBInput
-                      onChange={handleNameChange}
+                      onChange={handleOwnerNameChange}
                       wrapperClass="mb-4"
                       label="Full Name"
                       size="lg"

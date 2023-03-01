@@ -1,4 +1,3 @@
-import React from "react";
 import {
   MDBFooter,
   MDBContainer,
@@ -11,7 +10,7 @@ import { Link } from "react-router-dom";
 function Footer() {
   return (
     <MDBFooter
-      bgColor="#FFFFFF"
+      style={{ backgroundColor: "#fcdc8c" }}
       className="text-center text-lg-start text-muted"
     >
       <section className="d-flex justify-content-center justify-content-md-between pt-1 pb-0 border-bottom">
@@ -22,9 +21,9 @@ function Footer() {
               lg="4"
               xl="3"
               className="mx-auto mb-4"
-              style={{ color: "#FFBA00" }}
+              style={{ color: "#FFFFFF" }}
             >
-              <h6 className=" fw-bold mb-3" style={{ color: "#FFBA00" }}>
+              <h6 className=" fw-bold mb-3" style={{ color: "#FFFFFF" }}>
                 FaceBark &nbsp;
                 <MDBIcon fas icon="dog" />
               </h6>
@@ -32,19 +31,19 @@ function Footer() {
                 Pawsome connections, one bark at a time.
               </p>
               <div>
-                <a href="" className="me-4 text-reset">
+                <a href="/" className="me-4 text-reset">
                   <MDBIcon fab icon="facebook-f" />
                 </a>
-                <a href="" className="me-4 text-reset">
+                <a href="/" className="me-4 text-reset">
                   <MDBIcon fab icon="twitter" />
                 </a>
-                <a href="" className="me-4 text-reset">
+                <a href="/" className="me-4 text-reset">
                   <MDBIcon fab icon="google" />
                 </a>
-                <a href="" className="me-4 text-reset">
+                <a href="/" className="me-4 text-reset">
                   <MDBIcon fab icon="instagram" />
                 </a>
-                <a href="" className="me-4 text-reset">
+                <a href="/" className="me-4 text-reset">
                   <MDBIcon fab icon="linkedin" />
                 </a>
               </div>
@@ -55,7 +54,7 @@ function Footer() {
               lg="2"
               xl="2"
               className="mx-auto mb-4"
-              style={{ color: "#FFBA00" }}
+              style={{ color: "#FFFFFF" }}
             >
               <h6 className="fw-bold mb-2">Furiends</h6>
               <p className="mb-1">
@@ -83,7 +82,7 @@ function Footer() {
               lg="2"
               xl="2"
               className="mx-auto mb-4"
-              style={{ color: "#FFBA00" }}
+              style={{ color: "#FFFFFF" }}
             >
               <h6 className="fw-bold mb-2">Events</h6>
               <p className="mb-1">
@@ -110,9 +109,9 @@ function Footer() {
               lg="3"
               xl="3"
               className="mx-auto mb-md-0 mb-4"
-              style={{ color: "#FFBA00" }}
+              style={{ color: "#FFFFFF" }}
             >
-              <h6 className="fw-bold mb-2">Contact us</h6>
+              <h6 className="fw-bold mb-2">Contact Us</h6>
               <p style={{ fontSize: "13px" }} className="mb-1">
                 <MDBIcon icon="home" /> &nbsp;101 Dalmation Drive
                 <br></br>

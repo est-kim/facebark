@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { useAuthContext, useToken, getTokenInternal } from "./Authentication";
 import {
-  MDBInput,
   MDBCol,
   MDBRow,
-  MDBCheckbox,
   MDBBtn,
   MDBIcon,
   MDBCard,
@@ -16,7 +15,7 @@ import {
 
 function AccountDetailPage() {
 
-
+  const { isLoggedIn, setIsLoggedIn } = useAuthContext();
   const { accountId } = useParams();
   const [account, setAccount] = useState("");
   const [accounts, setAccounts] = useState([]);
@@ -24,9 +23,22 @@ function AccountDetailPage() {
   const [states, setStates] = useState([]);
   const [city, setCity] = useState("");
   const [cities, setCities] = useState([]);
+  const [token] = useToken();
   const [status, setStatus] = useState("");
   const [statuses, setStatuses] = useState([]);
 
+  console.log("TOKEN IN ACCOUNT DETAIL: ", token)
+  console.log("SET IS LOGGED IN: ", isLoggedIn)
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      const token = await getTokenInternal();
+      if (token) {
+        setIsLoggedIn(true);
+      }
+    };
+    fetchToken();
+  }, []);
 
   useEffect(() => {
       fetch("http://localhost:8000/statuses")
@@ -49,11 +61,34 @@ function AccountDetailPage() {
       .catch((error) => console.log(error));
   }, []);
 
+  // useEffect(() => {
+  //   fetch(`http://localhost:8000/accounts/${accountId}`)
+  //     .then((response) => response.json())
+  //     .then((data) => setAccount(data))
+  //     .catch((error) => console.log(error));
+  // }, []);
+
   useEffect(() => {
-    fetch(`http://localhost:8000/accounts/${accountId}`)
-      .then((response) => response.json())
-      .then((data) => setAccount(data))
-      .catch((error) => console.log(error));
+    const url = `http://localhost:8000/accounts/${accountId}`;
+    const fetchData = async () => {
+      try {
+        const response = await fetch(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setAccount(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
   }, []);
 
   function calculateAge(dobString) {
