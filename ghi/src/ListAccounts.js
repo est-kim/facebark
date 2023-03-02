@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react"
 import { useNavigate } from "react-router-dom";
+import Spinner from "./Spinner";
 import { useAuthContext, useToken, getTokenInternal } from "./Authentication";
 import {
   MDBCard,
@@ -21,6 +22,7 @@ function AccountList() {
     const { setIsLoggedIn } = useAuthContext();
     const navigate = useNavigate();
     const [token] = useToken();
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
       const fetchToken = async () => {
@@ -68,9 +70,16 @@ function AccountList() {
     useEffect(() => {
         fetch("http://localhost:8000/accounts")
         .then((response) => response.json())
-        .then((data) => setAccounts(data))
+        .then((data) => {
+            setAccounts(data);
+            setLoading(false);
+        })
         .catch((error) => console.log(error));
     }, []);
+
+    if (loading) {
+    return <Spinner />;
+    }
 
     let NewAccounts = []
     for (let a of accounts) {
@@ -147,8 +156,11 @@ function AccountList() {
 
   return (
     <>
-      <div className="list-bg">
-        <div className="row">
+      <div className="list-bg" style={{ paddingBottom: "50px" }}>
+        <div
+          className="row"
+          style={{ paddingBottom: "20px", paddingTop: "10px" }}
+        >
           <div className="offset-3 col-6">
             <div
               style={{
@@ -224,7 +236,7 @@ function AccountList() {
                 if (token && setIsLoggedIn) {
                   handleAccountClick(account.id);
                 } else {
-                    navigate("/signup")
+                  navigate("/signup");
                 }
               }}
             >

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import Spinner from "./Spinner";
 import { useAuthContext, useToken, getTokenInternal } from "./Authentication";
 import {
   MDBCol,
@@ -19,6 +20,7 @@ function EventDetailPage() {
   const [events, setEvents] = useState([]);
   const { isLoggedIn, setIsLoggedIn } = useAuthContext();
   const [token] = useToken();
+  const [loading, setLoading] = useState(true);
 
   // console.log(`http://localhost:8000/events/${eventId}`)
   useEffect(() => {
@@ -56,10 +58,18 @@ function EventDetailPage() {
         setEvent(data);
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchData();
-  }, []);
+    if (token && isLoggedIn) {
+      fetchData();
+    }
+  }, [eventId, isLoggedIn, token]);
+
+  if (loading) {
+    return <Spinner />;
+  }
 
   const formatTime = (timeString) => {
     const [time, period] = timeString.split(' ');

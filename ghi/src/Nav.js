@@ -18,8 +18,10 @@ function Nav() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (token !== null) {
+    if (token !== null && token !== false) {
       setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false)
     }
   }, [token, setIsLoggedIn]);
 

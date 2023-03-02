@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 function Footer() {
   return (
     <MDBFooter
-      style={{ backgroundColor: "#fcdc8c" }}
+      style={{ backgroundColor: "#fcdc8c", bottom: "0", width: "100%" }}
       className="text-center text-lg-start text-muted"
     >
       <section className="d-flex justify-content-center justify-content-md-between pt-1 pb-0 border-bottom">

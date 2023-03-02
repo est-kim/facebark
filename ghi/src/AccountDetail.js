@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import Spinner from "./Spinner";
 import { useAuthContext, useToken, getTokenInternal } from "./Authentication";
 import {
   MDBCol,
@@ -26,9 +27,21 @@ function AccountDetailPage() {
   const [token] = useToken();
   const [status, setStatus] = useState("");
   const [statuses, setStatuses] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [ userId, setUserId] = useState("");
 
+  console.log("TOKEN IN ACCOUNT DETAIL: ", token)
+  console.log("SET IS LOGGED IN: ", isLoggedIn)
 
+  useEffect(() => {
+    const fetchToken = async () => {
+      const token = await getTokenInternal();
+      if (token) {
+        setIsLoggedIn(true);
+      }
+    };
+    fetchToken();
+  }, []);
 
   console.log("TOKEN IN ACCOUNT DETAIL: ", token)
   console.log("SET IS LOGGED IN: ", isLoggedIn)
@@ -108,10 +121,19 @@ function AccountDetailPage() {
         setAccount(data);
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchData();
-  }, []);
+
+    if (token && isLoggedIn) {
+      fetchData();
+    }
+  }, [accountId, isLoggedIn, token]);
+
+  if (loading) {
+    return <Spinner />;
+  }
 
   function calculateAge(dobString) {
     const dob = new Date(dobString);

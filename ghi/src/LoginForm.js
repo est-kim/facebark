@@ -16,12 +16,8 @@ import { useAuthContext, useToken } from "./Authentication";
 
 
 function LoginForm() {
-    // const [token, login] = useToken();
-    // const { setToken, setIsLoggedIn } = useAuthContext();
-    // const [token, login] = useToken(setToken, setIsLoggedIn);
-    // const { isLoggedIn } = useAuthContext();
     const [, login] = useToken();
-    const { setIsLoggedIn } = useAuthContext();
+    const { isLoggedIn } = useAuthContext();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -46,12 +42,13 @@ function LoginForm() {
       event.preventDefault();
       const error = await login(username, password);
       if (error) {
-        setIsLoggedIn(false);
+        isLoggedIn(false);
         setError("Please enter the correct username and password");
       } else {
         navigate("/home");
       }
     };
+
 
 return (
   <MDBContainer className="login-container">

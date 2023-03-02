@@ -7,7 +7,7 @@ import {
   MDBBtn,
   MDBIcon,
 } from "mdb-react-ui-kit";
-import { useAuthContext, getTokenInternal } from "./Authentication";
+import { useAuthContext, getTokenInternal, useToken } from "./Authentication";
 
 function EventForm() {
   const [title, setTitle] = useState("");
@@ -21,20 +21,30 @@ function EventForm() {
   const [account_id, setAccount_id] = useState("");
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
+  const [state, setState] = useState([]);
+  const [city, setCity] = useState([]);
   const [dogParks, setDogParks] = useState([]);
   const [selectedStateId, setSelectedStateId] = useState("");
   const [selectedCityId, setSelectedCityId] = useState("");
   const [selectedDogParkId, setSelectedDogParkId] = useState("");
   const { setIsLoggedIn } = useAuthContext();
+  const [userId, setUserId] = useState("");
+  const [token] = useToken();
 
   const titleChangeHandler = (event) => {
     setTitle(event.target.value);
   };
+  // const titleChangeHandler = (event) => {
+  //   setTitle(event.target.value);
+  // };
   const addressChangeHandler = (event) => {
     setAddress(event.target.value);
   };
   const dateChangeHandler = (event) => {
     setDate(event.target.value);
+  };
+  const handleDogParkChange = (event) => {
+    setDogPark(event.target.value);
   };
   const start_timeChangeHandler = (event) => {
     setStart_time(event.target.value);
@@ -48,10 +58,18 @@ function EventForm() {
   const pictureChangeHandler = (event) => {
     setPicture(event.target.value);
   };
-  const account_idChangeHandler = (event) => {
-    setAccount_id(event.target.value);
+
+  const handleStateChange = (event) => {
+    const value = event.target.value;
+    setState(value);
+    setCity("");
   };
-  
+
+  const handleCityChange = (event) => {
+    const value = event.target.value;
+    setCity(value);
+  };
+
   useEffect(() => {
     const fetchToken = async () => {
       const token = await getTokenInternal();
@@ -63,6 +81,23 @@ function EventForm() {
   }, []);
 
   useEffect(() => {
+    async function getUserId() {
+      const url = `http://localhost:8000/api/things`;
+      // const response = await fetch(url);
+      const response = await fetch(url, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.ok) {
+        const data = await response.json();
+
+        setUserId(data);
+      }
+    }
+    getUserId();
+  }, [token]);
+
+  useEffect(() => {
     fetch("http://localhost:8000/states")
       .then((response) => response.json())
       .then((data) => setStates(data))
@@ -70,39 +105,33 @@ function EventForm() {
   }, []);
 
   useEffect(() => {
-    if (selectedStateId !== "") {
-      fetch(`http://localhost:8000/cities/${selectedStateId}`)
-        .then((response) => response.json())
-        .then((data) => setCities(data));
-    } else {
-      setCities([]);
-    }
-  }, [selectedStateId]);
+    fetch("http://localhost:8000/cities")
+      .then((response) => response.json())
+      .then((data) => setCities(data))
+      .catch((error) => console.log(error));
+  }, []);
 
   useEffect(() => {
-    if (selectedCityId !== "") {
-      fetch(`http://localhost:8000/dog_parks/${selectedCityId}`)
-        .then((response) => response.json())
-        .then((data) => setCities(data));
-    } else {
-      setDogParks([]);
-    }
-  }, [selectedCityId]);
+    fetch("http://localhost:8000/dog_parks")
+      .then((response) => response.json())
+      .then((data) => setDogParks(data))
+      .catch((error) => console.log(error));
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = {};
     data.title = title;
-    data.states_id = selectedStateId;
-    data.cities_id = selectedCityId;
-    data.dog_parks_id = selectedDogParkId;
+    data.states_id = state;
+    data.cities_id = city;
+    data.dog_parks_id = dogPark;
     data.address = address;
     data.date = date;
     data.start_time = start_time;
     data.end_time = end_time;
     data.description = description;
     data.picture = picture;
-    data.account_id = account_id;
+    data.account_id = userId;
     console.log(data);
 
     const eventUrl = "http://localhost:8000/events";
@@ -129,9 +158,22 @@ function EventForm() {
       setEnd_time("");
       setDescription("");
       setPicture("");
-      setAccount_id("");
     }
   };
+
+  console.log(cities);
+  console.log(states);
+  console.log(dogParks);
+
+  let NewCities = [];
+
+  for (let c of cities) if (c["state_id"] == state) NewCities.push(c);
+
+  console.log(NewCities);
+
+  let NewDogParks = [];
+
+  for (let d of dogParks) if (d["city_id"] == city) NewDogParks.push(d);
 
   return (
     <div className="container" style={{ marginTop: "50px" }}>
@@ -161,89 +203,96 @@ function EventForm() {
             <label htmlFor="title">Title</label>
           </div>
 
-          <div className="form-floating mb-3" style={{ width: "100%" }}>
+          <div className="mb-3">
             <select
-              id="states_id"
-              name="states_id"
-              value={selectedStateId || ""}
-              onChange={(event) =>
-                setSelectedStateId(parseInt(event.target.value))
-              }
+              onChange={handleStateChange}
+              value={state}
               required
-              className="form-control dropdown-arrow"
-              style={{ width: "100%" }}
+              id="state"
+              name="state"
+              className="form-select"
             >
-              <option value="" disabled={true}>
-                State
-              </option>
-              {states.map((state) => (
-                <option key={state.id} value={state.id}>
-                  {state.name}
-                </option>
-              ))}
+              <option value="">Choose a state</option>
+              {states.map((state) => {
+                return (
+                  <option key={state.id} value={state.id}>
+                    {state.name}
+                  </option>
+                );
+              })}
             </select>
-            <label htmlFor="states_id">State</label>
           </div>
 
-          <div className="form-floating mb-3" style={{ width: "100%" }}>
+          <div className="mb-3">
             <select
-              id="cities_id"
-              name="cities_id"
-              value={selectedCityId || ""}
-              onChange={(event) =>
-                setSelectedCityId(parseInt(event.target.value))
-              }
-              className="form-control dropdown-arrow"
-              style={{ width: "100%" }}
+              onChange={handleCityChange}
+              value={city}
+              required
+              id="city"
+              name="city"
+              className="form-select"
             >
-              <option value="" disabled={true}>
-                City
-              </option>
-              {cities.map((city) => (
-                <option key={city.id} value={city.id}>
-                  {city.name}
-                </option>
-              ))}
+              <option value="">Choose a city</option>
+              {NewCities.map((city) => {
+                return (
+                  <option key={city.id} value={city.id}>
+                    {city.name}
+                  </option>
+                );
+              })}
             </select>
-            <label htmlFor="cities_id">City</label>
           </div>
 
-          <div className="form-floating mb-3" style={{ width: "100%" }}>
+          <div className="mb-3">
+            <label htmlFor="dog_park" className="form-label">
+              Suggested Dog Parks in Your Area:
+            </label>
             <select
-              onChange={(event) =>
-                setSelectedDogParkId(parseInt(event.target.value))
-              }
-              value={selectedDogParkId || ""}
+              onChange={handleDogParkChange}
+              value={dogPark}
               required
-              name="dog_park"
               id="dog_park"
-              className="form-control dropdown-arrow"
-              style={{ width: "100%" }}
+              name="dog_park"
+              className="form-select"
             >
-              <option value="" disabled={true}>
-                Dog Park
+              <option value="" disabled hidden>
+                Choose a dog park...
               </option>
-              {dogParks.map((dogPark) => (
-                <option key={dogPark.id} value={dogPark.id}>
-                  {dogPark.name}
-                </option>
-              ))}
+              <option value="not_a_dog_park">
+                This Event Is Not At A Dog Park
+              </option>
+              {NewDogParks.map((dogPark) => {
+                return (
+                  <option key={dogPark.id} value={dogPark.id}>
+                    {dogPark.name}
+                  </option>
+                );
+              })}
             </select>
-            <label htmlFor="dog_park">Dog Park</label>
           </div>
 
-          <div className="form-floating mb-3">
-            <input
-              onChange={addressChangeHandler}
-              value={address}
-              placeholder="Address"
-              required
-              type="text"
-              name="address"
-              id="address"
-              className="form-control"
-            />
-            <label htmlFor="address">Address</label>
+          <div className="row mb-3">
+            <div className="col-6">
+              <div className="form-floating">
+                <input
+                  onChange={addressChangeHandler}
+                  value={address}
+                  placeholder="Address"
+                  required
+                  type="text"
+                  name="address"
+                  id="address"
+                  className="form-control"
+                />
+                <label htmlFor="address">Address</label>
+              </div>
+            </div>
+            <div className="col-6">
+              <span>
+                Alright hooman, either look up the address for the dog park or
+                put in a different address
+              </span>
+            </div>
           </div>
 
           <div className="form-floating mb-3">

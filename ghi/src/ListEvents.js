@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react"
-import { Link, useNavigate } from "react-router-dom";
+import Spinner from "./Spinner";
+import { useNavigate } from "react-router-dom";
 import { useAuthContext, useToken, getTokenInternal } from "./Authentication";
 import {
   MDBCard,
@@ -21,6 +22,7 @@ function EventList() {
     const { setIsLoggedIn } = useAuthContext();
     const navigate = useNavigate();
     const [token] = useToken();
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchToken = async () => {
@@ -66,44 +68,52 @@ function EventList() {
     }, []);
 
     useEffect(() => {
-        fetch("http://localhost:8000/events")
+      fetch("http://localhost:8000/events")
         .then((response) => response.json())
-        .then((data) => setEvents(data))
+        .then((data) => {
+          setEvents(data);
+          setLoading(false);
+        })
         .catch((error) => console.log(error));
     }, []);
 
-    let NewEvents = []
-    for (let a of events) {
-        if (a["states_id"] == state) {
-            NewEvents.push(a)
-        }
+    if (loading) {
+      return <Spinner />;
     }
 
-    let NewCities = []
-    for (let a of NewEvents) {
-            NewCities.push(a["cities_id"])
-        }
+    let NewEvents = [];
+    for (let e of events) {
+      if (e["states_id"] == state) {
+        NewEvents.push(e);
+      }
+    }
 
-    let FinalCities = []
+    let NewCities = [];
+    for (let e of NewEvents) {
+      NewCities.push(parseInt(e["cities_id"]));
+    }
+
+    let FinalCities = [];
     for (let c of cities)
-        if (NewCities.includes(c["id"]))
-            FinalCities.push(c)
-
+      if (NewCities.includes(c["id"]))
+        // console.log(true)
+        FinalCities.push(c);
     // console.log(FinalCities)
 
-    let FinalEvents = []
-    for (let a of events) {
-        if (state == "") {
-            FinalEvents = events
+    let FinalEvents = [];
+    for (let e of events) {
+      if (state == "") {
+        FinalEvents = events;
+      }
+      if (city == "") {
+        if (e["states_id"] == state) {
+          FinalEvents.push(e);
         }
-        if (city == "") {
-            if (a["states_id"] == state) {
-                FinalEvents.push(a)
-            }
-        }
-        if (a["states_id"] == state && a["cities_id"] == city) {
-            FinalEvents.push(a)
-        }
+      }
+
+      if (e["states_id"] == state && e["cities_id"] == city) {
+        FinalEvents.push(e);
+      }
     }
 
     // console.log(FinalEvents)
@@ -148,11 +158,19 @@ function EventList() {
 
   return (
     <>
-      <div className="list-bg">
-        <div className="row">
+      <div className="list-bg" style={{ paddingBottom: "50px" }}>
+        <div className="row" style={{ paddingBottom: "20px", paddingTop: "10px" }}>
           <div className="offset-3 col-6">
-            <div style={{ textAlign: "center" }} className="shadow p-4 mt-4">
-              <h1>Filter by Location</h1>
+            <div
+              style={{
+                textAlign: "center",
+                boxShadow: "0 0 10px rgba(0, 0, 0, 0.3)",
+                borderRadius: "3px",
+                backgroundColor: "white",
+              }}
+              className="shadow p-4 mt-4"
+            >
+              <h5>Filter by Location</h5>
               <form id="create-event-form">
                 <div className="mb-3">
                   <select
@@ -163,7 +181,7 @@ function EventList() {
                     name="state"
                     className="form-select"
                   >
-                    <option value="">choose a state</option>
+                    <option value="">Choose a state</option>
                     {states.map((state) => {
                       return (
                         <option key={state.id} value={state.id}>
@@ -183,7 +201,7 @@ function EventList() {
                     name="city"
                     className="form-select"
                   >
-                    <option value="">choose a city</option>
+                    <option value="">Choose a city</option>
                     {FinalCities.map((city) => {
                       return (
                         <option key={city.id} value={city.id}>
