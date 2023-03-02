@@ -26,9 +26,15 @@ function AccountDetailPage() {
   const [token] = useToken();
   const [status, setStatus] = useState("");
   const [statuses, setStatuses] = useState([]);
+  const [ userId, setUserId] = useState("");
+
+
 
   console.log("TOKEN IN ACCOUNT DETAIL: ", token)
   console.log("SET IS LOGGED IN: ", isLoggedIn)
+  console.log("UserId: ", userId)
+  console.log("AccountId: ", accountId)
+
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -39,6 +45,20 @@ function AccountDetailPage() {
     };
     fetchToken();
   }, []);
+
+  useEffect(() => {
+          async function getUserId() {
+              const url = `http://localhost:8000/api/things`;
+              // const response = await fetch(url);
+              const response = await fetch(url, { method: "GET", headers: { Authorization: `Bearer ${token}` } });
+              if (response.ok) {
+                  const data = await response.json();
+
+                  setUserId(data)
+              }
+          }
+          getUserId();
+      }, [token]);
 
   useEffect(() => {
       fetch("http://localhost:8000/statuses")
@@ -61,6 +81,8 @@ function AccountDetailPage() {
       .catch((error) => console.log(error));
   }, []);
 
+
+
   // useEffect(() => {
   //   fetch(`http://localhost:8000/accounts/${accountId}`)
   //     .then((response) => response.json())
@@ -77,7 +99,7 @@ function AccountDetailPage() {
             Authorization: `Bearer ${token}`,
           },
         });
-        
+
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -161,7 +183,31 @@ function AccountDetailPage() {
 
           NewStatuses.push(s)
 
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        const data = {};
 
+        data.follower_id = userId;
+        data.followee_id = accountId;
+
+        console.log(data);
+
+        const eventUrl = "http://localhost:8000/following";
+
+        const fetchConfig = {
+          method: "post",
+          body: JSON.stringify(data),
+          headers: {
+            "Content-type": "application/json",
+          },
+        };
+        const response = await fetch(eventUrl, fetchConfig);
+        console.log(response);
+        if (response.ok) {
+          //const newEvent = await response.json;
+
+        }
+      };
 
   return (
 <MDBRow className="mt-4">
@@ -183,9 +229,11 @@ function AccountDetailPage() {
           Picture: <img src={account.picture} alt={account.title} />
         </MDBCardText> */}
         <MDBCardFooter className="text-end">
-          <MDBBtn color="warning" className="me-2">
+        <form onSubmit={handleSubmit}>
+          <MDBBtn color="warning" className="me-2" type="submit">
             Follow <MDBIcon icon="edit" className="ms-1" />
           </MDBBtn>
+        </form>
         </MDBCardFooter>
       </MDBCardBody>
     </MDBCard>

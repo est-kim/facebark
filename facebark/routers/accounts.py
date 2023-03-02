@@ -100,3 +100,11 @@ async def create_account(
     token = await authenticator.login(response, request, form, accounts)
     print("this is the TOKEN: ", token)
     return AccountToken(account=account, **token.dict())
+
+@router.get("/api/things")
+async def get_things(
+    account_data: Optional[dict] = Depends(authenticator.try_get_current_account_data),
+):
+    if account_data:
+        return account_data["id"]
+    pass
