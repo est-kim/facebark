@@ -11,7 +11,8 @@ from routers import (
     cities,
     dog_parks,
     breeds,
-    following
+    following,
+    attendees
 )
 
 
@@ -26,7 +27,8 @@ app.include_router(dog_parks.router)
 app.include_router(following.router)
 app.include_router(authenticator.router)
 app.include_router(breeds.router)
-app.include_router(following.router)
+app.include_router(attendees.router)
+
 
 
 

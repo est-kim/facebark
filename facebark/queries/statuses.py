@@ -11,7 +11,7 @@ class Error(BaseModel):
 class StatusIn(BaseModel):
     status_text: str
     account_id: int
-    comment_id: int
+    image_url: int
 
 
 def get_pst_time() -> datetime:
@@ -29,7 +29,7 @@ class StatusOut(BaseModel):
     status_text: str
     time_stamp: datetime = Field(default_factory=lambda: get_pst_time())
     account_id: int
-    comment_id: Optional[int]
+    image_url: Optional[int]
 
 
 class StatusesOut(BaseModel):
@@ -47,14 +47,12 @@ class StatusRepository:
                     db.execute(
                         """
                         SELECT
-                            s.id,
-                            s.status_text,
-                            s.time_stamp,
-                            s.account_id,
-                            s.comment_id
-                        FROM statuses s
-                        LEFT JOIN accounts a
-                            ON (a.id = s.account_id)
+                            id,
+                            status_text,
+                            time_stamp,
+                            account_id,
+                            image_url
+                        FROM statuses
                         ORDER BY time_stamp DESC;
                         """,
                     )
@@ -65,7 +63,7 @@ class StatusRepository:
                             status_text=record[1],
                             time_stamp=record[2],
                             account_id=record[3],
-                            comment_id=record[4],
+                            image_url=record[4],
                         )
                         result.append(status)
                     return result
@@ -84,13 +82,13 @@ class StatusRepository:
                 result = db.execute(
                     """
                     INSERT INTO statuses
-                        (status_text, account_id, comment_id)
+                        (status_text, account_id, image_url)
                     VALUES
                         (%s, %s, %s)
-                    RETURNING id, status_text, time_stamp, account_id, comment_id;
+                    RETURNING id, status_text, time_stamp, account_id, image_url;
                     """,
                     # to pass in values to our SQL statement
-                    [status.status_text, status.account_id, status.comment_id],
+                    [status.status_text, status.account_id, status.image_url],
                 )
                 row = result.fetchone()
                 id = row[0]
@@ -124,7 +122,7 @@ class StatusRepository:
             status_text=record[1],
             time_stamp=time_stamp,
             account_id=record[3],
-            comment_id=record[4],
+            image_url=record[4],
         )
 
     def status_record_to_dict(self, row, description):
@@ -137,7 +135,7 @@ class StatusRepository:
                 "website",
                 "time_stamp",
                 "account_id",
-                "comment_id",
+                "image_url",
             ]
             for i, column in enumerate(description):
                 if column.name in status_fields:
