@@ -17,7 +17,7 @@ import {
 function AccountDetailPage() {
 
   const { isLoggedIn, setIsLoggedIn } = useAuthContext();
-  const { accountId } = useParams();
+  // const { accountId } = useParams();
   const [account, setAccount] = useState("");
   const [accounts, setAccounts] = useState([]);
   const [state, setState] = useState("");
@@ -27,8 +27,24 @@ function AccountDetailPage() {
   const [token] = useToken();
   const [status, setStatus] = useState("");
   const [statuses, setStatuses] = useState([]);
+  const [accountId, setAccountId] = useState("");
+  const [following, setFollowing] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [ userId, setUserId] = useState("");
+  const [userId, setUserId] = useState("");
+
+    useEffect(() => {
+        async function getAccountId() {
+            const url = `http://localhost:8000/api/things`;
+            const response = await fetch(url);
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data)
+                setAccountId(data)
+            }
+        }
+        getAccountId();
+    }, []);
+
 
   console.log("TOKEN IN ACCOUNT DETAIL: ", token)
   console.log("SET IS LOGGED IN: ", isLoggedIn)

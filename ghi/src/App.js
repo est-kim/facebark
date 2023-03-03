@@ -15,6 +15,8 @@ import AccountList from "./ListAccounts.js";
 import EventList from "./ListEvents.js";
 import EventDetailPage from "./EventDetail.js";
 import AccountDetailPage from "./AccountDetail.js";
+import FollowingList from './FollowingList.js';
+import Feed from './Feed.js';
 
 function GetToken() {
   // Get token from JWT cookie (if already logged in)
@@ -57,6 +59,14 @@ function App() {
             <Route
               path="/accounts/:accountId"
               element={<AccountDetailPage />}
+            />
+            <Route
+              path="/accounts/:accountId/following"
+              element={<FollowingList />}
+            />
+            <Route
+              path="/feed"
+              element={<Feed />}
             />
           </Routes>
           <Footer />

@@ -8,11 +8,14 @@ import {
   MDBBtn,
   MDBCardImage
 } from "mdb-react-ui-kit";
-import { useEffect } from "react";
-import { useAuthContext, getTokenInternal } from "./Authentication";
+import { useEffect, useState } from "react";
+import { useAuthContext, getTokenInternal, useToken } from "./Authentication";
 
 function HomePage() {
   const { setIsLoggedIn } = useAuthContext();
+  const [accountId, setAccountId] = useState("");
+  const [statuses, setStatuses] = useState([]);
+  const [token] = useToken();
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -24,75 +27,63 @@ function HomePage() {
     fetchToken();
   }, []);
 
+
+  useEffect(() => {
+        async function getAccountId() {
+            const url = `http://localhost:8000/api/things`;
+            const response = await fetch(url, { method: "GET", headers: { Authorization: `Bearer ${token}` } });
+            if (response.ok) {
+                const data = await response.json();
+                setAccountId(data)
+            }
+        }
+        getAccountId();
+    }, [token]);
+
+
+    useEffect(() => {
+        async function getStatusesOfAccountsFollowing() {
+            const url = `http://localhost:8000/feed/${accountId}`;
+            const response = await fetch(url);
+            if (response.ok) {
+                const data = await response.json();
+                setStatuses(data)
+            }
+        }
+        getStatusesOfAccountsFollowing();
+    }, [accountId, token]);
+
   return (
     <>
       <section className="home-feed">
         <h5 style={{ paddingLeft: "10px" }}>My Feed</h5>
-        <div className="row">
-          <div className="col-md-4 mb-4">
-            <div
-              className="bg-image hover-overlay shadow-1-strong rounded ripple"
-              data-mdb-ripple-color="light"
-            >
-              <img
-                src="https://mdbootstrap.com/img/new/standard/nature/023.jpg"
-                className="img-fluid"
-                alt=""
-              />
-              <a href="#!">
-                <div
-                  className="mask"
-                  style={{ backgroundColor: "rgba(251, 251, 251, 0.15)" }}
-                ></div>
-              </a>
-            </div>
-          </div>
-
-          <div className="col-md-8 mb-4">
-            <h5>Very long post title</h5>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Voluptatibus ratione necessitatibus itaque error alias repellendus
-              nemo reiciendis aperiam quisquam minus ipsam reprehenderit commodi
-              ducimus, in dicta aliquam eveniet dignissimos magni.
-            </p>
-
-            <MDBBtn color="primary">Read</MDBBtn>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-md-4 mb-4">
-            <div
-              className="bg-image hover-overlay shadow-1-strong rounded ripple"
-              data-mdb-ripple-color="light"
-            >
-              <img
-                src="https://mdbootstrap.com/img/new/standard/nature/111.jpg"
-                className="img-fluid"
-                alt=""
-              />
-              <a href="#!">
-                <div
-                  className="mask"
-                  style={{ backgroundColor: "rgba(251, 251, 251, 0.15)" }}
-                ></div>
-              </a>
-            </div>
-          </div>
-
-          <div className="col-md-8 mb-4">
-            <h5>Very long post title</h5>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Voluptatibus ratione necessitatibus itaque error alias repellendus
-              nemo reiciendis aperiam quisquam minus ipsam reprehenderit commodi
-              ducimus, in dicta aliquam eveniet dignissimos magni.
-            </p>
-
-            <MDBBtn color="primary">Read</MDBBtn>
-          </div>
-        </div>
+        <table className="table table-striped">
+            <thead>
+                <tr>
+                    <th>Message</th>
+                </tr>
+            </thead>
+            <tbody>
+                {statuses.map(status => {
+                    return (
+                        <tr key={status.id} value={status.id}>
+                        <td>
+                            <img src={status.account_image_url} className="img-thumbnail shoes" width="200"></img> At {
+                            new Date(status.time_stamp).toLocaleTimeString("en-US", {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                                })} on {
+                            new Date(status.time_stamp).toLocaleDateString("en-US", {
+                                month: '2-digit',
+                                day: '2-digit',
+                                year: '2-digit'
+                                })} {status.name} posted: <br></br>"{status.status_text}"
+                        </td>
+                        </tr>
+                    );
+                })}
+            </tbody>
+        </table>
       </section>
       <section className="home-events">
         <h5 style={{ paddingLeft: "10px" }}>Events</h5>

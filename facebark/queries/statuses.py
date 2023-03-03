@@ -47,14 +47,16 @@ class StatusRepository:
                     db.execute(
                         """
                         SELECT
-                            id,
-                            status_text,
-                            time_stamp,
-                            account_id,
-                            comment_id
-                        FROM statuses
+                            s.id,
+                            s.status_text,
+                            s.time_stamp,
+                            s.account_id,
+                            s.comment_id
+                        FROM statuses s
+                        LEFT JOIN accounts a
+                            ON (a.id = s.account_id)
                         ORDER BY time_stamp DESC;
-                        """
+                        """,
                     )
                     result = []
                     for record in db:
