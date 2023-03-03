@@ -30,6 +30,7 @@ function EventForm() {
   const { setIsLoggedIn } = useAuthContext();
   const [userId, setUserId] = useState("");
   const [token] = useToken();
+  const [showAlert, setShowAlert] = useState(false);
 
   const titleChangeHandler = (event) => {
     setTitle(event.target.value);
@@ -174,6 +175,13 @@ function EventForm() {
   let NewDogParks = [];
 
   for (let d of dogParks) if (d["city_id"] == city) NewDogParks.push(d);
+  const handleAlertClick = () => {
+    setShowAlert(true);
+  };
+
+  const handleCloseAlert = () => {
+    setShowAlert(false);
+  };
 
   return (
     <div className="container" style={{ marginTop: "50px" }}>
@@ -352,21 +360,53 @@ function EventForm() {
             <label htmlFor="description">Description</label>
           </div>
 
-          <div className="form-floating mb-3">
-            <input
-              onChange={pictureChangeHandler}
-              value={picture}
-              placeholder="Picture"
-              required
-              type="text"
-              name="picture"
-              id="picture"
-              className="form-control"
-            />
-            <label htmlFor="picture">Picture</label>
+          <div className="row mb-3">
+            <div className="col-6">
+              <div className="form-floating">
+                <input
+                  onChange={pictureChangeHandler}
+                  value={picture}
+                  placeholder="Picture"
+                  required
+                  type="text"
+                  name="picture"
+                  id="picture"
+                  className="form-control"
+                />
+                <label htmlFor="picture">Picture</label>
+              </div>
+            </div>
+            <div className="col-6">
+            <span>
+              The picture needs to be a URL, which is the address of the picture on the internet. It typically consists of the protocol (e.g., "http://" or "https://"), the domain name (e.g., "www.example.com"), and the path to the picture (e.g., "/images/picture.jpg"). To get a picture URL, follow these general steps:
+              <br /><br />
+              <a href="#" onClick={handleAlertClick} style={{ color: "blue", textDecoration: "underline", cursor: "pointer" }}>Click here for more information.</a>
+              {showAlert && (
+                <div style={{ position: "fixed", top: "0", left: "0", width: "100%", height: "100%", display: "flex", justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0, 0, 0, 0.5)" }} onClick={handleCloseAlert}>
+                  <div style={{ width: "50%", height: "70%", backgroundColor: "#fff", border: "1px solid #ccc", borderRadius: "5px", padding: "20px", overflow: "auto" }} onClick={(e) => e.stopPropagation()}>
+                    <div style={{ fontSize: "20px", marginBottom: "20px" }}>How to get a picture URL</div>
+                    <div style={{ marginBottom: "20px" }}>To get the URL of a picture on your phone or computer:</div>
+                    <ol>
+                      <li>Find the picture you want to use</li>
+                      <li>Upload the picture to a hosting service or cloud storage platform. Many free and paid options are available, such as Facebook (not Instagram), Imgur, Dropbox, or Google Drive</li>
+                      <li>Once the picture is uploaded, right-click on it and select "Copy image address" or "Copy image URL"</li>
+                      <li>Paste the picture URL in the "Picture" box</li>
+                    </ol>
+                    <br />
+                    <button onClick={handleCloseAlert}>Close</button>
+                  </div>
+                </div>
+              )}
+            </span>
+            );
+            </div>
+          </div>
+          <div className="form-group row">
+            <div className="col-sm-10 offset-sm-2">
+              <button className="btn btn-primary mx-auto d-block">Create</button>
+            </div>
           </div>
         </div>
-        <button className="btn btn-primary">Create</button>
       </form>
     </div>
   );

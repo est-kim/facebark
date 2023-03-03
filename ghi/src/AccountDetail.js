@@ -12,12 +12,13 @@ import {
   MDBCardTitle,
   MDBCardText,
   MDBCardFooter,
+  MDBInput
 } from "mdb-react-ui-kit";
 
 function AccountDetailPage() {
 
   const { isLoggedIn, setIsLoggedIn } = useAuthContext();
-  // const { accountId } = useParams();
+  const { accountId } = useParams();
   const [account, setAccount] = useState("");
   const [accounts, setAccounts] = useState([]);
   const [state, setState] = useState("");
@@ -25,29 +26,23 @@ function AccountDetailPage() {
   const [city, setCity] = useState("");
   const [cities, setCities] = useState([]);
   const [token] = useToken();
+  const [image, setImage] = useState("")
   const [status, setStatus] = useState("");
   const [statuses, setStatuses] = useState([]);
-  const [accountId, setAccountId] = useState("");
-  const [following, setFollowing] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState("");
-
-    useEffect(() => {
-        async function getAccountId() {
-            const url = `http://localhost:8000/api/things`;
-            const response = await fetch(url);
-            if (response.ok) {
-                const data = await response.json();
-                console.log(data)
-                setAccountId(data)
-            }
-        }
-        getAccountId();
-    }, []);
-
+  const [submitted, setSubmitted] = useState(false);
 
   console.log("TOKEN IN ACCOUNT DETAIL: ", token)
   console.log("SET IS LOGGED IN: ", isLoggedIn)
+
+  const handleStatusChange = (event) => {
+    setStatus(event.target.value);
+  }
+
+  const handleImageChange = (event) => {
+    setImage(event.target.value);
+  }
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -62,8 +57,9 @@ function AccountDetailPage() {
   console.log("TOKEN IN ACCOUNT DETAIL: ", token)
   console.log("SET IS LOGGED IN: ", isLoggedIn)
   console.log("UserId: ", userId)
+  console.log("UserId TYPE: ", (typeof userId))
   console.log("AccountId: ", accountId)
-
+  console.log("AccountId TYPE: ", (typeof accountId))
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -76,18 +72,20 @@ function AccountDetailPage() {
   }, []);
 
   useEffect(() => {
-          async function getUserId() {
-              const url = `http://localhost:8000/api/things`;
-              // const response = await fetch(url);
-              const response = await fetch(url, { method: "GET", headers: { Authorization: `Bearer ${token}` } });
-              if (response.ok) {
-                  const data = await response.json();
-
-                  setUserId(data)
-              }
-          }
-          getUserId();
-      }, [token]);
+    async function getUserId() {
+      const url = `http://localhost:8000/api/things`;
+      // const response = await fetch(url);
+      const response = await fetch(url, { method: "GET", headers: { Authorization: `Bearer ${token}` } });
+      if (response.ok) {
+        const data = await response.json();
+        console.log("THIS IS THE RESPONSEEE:", response)
+        console.log("THIS IS THE DATAAA:", data);
+        console.log("THIS IS THE DATAAA TYPE:", (typeof data));
+        setUserId(data)
+      }
+    }
+    getUserId();
+  }, [token]);
 
   useEffect(() => {
       fetch("http://localhost:8000/statuses")
@@ -160,141 +158,225 @@ function AccountDetailPage() {
   }
 
   let NewState = ""
-
-  for (let s of states)
-
-    if (s["id"] == account.state_id)
-
-      NewState = s["name"]
+  for (let s of states) {
+    if (s["id"] === account.state_id) {
+      NewState = s["name"];
+    }
+  }
 
   let NewCity = ""
+  for (let c of cities) {
+    if (c["id"] === account.city_id) {
+      NewCity = c["name"];
+    }
+  }
 
-  for (let c of cities)
+  const cardStyle = {
+    maxWidth: '400px',
+    width: '100%',
+    margin: '10px',
+    padding: '10px',
+    boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
+    borderRadius: '5px',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  };
 
-    if (c["id"] == account.city_id)
+  const imgStyle = {
+    maxWidth: '100%',
+    maxHeight: '200px',
+    objectFit: 'contain',
+    marginBottom: '10px',
+  };
 
-      NewCity = c["name"]
+  const headerStyle = {
+    fontSize: '1.2em',
+    fontWeight: 'bold',
+    marginBottom: '10px',
+    textAlign: 'center',
+  };
 
-      const cardStyle = {
-      maxWidth: '400px',
-      width: '100%',
-      margin: '10px',
-      padding: '10px',
-      boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
-      borderRadius: '5px',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-    };
+  const bodyStyle = {
+    fontSize: '1em',
+    textAlign: 'justify',
+  };
 
-    const imgStyle = {
-      maxWidth: '100%',
-      maxHeight: '200px',
-      objectFit: 'contain',
-      marginBottom: '10px',
-    };
+  const timeStampStyle = {
+    fontSize: '0.8em',
+    fontWeight: 'bold',
+    marginBottom: '0.5em',
+  };
 
-    const headerStyle = {
-      fontSize: '1.2em',
-      fontWeight: 'bold',
-      marginBottom: '10px',
-      textAlign: 'center',
-    };
+  let NewStatuses = []
 
-    const bodyStyle = {
-      fontSize: '1em',
-      textAlign: 'justify',
-    };
+  for (let s of statuses) {
+    if (s["account_id"] === parseInt(accountId)) {
+      NewStatuses.push(s);
+    }
+  }
+  console.log(statuses)
+  const handleFollow = async (event) => {
+      event.preventDefault();
+      const data = {};
 
-    const timeStampStyle = {
-      fontSize: '0.8em',
-      fontWeight: 'bold',
-      marginBottom: '0.5em',
-    };
+      data.follower_id = userId;
+      data.followee_id = parseInt(accountId);
 
-    let NewStatuses = []
+      console.log("THIS IS DATA IN HANDLE Follow", data);
 
-    for (let s of statuses)
+      const eventUrl = "http://localhost:8000/following";
 
-        if (s["account_id"] == accountId)
-
-          NewStatuses.push(s)
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        const data = {};
-
-        data.follower_id = userId;
-        data.followee_id = accountId;
-
-        console.log(data);
-
-        const eventUrl = "http://localhost:8000/following";
-
-        const fetchConfig = {
-          method: "post",
-          body: JSON.stringify(data),
-          headers: {
-            "Content-type": "application/json",
-          },
-        };
-        const response = await fetch(eventUrl, fetchConfig);
-        console.log(response);
-        if (response.ok) {
-          //const newEvent = await response.json;
-
-        }
+      const fetchConfig = {
+        method: "post",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-type": "application/json",
+        },
       };
+      const response = await fetch(eventUrl, fetchConfig);
+      console.log(response);
+      if (response.ok) {
+        //const newEvent = await response.json;
+      }
+  };
 
-  return (
-<MDBRow className="mt-4">
-  <MDBCol md="6" className="mx-auto">
-    <MDBCard className="text-center">
-      <MDBCardBody>
-        <MDBCardText>
-          <img src={account.image_url} alt={account.name} className="card-img-top img-fluid" style={{ maxHeight: '300px', maxWidth: '100%', objectFit: 'contain' }} />
-        </MDBCardText>
-        <MDBCardTitle>{account.name}</MDBCardTitle>
-        <MDBCardText>{account.description}</MDBCardText>
-        <MDBCardText><strong>Age:</strong> {calculateAge(account.dob)}</MDBCardText>
-        <MDBCardText><strong>Breed:</strong> {account.breed}</MDBCardText>
-        <MDBCardText><strong>State:</strong> {NewState }</MDBCardText>
-        <MDBCardText><strong>City:</strong> {NewCity}</MDBCardText>
-        <MDBCardText><strong>Male/Female:</strong> {account.sex}</MDBCardText>
-        <MDBCardText><strong>Owner Name:</strong> {account.owner_name}</MDBCardText>
-        {/* <MDBCardText>
-          Picture: <img src={account.picture} alt={account.title} />
-        </MDBCardText> */}
-        <MDBCardFooter className="text-end">
-        <form onSubmit={handleSubmit}>
-          <MDBBtn color="warning" className="me-2" type="submit">
-            Follow <MDBIcon icon="edit" className="ms-1" />
-          </MDBBtn>
-        </form>
-        </MDBCardFooter>
-      </MDBCardBody>
-    </MDBCard>
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const data = {};
 
-    {NewStatuses.length > 0 && (
-      <div className="mt-4">
-        <h2 style={{ textAlign: 'center' }}>My Pupdates!</h2>
-        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
-          {NewStatuses.map((status) => (
-            <div style={cardStyle} key={status.id}>
-              <div style={timeStampStyle}>{new Date(status.time_stamp).toLocaleString()}</div>
-              <div style={bodyStyle}>{status.status_text}</div>
-            </div>
-          ))}
-        </div>
+    data.account_id = parseInt(accountId);
+    data.status_text = status;
+    data.image_url = image;
+
+    const url = "http://localhost:8000/statuses";
+    const fetchConfig = {
+      method: "post",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    try {
+      const response = await fetch(url, fetchConfig);
+      console.log("this the response!",response)
+      if (response.ok) {
+        setStatus("");
+        setImage("");
+        setSubmitted(true);
+      } else {
+        const error = await response.json();
+        setSubmitted(false);
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  };
+
+
+
+return (
+  <MDBRow className="mt-4">
+    <MDBCol md="6" className="mx-auto">
+      <MDBCard className="text-center">
+        <MDBCardBody>
+          <MDBCardText>
+            <img
+              src={account.image_url}
+              alt={account.name}
+              className="card-img-top img-fluid"
+              style={{
+                maxHeight: "300px",
+                maxWidth: "100%",
+                objectFit: "contain",
+              }}
+            />
+          </MDBCardText>
+          <MDBCardTitle>{account.name}</MDBCardTitle>
+          <MDBCardText>{account.description}</MDBCardText>
+          <MDBCardText>
+            <strong>Age:</strong> {calculateAge(account.dob)}
+          </MDBCardText>
+          <MDBCardText>
+            <strong>Breed:</strong> {account.breed}
+          </MDBCardText>
+          <MDBCardText>
+            <strong>State:</strong> {NewState}
+          </MDBCardText>
+          <MDBCardText>
+            <strong>City:</strong> {NewCity}
+          </MDBCardText>
+          <MDBCardText>
+            <strong>Male/Female:</strong> {account.sex}
+          </MDBCardText>
+          <MDBCardText>
+            <strong>Owner Name:</strong> {account.owner_name}
+          </MDBCardText>
+          {/* <MDBCardText>
+            Picture: <img src={account.picture} alt={account.title} />
+          </MDBCardText> */}
+          <MDBCardFooter className="text-end">
+            {parseInt(accountId) !== userId && (
+              <form onSubmit={handleFollow}>
+                <MDBBtn color="warning" className="me-2" type="submit">
+                  Follow <MDBIcon icon="edit" className="ms-1" />
+                </MDBBtn>
+              </form>
+            )}
+          </MDBCardFooter>
+        </MDBCardBody>
+      </MDBCard>
+      <div>
+        {parseInt(accountId) === userId && (
+          <form onSubmit={handleSubmit} id="status-update">
+            <h4>Post a pupdate!</h4>
+            <MDBInput
+              onChange={handleStatusChange}
+              label="Tell us about your day!"
+              id="status_text"
+              name="status_text"
+              type="textarea"
+            />
+            <MDBInput
+              onChange={handleImageChange}
+              label="Post a photo! (Optional)"
+              id="image_url"
+              name="image_url"
+              type="textarea"
+            />
+            <MDBBtn>Post</MDBBtn>
+          </form>
+        )}
       </div>
-    )}
-
-  </MDBCol>
-</MDBRow>
-
-
-  );
+      <div>
+        {NewStatuses.length > 0 && (
+          <div className="mt-4">
+            <h2 style={{ textAlign: "center" }}>My Pupdates!</h2>
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "center",
+                alignItems: "center",
+                textAlign: "center",
+              }}
+            >
+              {NewStatuses.map((status) => (
+                <div style={cardStyle} key={status.id}>
+                  <div style={timeStampStyle}>
+                    {new Date(status.time_stamp).toLocaleString()}
+                  </div>
+                  <div style={bodyStyle}>{status.status_text}{status.image_url}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </MDBCol>
+  </MDBRow>
+);
 }
 
 export default AccountDetailPage;

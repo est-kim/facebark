@@ -11,7 +11,7 @@ class Error(BaseModel):
 class StatusIn(BaseModel):
     status_text: str
     account_id: int
-    image_url: int
+    image_url: str
 
 
 def get_pst_time() -> datetime:
@@ -29,7 +29,7 @@ class StatusOut(BaseModel):
     status_text: str
     time_stamp: datetime = Field(default_factory=lambda: get_pst_time())
     account_id: int
-    image_url: Optional[int]
+    image_url: Optional[str]
 
 
 class StatusesOut(BaseModel):
