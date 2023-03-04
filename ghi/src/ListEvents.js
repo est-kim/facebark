@@ -115,7 +115,6 @@ function EventList() {
         FinalEvents.push(e);
       }
     }
-
     // console.log(FinalEvents)
 
     const cardStyle = {

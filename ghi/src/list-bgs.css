@@ -5,3 +5,15 @@
     background-size: 2000px 180%;
     background-color: #e3f1c0;
 }
+
+.unfollow-btn {
+  font-size: 8px;
+  padding: 4px 8px;
+  border-radius: 3px;
+  border: none;
+  background-color: rgba(235, 142, 3, 0.707);
+  color: white;
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+}

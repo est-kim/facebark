@@ -99,7 +99,7 @@ function Nav() {
                     aria-labelledby="navbarDarkDropdownMenuLink"
                   >
                     <li>
-                      <Link className="dropdown-item" to="/accounts">
+                      <Link className="dropdown-item" to="/followinglist">
                         Following
                       </Link>
                     </li>
@@ -164,7 +164,6 @@ function Nav() {
               Log Out
             </MDBNavbarLink>
             <MDBNavbarLink
-              className={isLoggedIn ? "d-none" : "nav-link"}
               href="/signup"
               style={{ color: "#FFBA00" }}
             >

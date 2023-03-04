@@ -34,8 +34,7 @@ def get_one_following(
     repo: FollowingRepository = Depends(),
 ):
     return repo.get_all_following_for_one_account(account_id)
-
-
+    
 @router.delete("/following/{followee_id}", response_model=bool)
 def delete_following(
     follower_id: int,

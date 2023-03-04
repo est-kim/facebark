@@ -56,18 +56,11 @@ function App() {
             <Route path="/events" element={<EventList />} />
             <Route path="/accounts" element={<AccountList />} />
             <Route path="/events/:eventId" element={<EventDetailPage />} />
-            <Route
-              path="/accounts/:accountId"
-              element={<AccountDetailPage />}
+            {/* //<Route path="/following" element={<FollowingDetail />} /> */}
+            <Route path="/accounts/:accountId" element={<AccountDetailPage />} />
+            <Route path="/followinglist" element={<FollowingList />}
             />
-            <Route
-              path="/accounts/:accountId/following"
-              element={<FollowingList />}
-            />
-            <Route
-              path="/feed"
-              element={<Feed />}
-            />
+            
           </Routes>
           <Footer />
         </AuthProvider>

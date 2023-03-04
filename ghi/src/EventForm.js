@@ -12,7 +12,7 @@ import { useAuthContext, getTokenInternal, useToken } from "./Authentication";
 
 function EventForm() {
   const [title, setTitle] = useState("");
-  const [dogPark, setDogPark] = useState("");
+  //const [dogPark, setDogPark] = useState("");
   const [address, setAddress] = useState("");
   const [date, setDate] = useState("");
   const [start_time, setStart_time] = useState("");
@@ -153,7 +153,7 @@ function EventForm() {
       setTitle("");
       setSelectedStateId("");
       setSelectedCityId("");
-      setDogPark("");
+      setDogParks("");
       setAddress("");
       setDate("");
       setStart_time("");
@@ -407,6 +407,11 @@ function EventForm() {
               <button className="btn btn-primary mx-auto d-block">Create</button>
             </div>
           </div>
+          <div className="form-floating mb-3">
+            <input onChange={account_idChangeHandler} value={account_id} placeholder="Account" required type="text" name="account_id" id="account_id" className="form-control" />
+            <label htmlFor="account">Account</label>
+            </div>
+
         </div>
       </form>
     </div>
