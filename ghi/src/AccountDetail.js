@@ -228,7 +228,7 @@ function AccountDetailPage() {
     aspectRatio: "1 / 1",
   };
   console.log("THIS THE ACCCOUNTTTTT:", account)
-  
+
   return (
     <div
       className="list-bg"
