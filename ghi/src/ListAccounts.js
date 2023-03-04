@@ -32,7 +32,7 @@ function AccountList() {
         }
       };
       fetchToken();
-    }, []);
+    }, [setIsLoggedIn]);
 
     const handleStateChange = (event) => {
         const value = event.target.value;
@@ -83,7 +83,7 @@ function AccountList() {
 
     let NewAccounts = []
     for (let a of accounts) {
-        if (a["state_id"] == state) {
+        if (a["state_id"] == parseInt(state)) {
             NewAccounts.push(a)
         }
     }
@@ -101,16 +101,17 @@ function AccountList() {
 
     let FinalAccounts = []
     for (let a of accounts) {
-        if (state == "") {
+        console.log("STATE TYPEEEE:", state)
+        if (state === "") {
             FinalAccounts = accounts
         }
-        if (city == "") {
-                if (a["state_id"] == state) {
+        if (city === "") {
+                if (a["state_id"] === parseInt(state)) {
                     FinalAccounts.push(a)
                 }
         }
 
-        if (a["state_id"] == state && a["city_id"] == city) {
+        if (a["state_id"] === parseInt(state) && a["city_id"] === parseInt(city)) {
             FinalAccounts.push(a)
         }
     }
@@ -149,10 +150,19 @@ function AccountList() {
     };
 
     const bodyStyle = {
-        fontSize: '12px',
-        marginTop: '1px',
-        paddingBottom: '4px'
+        fontSize: "12px",
+        marginTop: "1px",
+        paddingBottom: "4px",
+        fontStyle: "italic",
     };
+
+    function extractFirstSentence(str) {
+      let sentenceEnd = str.search(/[.!]/);
+      if (sentenceEnd === -1) {
+        return str;
+      }
+      return str.substring(0, sentenceEnd + 1);
+    }
 
   return (
     <>
@@ -167,7 +177,7 @@ function AccountList() {
                 textAlign: "center",
                 boxShadow: "0 0 10px rgba(0, 0, 0, 0.3)",
                 borderRadius: "3px",
-                backgroundColor: "white",
+                backgroundColor: "rgba(255, 255, 255, 0.8)",
               }}
               className="shadow p-4 mt-4"
             >
@@ -270,7 +280,7 @@ function AccountList() {
                   {account.breed}
                 </div>
                 <MDBCardText style={bodyStyle}>
-                  "{account.description}"
+                  "{extractFirstSentence(account.description)}"
                 </MDBCardText>
               </MDBCardBody>
             </MDBCard>

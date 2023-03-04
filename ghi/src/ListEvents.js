@@ -83,7 +83,7 @@ function EventList() {
 
     let NewEvents = [];
     for (let e of events) {
-      if (e["states_id"] == state) {
+      if (e["states_id"] === state) {
         NewEvents.push(e);
       }
     }
@@ -102,16 +102,16 @@ function EventList() {
 
     let FinalEvents = [];
     for (let e of events) {
-      if (state == "") {
+      if (state === "") {
         FinalEvents = events;
       }
-      if (city == "") {
-        if (e["states_id"] == state) {
+      if (city === "") {
+        if (e["states_id"] === state) {
           FinalEvents.push(e);
         }
       }
 
-      if (e["states_id"] == state && e["cities_id"] == city) {
+      if (e["states_id"] === state && e["cities_id"] === city) {
         FinalEvents.push(e);
       }
     }
@@ -159,14 +159,17 @@ function EventList() {
   return (
     <>
       <div className="list-bg" style={{ paddingBottom: "50px" }}>
-        <div className="row" style={{ paddingBottom: "20px", paddingTop: "10px" }}>
+        <div
+          className="row"
+          style={{ paddingBottom: "20px", paddingTop: "10px" }}
+        >
           <div className="offset-3 col-6">
             <div
               style={{
                 textAlign: "center",
                 boxShadow: "0 0 10px rgba(0, 0, 0, 0.3)",
                 borderRadius: "3px",
-                backgroundColor: "white",
+                backgroundColor: "rgba(255, 255, 255, 0.8)",
               }}
               className="shadow p-4 mt-4"
             >

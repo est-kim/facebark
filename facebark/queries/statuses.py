@@ -10,8 +10,8 @@ class Error(BaseModel):
 
 class StatusIn(BaseModel):
     status_text: str
-    account_id: int
     image_url: str
+    account_id: int
 
 
 def get_pst_time() -> datetime:
@@ -20,7 +20,7 @@ def get_pst_time() -> datetime:
     pst_time = utc_time.replace(tzinfo=timezone.utc) + pst_offset
     pst_time = pst_time.replace(
         tzinfo=None
-    )  # remove timezone info to avoid ambiguity
+    )
     return pst_time
 
 
@@ -28,8 +28,9 @@ class StatusOut(BaseModel):
     id: int
     status_text: str
     time_stamp: datetime = Field(default_factory=lambda: get_pst_time())
+    image_url: str
     account_id: int
-    image_url: Optional[str]
+
 
 
 class StatusesOut(BaseModel):
@@ -47,12 +48,14 @@ class StatusRepository:
                     db.execute(
                         """
                         SELECT
-                            id,
-                            status_text,
-                            time_stamp,
-                            account_id,
-                            image_url
-                        FROM statuses
+                            s.id,
+                            s.status_text,
+                            s.time_stamp,
+                            s.account_id,
+                            s.image_url
+                        FROM statuses s
+                        LEFT JOIN accounts a
+                            ON (a.id = s.account_id)
                         ORDER BY time_stamp DESC;
                         """,
                     )
@@ -70,6 +73,41 @@ class StatusRepository:
         except Exception as e:
             print(e)
             return {"message": "Could not get all statuses"}
+
+    def get_statuses_by_account_id(self, account_id:int) -> List[StatusOut]:
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    db.execute(
+                        """
+                        SELECT
+                            s.id,
+                            s.status_text,
+                            s.time_stamp,
+                            s.account_id,
+                            s.image_url
+                        FROM statuses s
+                        LEFT JOIN accounts a
+                            ON (a.id = s.account_id)
+                        WHERE s.account_id = %s
+                        ORDER BY time_stamp DESC;
+                        """,
+                        [account_id],
+                    )
+                    result = []
+                    for record in db:
+                        status = StatusOut(
+                            id=record[0],
+                            status_text=record[1],
+                            time_stamp=record[2],
+                            account_id=record[3],
+                            image_url=record[4],
+                        )
+                        result.append(status)
+                    return result
+        except Exception as e:
+            print(e)
+            return {"message": "Could not get all statuses by acc id"}
 
     ##add try and except after fixing post
     def create(self, status: StatusIn) -> Union[StatusOut, Error]:
@@ -132,7 +170,6 @@ class StatusRepository:
             status_fields = [
                 "id",
                 "status_text",
-                "website",
                 "time_stamp",
                 "account_id",
                 "image_url",

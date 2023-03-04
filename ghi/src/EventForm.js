@@ -8,6 +8,7 @@ import {
   MDBIcon,
 } from "mdb-react-ui-kit";
 import { useAuthContext, getTokenInternal, useToken } from "./Authentication";
+import { useAuthContext, getTokenInternal, useToken } from "./Authentication";
 
 function EventForm() {
   const [title, setTitle] = useState("");

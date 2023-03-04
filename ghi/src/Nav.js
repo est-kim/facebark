@@ -15,6 +15,7 @@ function Nav() {
   const [showNavRight, setShowNavRight] = useState(false);
   const [token, , logout] = useToken();
   const { isLoggedIn, setIsLoggedIn } = useAuthContext();
+  const [userId, setUserId] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,6 +25,25 @@ function Nav() {
       setIsLoggedIn(false)
     }
   }, [token, setIsLoggedIn]);
+
+  console.log("USERRRRR: ", userId)
+  console.log("USERRRRR: ", (typeof userId))
+
+  useEffect(() => {
+    async function getUserId() {
+      const url = `http://localhost:8000/api/things`;
+      // const response = await fetch(url);
+      const response = await fetch(url, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setUserId(data);
+      }
+    }
+    getUserId();
+  }, [token]);
 
   console.log("token:", token);
   console.log("isLoggedIn:", isLoggedIn);
@@ -52,7 +72,7 @@ function Nav() {
             </Link>
             <MDBNavbarLink
               className={isLoggedIn ? "nav-link" : "d-none"}
-              href="/profile"
+              href={"/accounts/" + userId}
               style={{ color: "#FFBA00" }}
             >
               Profile
