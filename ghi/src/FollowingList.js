@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useToken } from './Authentication';
 import {
   MDBCard,
   MDBCardBody,
@@ -9,8 +8,8 @@ import {
   MDBCardText
 } from "mdb-react-ui-kit";
 import "./list-bgs.css";
-
-
+import { useAuthContext, getTokenInternal, useToken } from "./Authentication";
+import { useNavigate } from "react-router-dom";
 
 function FollowingList() {
     const [accountId, setAccountId] = useState("");
@@ -18,23 +17,18 @@ function FollowingList() {
     const [token] = useToken();
     const [accounts, setAccounts] = useState([]);
     const [account, setAccount] = useState("");
+    const { setIsLoggedIn } = useAuthContext();
+    const navigate = useNavigate();
 
-    const handleUnfollow = async (followee_id) => {
-        const response = await fetch(`http://localhost:8000/following/${followee_id}`, {
-          method: "DELETE",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        })
-        console.log(followee_id)
-        if (response.ok) {
-          setFollowing(following.filter((f) => f.followee_id !== followee_id));
-        } else {
-          console.error("Failed to unfollow user");
-        }
-      };
-   
+
+    const handleAccountClick = (id) => {
+      if (!setIsLoggedIn) {
+          navigate("/signup");
+      } else {
+          navigate(`/accounts/${id}`);
+      }
+  };
+
     useEffect(() => {
         async function getAccountId() {
             const url = `http://localhost:8000/api/things`;
@@ -43,12 +37,12 @@ function FollowingList() {
             if (response.ok) {
                 const data = await response.json();
                 console.log("this should be the accountdsf array  id:", data)
-                setAccountId(data) 
+                setAccountId(data)
             }
         }
         getAccountId();
     }, [token]);
-  
+
 
     useEffect(() => {
         async function getAccountsFollowing() {
@@ -57,7 +51,7 @@ function FollowingList() {
             if (response.ok) {
                 const data = await response.json();
                 setFollowing(data)
-                
+
             }
         }
         getAccountsFollowing();
@@ -68,28 +62,28 @@ function FollowingList() {
         .then((response) => response.json())
         .then((data) => {
             setAccounts(data);
-            
+
         })
         .catch((error) => console.log(error));
     }, []);
 
     let newIds =[];
-    for (let f of following) 
+    for (let f of following)
         if (f["follower_id"] === accountId)
             newIds.push(f["followee_id"])
-    
+
 
     let NewAccounts = []
     for (let a of accounts)
         if (newIds.includes(a["id"]))
             NewAccounts.push(a)
-    
-    
+
+
     let MyAccount = []
     for (let a of accounts)
         if (a["id"]== accountId)
         MyAccount.push(a)
-    
+
 
         //following= where follwer_id
         //if follower id  is = to followee id
@@ -132,81 +126,77 @@ function FollowingList() {
 
     return (
         <>
-         <div>    
+         <div>
                 {MyAccount.map(account => {
                     return (
                         <tr key={account.id}>
                             <h1>Welcome,{ account.name }</h1>
-                            
+
                             {<img src={account.image_url} alt="" style={{ width: "250px", height: "250px", borderRadius: "50%" }} />}
-                            
+
                         </tr>
                     );
                 })}
             </div>
-        <h1>Here are all the dog butts you sniff on the regular :</h1>
+<h1>Here are all the dog butts you sniff on the regular :</h1>
+<div
+  style={{
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
+  }}
+>
+  {NewAccounts.map((account) => (
+    <MDBCard
+      style={{
+        ...cardStyle,
+      }}
+      key={account.id}
+    >
+      <MDBRipple
+        rippleColor="light"
+        rippleTag="div"
+        className="bg-image hover-overlay"
+        onClick={() => {
+          if (token && setIsLoggedIn) {
+            handleAccountClick(account.id);
+          } else {
+            navigate("/signup");
+          }
+        }}
+      >
+        <MDBCardImage
+          src={account.image_url}
+          alt={account.name}
+          style={imgStyle}
+        />
+        <a href={`${account.id}`}>
+          <div
+            className="mask"
+            style={{ backgroundColor: "rgba(251, 251, 251, 0.15)" }}
+          ></div>
+        </a>
+      </MDBRipple>
+      <MDBCardBody style={{ padding: "3px" }}>
+        <MDBCardTitle style={headerStyle}>{account.name}</MDBCardTitle>
         <div
           style={{
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "center",
-            alignItems: "center",
-            textAlign: "center",
+            ...headerStyle,
+            fontSize: "0.8em",
+            fontWeight: "normal",
           }}
         >
-          {NewAccounts.map((account) => (
-            <MDBCard
-              style={{
-                ...cardStyle,
-              }}
-              key={account.id}
-            //   onClick={() => {
-            //     if (token && setIsLoggedIn) {
-            //       handleAccountClick(account.id);
-            //     } else {
-            //         navigate("/signup")
-            //     }
-            //   }}
-            >
-              <MDBRipple
-                rippleColor="light"
-                rippleTag="div"
-                className="bg-image
-            hover-overlay"
-              >
-                <MDBCardImage
-                  src={account.image_url}
-                  alt={account.name}
-                  style={imgStyle}
-                />
-                <a>
-                  <div
-                    className="mask"
-                    style={{ backgroundColor: "rgba(251, 251, 251, 0.15)" }}
-                  ></div>
-                </a>
-              </MDBRipple>
-              <MDBCardBody style={{ padding: "3px" }}>
-                <MDBCardTitle style={headerStyle}>{account.name}</MDBCardTitle>
-                <div
-                  style={{
-                    ...headerStyle,
-                    fontSize: "0.8em",
-                    fontWeight: "normal",
-                  }}
-                >
-                  {account.breed}
-                </div>
-                <MDBCardText style={bodyStyle}>
-                  "{account.description}"
-                </MDBCardText>
-                <button className="unfollow-btn" onClick={() => handleUnfollow(account.id)} >
-                Unleash
-              </button>
-              </MDBCardBody>
-            </MDBCard>
-          ))}
+          {account.breed}
         </div>
+        <MDBCardText style={bodyStyle}>
+          "{account.description}"
+        </MDBCardText>
+      </MDBCardBody>
+    </MDBCard>
+  ))}
+</div>
 
         </>
     );

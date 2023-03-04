@@ -119,48 +119,46 @@ function EventForm() {
       .catch((error) => console.log(error));
   }, []);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const data = {};
-    data.title = title;
-    data.states_id = state;
-    data.cities_id = city;
-    data.dog_parks_id = dogPark;
-    data.address = address;
-    data.date = date;
-    data.start_time = start_time;
-    data.end_time = end_time;
-    data.description = description;
-    data.picture = picture;
-    data.account_id = userId;
-    console.log(data);
+const handleSubmit = async (event) => {
+  event.preventDefault();
+  const data = {};
+  data.title = title;
+  data.states_id = state;
+  data.cities_id = city;
+  data.dog_parks_id = dogPark;
+  data.address = address;
+  data.date = date;
+  data.start_time = start_time;
+  data.end_time = end_time;
+  data.description = description;
+  data.picture = picture.startsWith("http") ? picture : "https://img.freepik.com/free-vector/many-dogs-running-park_1308-86675.jpg";
+  data.account_id = userId;
+  console.log(data);
 
-    const eventUrl = "http://localhost:8000/events";
+  const eventUrl = "http://localhost:8000/events";
 
-    const fetchConfig = {
-      method: "post",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-type": "application/json",
-      },
-    };
-    const response = await fetch(eventUrl, fetchConfig);
-    console.log(response);
-    if (response.ok) {
-      //const newEvent = await response.json;
-
-      setTitle("");
-      setSelectedStateId("");
-      setSelectedCityId("");
-      setDogParks("");
-      setAddress("");
-      setDate("");
-      setStart_time("");
-      setEnd_time("");
-      setDescription("");
-      setPicture("");
-    }
+  const fetchConfig = {
+    method: "post",
+    body: JSON.stringify(data),
+    headers: {
+      "Content-type": "application/json",
+    },
   };
+  const response = await fetch(eventUrl, fetchConfig);
+  console.log(response);
+  if (response.ok) {
+    setTitle("");
+    setSelectedStateId("");
+    setSelectedCityId("");
+    setDogParks("");
+    setAddress("");
+    setDate("");
+    setStart_time("");
+    setEnd_time("");
+    setDescription("");
+    setPicture("");
+  }
+};
 
   console.log(cities);
   console.log(states);
@@ -368,10 +366,11 @@ function EventForm() {
                   value={picture}
                   placeholder="Picture"
                   required
-                  type="text"
+                  type="url"
                   name="picture"
                   id="picture"
                   className="form-control"
+
                 />
                 <label htmlFor="picture">Picture</label>
               </div>

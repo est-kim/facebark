@@ -116,7 +116,7 @@ function SignUpForm() {
         data.phone_number = phoneNumber;
         data.owner_name = ownerName;
         data.breed = selectedBreed;
-        data.image_url = dogImage;
+        data.image_url = dogImage.startsWith("http") ? dogImage : "https://cdn2.vectorstock.com/i/1000x1000/23/81/clip-art-animal-dog-dog-body-position-sitting-vector-25502381.jpg";
         data.dob = birthday;
         data.description = description;
         data.sex = selectedGender;

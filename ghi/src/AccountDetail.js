@@ -28,6 +28,7 @@ function AccountDetailPage() {
   const [image, setImage] = useState("");
   const [status, setStatus] = useState("");
   const [statuses, setStatuses] = useState([]);
+  const [following, setFollowing] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -98,6 +99,13 @@ function AccountDetailPage() {
   }, []);
 
   useEffect(() => {
+    fetch("http://localhost:8000/following")
+      .then((response) => response.json())
+      .then((data) => setFollowing(data))
+      .catch((error) => console.log(error));
+  }, []);
+
+  useEffect(() => {
     const url = `http://localhost:8000/accounts/${accountId}`;
     const fetchData = async () => {
       try {
@@ -159,7 +167,14 @@ function AccountDetailPage() {
     }
   }
 
-  console.log(statuses);
+  let FollowerIds = []
+  for (let f of following) {
+    if (f["followee_id"] == accountId) {
+      FollowerIds.push(f["follower_id"])
+    }
+  }
+
+
   const handleFollow = async (event) => {
     event.preventDefault();
     const data = {};
@@ -185,6 +200,29 @@ function AccountDetailPage() {
       //const newEvent = await response.json;
     }
   };
+
+  const handleUnfollow = async (event) => {
+    event.preventDefault();
+
+    const eventUrl = `http://localhost:8000/following/${accountId}?follower_id=${userId}`;
+
+
+    const fetchConfig = {
+      method: "delete",
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
+
+    const response = await fetch(eventUrl, fetchConfig);
+
+    console.log(response);
+
+    if (response.ok) {
+      // Do something after the unfollow is successful
+    }
+  };
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -290,11 +328,25 @@ function AccountDetailPage() {
           </MDBCardText> */}
               <MDBCardFooter className="text-end">
                 {parseInt(accountId) !== userId && (
-                  <form onSubmit={handleFollow}>
-                    <MDBBtn color="warning" className="me-2" type="submit">
-                      Follow <MDBIcon icon="edit" className="ms-1" />
-                    </MDBBtn>
-                  </form>
+                  <>
+                    {FollowerIds.includes(userId) ?
+                      <form onSubmit={handleUnfollow}>
+                        <button className="btn btn-danger me-2" type="submit" onClick={(e) => {
+                            e.preventDefault();
+                            e.target.innerText = "Unfollowed";
+                            handleUnfollow(e);
+                          }}>Unfollow <MDBIcon icon="edit" className="ms-1" /></button>
+                      </form>
+                      :
+                      <form onSubmit={handleFollow}>
+                        <button className="btn btn-warning me-2" type="submit" onClick={(e) => {
+                            e.preventDefault();
+                            e.target.innerText = "Following";
+                            handleFollow(e);
+                          }}>Follow <MDBIcon icon="edit" className="ms-1" /></button>
+                      </form>
+                    }
+                  </>
                 )}
               </MDBCardFooter>
             </MDBCardBody>
