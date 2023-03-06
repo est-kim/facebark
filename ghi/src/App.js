@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
-import React, { BrowserRouter, Routes, Route, Switch } from "react-router-dom";
-import Construct from './Construct.js';
-import ErrorNotification from './ErrorNotification';
+import React, { BrowserRouter, Routes, Route } from "react-router-dom";
 import './App.css';
 import Nav from "./Nav";
 import LandingPage from './LandingPage';
@@ -9,23 +7,17 @@ import HomePage from './HomePage';
 import SignUpForm from "./SignUpForm"
 import LoginForm from "./LoginForm";
 import Footer from "./Footer";
-import { AuthProvider, useToken } from "./Authentication";
+import { AuthProvider } from "./Authentication";
 import EventForm from './EventForm';
 import AccountList from "./ListAccounts.js";
 import EventList from "./ListEvents.js";
 import EventDetailPage from "./EventDetail.js";
 import AccountDetailPage from "./AccountDetail.js";
 import FollowingList from './FollowingList.js';
-import Feed from './Feed.js';
-
-function GetToken() {
-  // Get token from JWT cookie (if already logged in)
-  useToken();
-  return null;
-}
+import MyFollowers from './MyFollowers.js';
 
 function App() {
-  const [accounts, setAccounts] = useState([]);
+  const [, setAccounts] = useState([]);
 
   const getAccounts = async () => {
     const url = "http://localhost:8000/accounts";
@@ -56,11 +48,11 @@ function App() {
             <Route path="/events" element={<EventList />} />
             <Route path="/accounts" element={<AccountList />} />
             <Route path="/events/:eventId" element={<EventDetailPage />} />
-            {/* //<Route path="/following" element={<FollowingDetail />} /> */}
             <Route path="/accounts/:accountId" element={<AccountDetailPage />} />
             <Route path="/followinglist" element={<FollowingList />}
             />
-            
+            <Route path="/followers" element={<MyFollowers />}
+            />
           </Routes>
           <Footer />
         </AuthProvider>

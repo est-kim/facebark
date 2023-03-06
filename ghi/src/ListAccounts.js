@@ -17,7 +17,6 @@ function AccountList() {
     const [states, setStates] = useState([]);
     const [city, setCity] = useState("");
     const [cities, setCities] = useState([]);
-    const [account, setAccount] = useState("");
     const [accounts, setAccounts] = useState([]);
     const { setIsLoggedIn } = useAuthContext();
     const navigate = useNavigate();
@@ -83,7 +82,7 @@ function AccountList() {
 
     let NewAccounts = []
     for (let a of accounts) {
-        if (a["state_id"] == parseInt(state)) {
+        if (a["state_id"] === parseInt(state)) {
             NewAccounts.push(a)
         }
     }
@@ -261,12 +260,12 @@ function AccountList() {
                   alt={account.name}
                   style={imgStyle}
                 />
-                <a>
+                <span>
                   <div
                     className="mask"
                     style={{ backgroundColor: "rgba(251, 251, 251, 0.15)" }}
                   ></div>
-                </a>
+                </span>
               </MDBRipple>
               <MDBCardBody style={{ padding: "3px" }}>
                 <MDBCardTitle style={headerStyle}>{account.name}</MDBCardTitle>

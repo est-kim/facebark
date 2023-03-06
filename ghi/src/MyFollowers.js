@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   MDBCard,
   MDBCardBody,
@@ -7,7 +7,7 @@ import {
   MDBRipple,
   MDBCardText,
   MDBRow,
-  MDBCol
+  MDBCol,
 } from "mdb-react-ui-kit";
 import "./list-bgs.css";
 import { useAuthContext, useToken } from "./Authentication";
@@ -21,98 +21,99 @@ function FollowingList() {
   const { setIsLoggedIn } = useAuthContext();
   const navigate = useNavigate();
 
-
   const handleAccountClick = (id) => {
     if (!setIsLoggedIn) {
-        navigate("/signup");
+      navigate("/signup");
     } else {
-        navigate(`/accounts/${id}`);
+      navigate(`/accounts/${id}`);
     }
   };
 
   useEffect(() => {
-      async function getAccountId() {
-          const url = `http://localhost:8000/api/things`;
-          const response = await fetch(url, { method: "GET", headers: { Authorization: `Bearer ${token}` } });
-          if (response.ok) {
-              const data = await response.json();
-              console.log("this should be the accountdsf array  id:", data)
-              setAccountId(data)
-          }
+    async function getAccountId() {
+      const url = `http://localhost:8000/api/things`;
+      const response = await fetch(url, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log("this should be the accountdsf array  id:", data);
+        setAccountId(data);
       }
-      getAccountId();
+    }
+    getAccountId();
   }, [token]);
 
-
   useEffect(() => {
-      async function getAccountsFollowing() {
-          const url = 'http://localhost:8000/following';
-          const response = await fetch(url);
-          if (response.ok) {
-              const data = await response.json();
-              setFollowing(data)
-          }
+    async function getAccountsFollowing() {
+      const url = "http://localhost:8000/following";
+      const response = await fetch(url);
+      if (response.ok) {
+        const data = await response.json();
+        setFollowing(data);
       }
-      getAccountsFollowing();
+    }
+    getAccountsFollowing();
   }, []);
 
   useEffect(() => {
-      fetch("http://localhost:8000/accounts")
+    fetch("http://localhost:8000/accounts")
       .then((response) => response.json())
       .then((data) => {
-          setAccounts(data);
+        setAccounts(data);
       })
       .catch((error) => console.log(error));
   }, []);
 
-  let newIds =[];
+  let newIds = [];
   for (let f of following) {
-    if (f["follower_id"] === accountId) {
-      newIds.push(f["followee_id"]);
-    };
-  };
+    if (f["followee_id"] === accountId) {
+      newIds.push(f["follower_id"]);
+    }
+  }
 
   let NewAccounts = [];
   for (let a of accounts) {
     if (newIds.includes(a["id"])) {
       NewAccounts.push(a);
-    };
-  };
+    }
+  }
 
   const cardStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    paddingTop: '10px',
-    margin: '8px',
-    marginTop: '10px',
-    width: '275px',
-    height: '334px',
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+    display: "flex",
+    flexDirection: "column",
+    border: "1px solid #ccc",
+    borderRadius: "4px",
+    paddingTop: "10px",
+    margin: "8px",
+    marginTop: "10px",
+    width: "275px",
+    height: "334px",
+    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
   };
 
   const imgStyle = {
-      height: '250px',
-      width: '250px',
-      objectFit: 'cover',
-      marginTop: '12px',
-      marginBottom: '8px',
-      borderRadius: '0.5px'
+    height: "250px",
+    width: "250px",
+    objectFit: "cover",
+    marginTop: "12px",
+    marginBottom: "8px",
+    borderRadius: "0.5px",
   };
 
   const headerStyle = {
-      fontSize: '18px',
-      fontWeight: 'bold',
-      marginTop: '0px',
-      marginBottom: '0px',
-      paddingTop: '5px'
+    fontSize: "18px",
+    fontWeight: "bold",
+    marginTop: "0px",
+    marginBottom: "0px",
+    paddingTop: "5px",
   };
 
   const bodyStyle = {
-      fontSize: '12px',
-      marginTop: '1px',
-      paddingBottom: '4px'
+    fontSize: "12px",
+    marginTop: "1px",
+    paddingBottom: "4px",
   };
 
   return (
@@ -134,7 +135,7 @@ function FollowingList() {
       >
         <MDBRow>
           <MDBCol md="12">
-            <h4>Here are all the dog butts you sniff on the regular :</h4>
+            <h4>Here are all the dogs sniffing your butt on the regular :</h4>
           </MDBCol>
         </MDBRow>
         <MDBRow className="justify-content-center">

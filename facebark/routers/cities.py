@@ -11,6 +11,7 @@ def get_all(
 ):
     return repo.get_all()
 
+
 @router.get("/cities/{state_id}", response_model=Union[List[CityOut], Error])
 def get_by_state_id(
     state_id: int,

@@ -3,6 +3,7 @@ from typing import Optional, List, Union
 from queries.pool import pool
 from queries.accounts import AccountOut
 from datetime import datetime
+
 # from queries.statuses import StatusOut
 
 
@@ -66,7 +67,6 @@ class FollowingRepository:
             print(e)
             return {"message": "Could not get all following relationships"}
 
-
     def create(self, following: FollowingIn) -> FollowingOut:
         with pool.connection() as conn:
             with conn.cursor() as db:
@@ -78,16 +78,14 @@ class FollowingRepository:
                         (%s, %s)
                     RETURNING id;
                     """,
-                    [
-                        following.follower_id,
-                        following.followee_id
-                    ]
+                    [following.follower_id, following.followee_id],
                 )
                 id = result.fetchone()[0]
                 return self.following_in_to_out(id, following)
 
-
-    def get_all_following_for_one_account(self, account_id: int) -> List[AccountOut]:
+    def get_all_following_for_one_account(
+        self, account_id: int
+    ) -> List[AccountOut]:
         try:
             with pool.connection() as conn:
                 with conn.cursor() as db:
@@ -113,7 +111,7 @@ class FollowingRepository:
                             ON (f.followee_id = a.id)
                         WHERE f.follower_id = %s
                         """,
-                        [account_id]
+                        [account_id],
                     )
                     result = []
                     for record in db:
@@ -131,14 +129,13 @@ class FollowingRepository:
                             owner_name=record[11],
                             description=record[12],
                             city_id=record[13],
-                            state_id=record[14]
+                            state_id=record[14],
                         )
                         result.append(account)
                     return result
         except Exception as e:
             print(e)
             return {"message": "Could not get that following relationship"}
-
 
     def delete(self, follower_id: int, followee_id: int) -> bool:
         try:
@@ -150,15 +147,16 @@ class FollowingRepository:
                         WHERE follower_id = %s
                         AND followee_id = %s
                         """,
-                        [follower_id, followee_id]
+                        [follower_id, followee_id],
                     )
                     return True
         except Exception as e:
             print(e)
             return False
 
-
-    def get_all_statuses_for_accounts_following(self, account_id: int) -> List[StatusOutVO]:
+    def get_all_statuses_for_accounts_following(
+        self, account_id: int
+    ) -> List[StatusOutVO]:
         try:
             with pool.connection() as conn:
                 with conn.cursor() as db:
@@ -181,7 +179,7 @@ class FollowingRepository:
                         WHERE f.follower_id = %s
                         ORDER BY s.time_stamp DESC;
                         """,
-                        [account_id]
+                        [account_id],
                     )
                     result = []
                     for record in db:
@@ -200,11 +198,9 @@ class FollowingRepository:
             print(e)
             return {"message": "Could not get those status updates"}
 
-
     def following_in_to_out(self, id: int, following: FollowingIn):
         old_data = following.dict()
         return FollowingOut(id=id, **old_data)
-
 
     def record_to_following_out(self, record):
         return FollowingOut(

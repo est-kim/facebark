@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
-from typing import Optional, List, Union
-from datetime import datetime, timezone, timedelta
+from typing import List, Union
+from datetime import datetime, timedelta
 from queries.pool import pool
 
 
@@ -17,20 +17,16 @@ class StatusIn(BaseModel):
 def get_pst_time() -> datetime:
     utc_time = datetime.utcnow()
     pst_offset = timedelta(hours=-8)
-    pst_time = utc_time.replace(tzinfo=timezone.utc) + pst_offset
-    pst_time = pst_time.replace(
-        tzinfo=None
-    )
-    return pst_time
+    pst_time = utc_time + pst_offset
+    return pst_time.replace(microsecond=0).isoformat()
 
 
 class StatusOut(BaseModel):
     id: int
     status_text: str
-    time_stamp: datetime = Field(default_factory=lambda: get_pst_time())
+    time_stamp: datetime = Field(default_factory=get_pst_time)
     image_url: str
     account_id: int
-
 
 
 class StatusesOut(BaseModel):
@@ -38,7 +34,7 @@ class StatusesOut(BaseModel):
 
 
 class StatusRepository:
-    def get_all(self)-> Union[Error, List[StatusOut]]:
+    def get_all(self) -> Union[Error, List[StatusOut]]:
         try:
             # connect the database by creating pool of connections
             with pool.connection() as conn:
@@ -74,7 +70,7 @@ class StatusRepository:
             print(e)
             return {"message": "Could not get all statuses"}
 
-    def get_statuses_by_account_id(self, account_id:int) -> List[StatusOut]:
+    def get_statuses_by_account_id(self, account_id: int) -> List[StatusOut]:
         try:
             with pool.connection() as conn:
                 with conn.cursor() as db:
@@ -99,7 +95,7 @@ class StatusRepository:
                         status = StatusOut(
                             id=record[0],
                             status_text=record[1],
-                            time_stamp=record[2],
+                            time_stamp=get_pst_time(),
                             account_id=record[3],
                             image_url=record[4],
                         )

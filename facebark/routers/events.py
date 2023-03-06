@@ -39,6 +39,7 @@ def delete_event(
 ) -> bool:
     return repo.delete(event_id)
 
+
 @router.get("/events/{event_id}", response_model=Optional[EventsOut])
 def get_one_event(
     event_id: int,

@@ -12,7 +12,7 @@ from routers import (
     dog_parks,
     breeds,
     following,
-    attendees
+    attendees,
 )
 
 
@@ -28,8 +28,6 @@ app.include_router(following.router)
 app.include_router(authenticator.router)
 app.include_router(breeds.router)
 app.include_router(attendees.router)
-
-
 
 
 app.add_middleware(

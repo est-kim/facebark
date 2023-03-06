@@ -16,7 +16,7 @@ from queries.accounts import (
     AccountIn,
     AccountOut,
     AccountOutWithPassword,
-    AccountsOut,
+    AccountUpdate,
     AccountRepository,
     DuplicateAccountError,
 )
@@ -77,6 +77,15 @@ def get_account(
         return status.HTTP_404_NOT_FOUND
 
 
+@router.put("/accounts/{id}", response_model=AccountUpdate)
+def update(
+    id: int,
+    account: AccountUpdate,
+    repo: AccountRepository = Depends()
+) -> AccountIn:
+    return repo.update(id, account)
+
+
 @router.post("/accounts", response_model=AccountToken | HttpError)
 async def create_account(
     info: AccountIn,
@@ -101,12 +110,14 @@ async def create_account(
     print("this is the TOKEN: ", token)
     return AccountToken(account=account, **token.dict())
 
+
 @router.get("/api/things")
 async def get_things(
-    account_data: Optional[dict] = Depends(authenticator.try_get_current_account_data),
+    account_data: Optional[dict] = Depends(
+        authenticator.try_get_current_account_data
+    ),
 ):
     if account_data:
-        return account_data["id"] 
-    
-    
+        return account_data["id"]
+
     pass

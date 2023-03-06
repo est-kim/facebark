@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react"
+import React, { useEffect, useState } from "react";
 import Spinner from "./Spinner";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext, useToken, getTokenInternal } from "./Authentication";
@@ -8,152 +8,151 @@ import {
   MDBCardText,
   MDBRipple,
   MDBCardImage,
-  MDBCardTitle
+  MDBCardTitle,
 } from "mdb-react-ui-kit";
 import "./list-bgs.css";
 
 function EventList() {
-    const [state, setState] = useState("");
-    const [states, setStates] = useState([]);
-    const [city, setCity] = useState("");
-    const [cities, setCities] = useState([]);
-    const [event, setEvent] = useState("");
-    const [events, setEvents] = useState([]);
-    const { setIsLoggedIn } = useAuthContext();
-    const navigate = useNavigate();
-    const [token] = useToken();
-    const [loading, setLoading] = useState(true);
+  const [state, setState] = useState("");
+  const [states, setStates] = useState([]);
+  const [city, setCity] = useState("");
+  const [cities, setCities] = useState([]);
+  const [events, setEvents] = useState([]);
+  const { setIsLoggedIn } = useAuthContext();
+  const navigate = useNavigate();
+  const [token] = useToken();
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchToken = async () => {
-        const token = await getTokenInternal();
-        if (token) {
-            setIsLoggedIn(true);
-        }
-        };
-        fetchToken();
-    }, []);
-
-    const handleStateChange = (event) => {
-        const value = event.target.value;
-        setState(value);
-        setCity("");
+  useEffect(() => {
+    const fetchToken = async () => {
+      const token = await getTokenInternal();
+      if (token) {
+        setIsLoggedIn(true);
       }
-
-    const handleCityChange = (event) => {
-        const value = event.target.value;
-        setCity(value);
-      }
-
-    const handleEventClick = (id) => {
-        if (!setIsLoggedIn) {
-        navigate("/signup");
-        } else {
-        navigate(`/events/${id}`);
-        }
     };
+    fetchToken();
+  }, [setIsLoggedIn]);
 
-    useEffect(() => {
-        fetch("http://localhost:8000/states")
-        .then((response) => response.json())
-        .then((data) => setStates(data))
-        .catch((error) => console.log(error));
-    }, []);
+  const handleStateChange = (event) => {
+    const value = event.target.value;
+    setState(value);
+    setCity("");
+  };
 
-    useEffect(() => {
-        fetch("http://localhost:8000/cities")
-        .then((response) => response.json())
-        .then((data) => setCities(data))
-        .catch((error) => console.log(error));
-    }, []);
+  const handleCityChange = (event) => {
+    const value = event.target.value;
+    setCity(value);
+  };
 
-    useEffect(() => {
-      fetch("http://localhost:8000/events")
-        .then((response) => response.json())
-        .then((data) => {
-          setEvents(data);
-          setLoading(false);
-        })
-        .catch((error) => console.log(error));
-    }, []);
-
-    if (loading) {
-      return <Spinner />;
+  const handleEventClick = (id) => {
+    if (!setIsLoggedIn) {
+      navigate("/signup");
+    } else {
+      navigate(`/events/${id}`);
     }
+  };
 
-    let NewEvents = [];
-    for (let e of events) {
+  useEffect(() => {
+    fetch("http://localhost:8000/states")
+      .then((response) => response.json())
+      .then((data) => setStates(data))
+      .catch((error) => console.log(error));
+  }, []);
+
+  useEffect(() => {
+    fetch("http://localhost:8000/cities")
+      .then((response) => response.json())
+      .then((data) => setCities(data))
+      .catch((error) => console.log(error));
+  }, []);
+
+  useEffect(() => {
+    fetch("http://localhost:8000/events")
+      .then((response) => response.json())
+      .then((data) => {
+        setEvents(data);
+        setLoading(false);
+      })
+      .catch((error) => console.log(error));
+  }, []);
+
+  if (loading) {
+    return <Spinner />;
+  }
+
+  let NewEvents = [];
+  for (let e of events) {
+    if (e["states_id"] === state) {
+      NewEvents.push(e);
+    }
+  }
+
+  let NewCities = [];
+  for (let e of NewEvents) {
+    NewCities.push(parseInt(e["cities_id"]));
+  }
+
+  let FinalCities = [];
+  for (let c of cities)
+    if (NewCities.includes(c["id"]))
+      // console.log(true)
+      FinalCities.push(c);
+  // console.log(FinalCities)
+
+  let FinalEvents = [];
+  for (let e of events) {
+    if (state === "") {
+      FinalEvents = events;
+    }
+    if (city === "") {
       if (e["states_id"] === state) {
-        NewEvents.push(e);
-      }
-    }
-
-    let NewCities = [];
-    for (let e of NewEvents) {
-      NewCities.push(parseInt(e["cities_id"]));
-    }
-
-    let FinalCities = [];
-    for (let c of cities)
-      if (NewCities.includes(c["id"]))
-        // console.log(true)
-        FinalCities.push(c);
-    // console.log(FinalCities)
-
-    let FinalEvents = [];
-    for (let e of events) {
-      if (state === "") {
-        FinalEvents = events;
-      }
-      if (city === "") {
-        if (e["states_id"] === state) {
-          FinalEvents.push(e);
-        }
-      }
-
-      if (e["states_id"] === state && e["cities_id"] === city) {
         FinalEvents.push(e);
       }
     }
-    // console.log(FinalEvents)
 
-    const cardStyle = {
-        display: "flex",
-        flexDirection: "column",
-        border: "1px solid #ccc",
-        borderRadius: "4px",
-        paddingTop: "10px",
-        margin: "8px",
-        marginTop: "10px",
-        width: "340px",
-        height: "270px",
-        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-    };
+    if (e["states_id"] === state && e["cities_id"] === city) {
+      FinalEvents.push(e);
+    }
+  }
+  // console.log(FinalEvents)
 
-    const imgStyle = {
-        height: "280px",
-        width: "310px",
-        objectFit: "cover",
-        objectPosition: "bottom",
-        marginTop: "12px",
-        marginBottom: "8px",
-    };
+  const cardStyle = {
+    display: "flex",
+    flexDirection: "column",
+    border: "1px solid #ccc",
+    borderRadius: "4px",
+    paddingTop: "10px",
+    margin: "8px",
+    marginTop: "10px",
+    width: "340px",
+    height: "270px",
+    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+  };
 
-    const headerStyle = {
-        fontSize: "18px",
-        fontWeight: "bold",
-        margin: "0px",
-        padding: "0px",
-        marginBottom: "0px",
-        paddingTop: "5px",
-    };
+  const imgStyle = {
+    height: "280px",
+    width: "310px",
+    objectFit: "cover",
+    objectPosition: "bottom",
+    marginTop: "12px",
+    marginBottom: "8px",
+  };
 
-    const bodyStyle = {
-        fontSize: "12px",
-        marginTop: "1px",
-        padding: "0px",
-        paddingBottom: "0px",
-    };
+  const headerStyle = {
+    fontSize: "18px",
+    fontWeight: "bold",
+    margin: "0px",
+    padding: "0px",
+    marginBottom: "0px",
+    paddingTop: "5px",
+  };
+
+  const bodyStyle = {
+    fontSize: "12px",
+    marginTop: "1px",
+    padding: "0px",
+    paddingBottom: "0px",
+  };
 
   return (
     <>
@@ -249,12 +248,12 @@ function EventList() {
                   alt={event.name}
                   style={imgStyle}
                 />
-                <a>
+                <span>
                   <div
                     className="mask"
                     style={{ backgroundColor: "rgba(251, 251, 251, 0.15)" }}
                   ></div>
-                </a>
+                </span>
               </MDBRipple>
               <MDBCardBody style={{ padding: "4px", paddingBottom: "5px" }}>
                 <MDBCardTitle

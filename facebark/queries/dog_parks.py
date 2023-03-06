@@ -22,7 +22,7 @@ class DogParkRepository:
                 with conn.cursor() as db:
                     # Run our SELECT statement
                     result = db.execute(
-                         """
+                        """
                         SELECT 
                         id, 
                         name, 
@@ -66,9 +66,4 @@ class DogParkRepository:
             return {"message": "Could not get all dog parks"}
 
     def record_to_dog_out(self, record):
-        return DogParkOut(
-            id=record[0], 
-            name=record[1], 
-            city_id=record[2]
-        )
-    
+        return DogParkOut(id=record[0], name=record[1], city_id=record[2])

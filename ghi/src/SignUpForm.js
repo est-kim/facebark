@@ -27,7 +27,7 @@ function SignUpForm() {
     const [breeds, setBreeds] = useState([]);
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
-    const [submitted, setSubmitted] = useState(false);
+    const [, setSubmitted] = useState(false);
     const [existing, setExisting] = useState(false);
     const navigate = useNavigate();
     const [errorMessage, setErrorMessage] = useState("");

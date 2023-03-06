@@ -75,7 +75,7 @@ class EventsRepository:
                             On (a.id = e.account_id)
                         WHERE e.id = %s
                         """,
-                        [event_id]
+                        [event_id],
                     )
                     record = result.fetchone()
                     if record is None:
@@ -140,7 +140,7 @@ class EventsRepository:
         except Exception as e:
             return {"message": "could not update events"}
 
-    def get_all(self) -> Union[ List[EventsOut],Error]:
+    def get_all(self) -> Union[List[EventsOut], Error]:
         try:
             # connect the database
             with pool.connection() as conn:
@@ -205,7 +205,7 @@ class EventsRepository:
                         event.end_time,
                         event.description,
                         event.picture,
-                        event.account_id
+                        event.account_id,
                     ],
                 )
                 id = result.fetchone()[0]
@@ -228,5 +228,5 @@ class EventsRepository:
             end_time=record[8],
             description=record[9],
             picture=record[10],
-            account_id=record[11]
+            account_id=record[11],
         )

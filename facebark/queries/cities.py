@@ -15,11 +15,7 @@ class Error(BaseModel):
 
 class CityRepository:
     def record_to_city_out(self, record):
-        return CityOut(
-            id=record[0],
-            name=record[1],
-            state_id=record[2]
-        )
+        return CityOut(id=record[0], name=record[1], state_id=record[2])
 
     def get_cities_by_state_id(self, state_id: int) -> List[CityOut]:
         try:
@@ -42,7 +38,9 @@ class CityRepository:
                         [state_id],
                     )
                     records = result.fetchall()
-                    cities = [self.record_to_city_out(record) for record in records]
+                    cities = [
+                        self.record_to_city_out(record) for record in records
+                    ]
                     return cities
         except Exception as e:
             print(e)
@@ -76,4 +74,3 @@ class CityRepository:
         except Exception as e:
             print(e)
             return {"message": "Could not get all cities"}
-

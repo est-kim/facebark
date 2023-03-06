@@ -6,8 +6,8 @@ import {
   MDBNavbar,
   MDBNavbarBrand,
   MDBNavbarNav,
-  MDBNavbarLink,
-  MDBCollapse
+  MDBCollapse,
+  MDBNavbarToggler
 } from "mdb-react-ui-kit";
 
 
@@ -17,6 +17,11 @@ function Nav() {
   const { isLoggedIn, setIsLoggedIn } = useAuthContext();
   const [userId, setUserId] = useState("");
   const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   useEffect(() => {
     if (token !== null && token !== false) {
@@ -32,7 +37,6 @@ function Nav() {
   useEffect(() => {
     async function getUserId() {
       const url = `http://localhost:8000/api/things`;
-      // const response = await fetch(url);
       const response = await fetch(url, {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
@@ -61,6 +65,7 @@ function Nav() {
             width="150px"
           />
         </MDBNavbarBrand>
+        <MDBNavbarToggler onClick={() => setShowNavRight(!showNavRight)} />
         <MDBCollapse navbar show={showNavRight}>
           <MDBNavbarNav right fullWidth={false} className="mb-2 mb-lg-0">
             <Link
@@ -70,52 +75,72 @@ function Nav() {
             >
               Home
             </Link>
-            <MDBNavbarLink
+            <Link
               className={isLoggedIn ? "nav-link" : "d-none"}
-              href={"/accounts/" + userId}
+              to={{
+                pathname: "/accounts/" + userId,
+                state: { isLoggedIn: isLoggedIn },
+              }}
               style={{ color: "#FFBA00" }}
             >
               Profile
-            </MDBNavbarLink>
+            </Link>
             <div
               className="collapse navbar-collapse"
               id="navbarNavDarkDropdown"
             >
               <ul className="navbar-nav">
                 <li className="nav-item dropdown">
-                  <a
-                    className="nav-link dropdown-toggle"
-                    href="#"
-                    id="navbarDarkDropdownMenuLink"
-                    role="button"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                    style={{ color: "#FFBA00" }}
-                  >
-                    Dogs
-                  </a>
-                  <ul
-                    className="dropdown-menu dropdown-menu-dark"
-                    aria-labelledby="navbarDarkDropdownMenuLink"
-                  >
-                    <li>
-                      <Link className="dropdown-item" to="/followinglist">
-                        Following
-                      </Link>
-                    </li>
-                    <li>
-                      <Link className="dropdown-item" to="/accounts">
-                        View All Dogs
-                      </Link>
-                    </li>
-                  </ul>
+                  {isLoggedIn ? (
+                    <>
+                      <a
+                        className="nav-link dropdown-toggle"
+                        href="/accounts"
+                        id="navbarDarkDropdownMenuLink"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        style={{ color: "#FFBA00" }}
+                      >
+                        Dogs
+                      </a>
+                      <ul
+                        className="dropdown-menu dropdown-menu-dark"
+                        aria-labelledby="navbarDarkDropdownMenuLink"
+                      >
+                        <li>
+                          <Link className="dropdown-item" to="/accounts">
+                            View All Dogs
+                          </Link>
+                        </li>
+                        <li>
+                          <Link className="dropdown-item" to="/followinglist">
+                            Following
+                          </Link>
+                        </li>
+                        <li>
+                          <Link className="dropdown-item" to="/followers">
+                            My Followers
+                          </Link>
+                        </li>
+                      </ul>
+                    </>
+                  ) : (
+                    <Link
+                      className="nav-link"
+                      to="/accounts"
+                      style={{ color: "#FFBA00" }}
+                    >
+                      Dogs
+                    </Link>
+                  )}
                 </li>
                 <li className="nav-item dropdown">
                   {isLoggedIn ? (
                     <>
                       <a
                         className="nav-link dropdown-toggle"
-                        href="#"
+                        href="/events"
                         id="navbarDarkDropdownMenuLink"
                         role="button"
                         data-bs-toggle="dropdown"
@@ -152,30 +177,31 @@ function Nav() {
                 </li>
               </ul>
             </div>
-            <MDBNavbarLink
+            <Link
               className={isLoggedIn ? "nav-link" : "d-none"}
+              to="/"
               onClick={() => {
-                logout();
+                handleLogout();
                 setIsLoggedIn(false);
-                navigate("/");
               }}
               style={{ color: "#FFBA00" }}
             >
               Log Out
-            </MDBNavbarLink>
-            <MDBNavbarLink
-              href="/signup"
-              style={{ color: "#FFBA00" }}
+            </Link>
+            <Link
+              className={isLoggedIn ? "d-none" : "nav-link"}
+              to="/signup"
+              style={{ color: "#FFBA00", cursor: "pointer" }}
             >
               Sign Up
-            </MDBNavbarLink>
-            <MDBNavbarLink
+            </Link>
+            <Link
               className={isLoggedIn ? "d-none" : "nav-link"}
-              href="/login"
+              to="/login"
               style={{ color: "#FFBA00", cursor: "pointer" }}
             >
               Sign In
-            </MDBNavbarLink>
+            </Link>
           </MDBNavbarNav>
         </MDBCollapse>
       </MDBContainer>

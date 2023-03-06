@@ -48,8 +48,19 @@ class AccountOut(BaseModel):
 class AccountOutWithPassword(AccountOut):
     hashed_password: str
 
+
+class AccountUpdate(BaseModel):
+    username: Optional[str]
+    email: Optional[str]
+    phone_number: Optional[str]
+    name: Optional[str]
+    image_url: Optional[str]
+    description: Optional[str]
+
+
 class AccountsOut(BaseModel):
     accounts: List[AccountOut]
+
 
 class AccountRepository:
     def record_to_account_out(self, record) -> AccountOutWithPassword:
@@ -196,25 +207,25 @@ class AccountRepository:
         self, account: AccountIn, hashed_password: str
     ) -> AccountOutWithPassword:
 
-            with pool.connection() as conn:
-                with conn.cursor() as db:
-                    params = [
-                        account.username,
-                        account.email,
-                        account.phone_number,
-                        account.name,
-                        account.image_url,
-                        account.breed,
-                        account.sex,
-                        account.dob,
-                        account.owner_name,
-                        account.description,
-                        account.city_id,
-                        account.state_id,
-                        hashed_password,
-                    ]
-                    db.execute(
-                        """
+        with pool.connection() as conn:
+            with conn.cursor() as db:
+                params = [
+                    account.username,
+                    account.email,
+                    account.phone_number,
+                    account.name,
+                    account.image_url,
+                    account.breed,
+                    account.sex,
+                    account.dob,
+                    account.owner_name,
+                    account.description,
+                    account.city_id,
+                    account.state_id,
+                    hashed_password,
+                ]
+                db.execute(
+                    """
                         INSERT INTO accounts (username, email, phone_number,
                         name, image_url, breed, sex, dob, owner_name, description,
                         city_id, state_id, hashed_password)
@@ -223,17 +234,49 @@ class AccountRepository:
                         name, image_url, breed, sex, dob, owner_name, description,
                         city_id, state_id, hashed_password;
                         """,
-                        params,
+                    params,
+                )
+
+                record = None
+                row = db.fetchone()
+                if row is not None:
+                    record = {}
+                    for i, column in enumerate(db.description):
+                        record[column.name] = row[i]
+
+                return record
+
+    def update(self, id: int, account: AccountUpdate) -> AccountOut:
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    db.execute(
+                        """
+                        UPDATE accounts
+                        SET username = %s,
+                        email = %s,
+                        phone_number = %s,
+                        name = %s,
+                        image_url = %s,
+                        description = %s
+                        WHERE id = %s
+                        """,
+                        [
+                            account.username,
+                            account.email,
+                            account.phone_number,
+                            account.name,
+                            account.image_url,
+                            account.description,
+                            id
+                        ]
                     )
+                    old_data = account.dict()
+                    return AccountUpdate(**old_data)
+        except Exception as e:
+            print(e)
+            return {"message": "Could not update account information"}
 
-                    record = None
-                    row = db.fetchone()
-                    if row is not None:
-                        record = {}
-                        for i, column in enumerate(db.description):
-                            record[column.name] = row[i]
-
-                    return record
 
     def account_in_to_out(
         self, id: int, account: AccountIn, hashed_password: str

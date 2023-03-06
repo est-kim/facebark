@@ -67,7 +67,7 @@ export const AuthProvider = ({ children }) => {
 export const useAuthContext = () => useContext(AuthContext);
 
 export function useToken() {
-    const { token, setToken, user, setUser, setIsLoggedIn } = useAuthContext();
+    const { token, setToken, setIsLoggedIn } = useAuthContext();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -179,7 +179,6 @@ export function useToken() {
     return [ token, login, logout, signup, update ];
 }
 
-/// what is this for and how do we use this?! is it the account by id?
 export const useUser = (token) => {
   const [user, setUser] = useState();
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   MDBContainer,
   MDBInput,
@@ -16,42 +16,40 @@ import { useAuthContext, useToken } from "./Authentication";
 
 
 function LoginForm() {
-    const [, login] = useToken();
-    const { isLoggedIn } = useAuthContext();
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
-    const navigate = useNavigate();
+  const [, login] = useToken();
+  const { isLoggedIn } = useAuthContext();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-    useEffect(() => {
-      setUsername("");
-      setPassword("");
-    }, []);
+  useEffect(() => {
+    setUsername("");
+    setPassword("");
+  }, []);
 
-    const handleUsernameChange = (event) => {
-        const value = event.target.value;
-        setUsername(value);
+  const handleUsernameChange = (event) => {
+      const value = event.target.value;
+      setUsername(value);
+  }
+
+  const handlePasswordChange = (event) => {
+      const value = event.target.value;
+      setPassword(value);
+  }
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const error = await login(username, password);
+    if (error) {
+      isLoggedIn(false);
+    } else {
+      navigate("/home");
     }
-
-    const handlePasswordChange = (event) => {
-        const value = event.target.value;
-        setPassword(value);
-    }
-
-    const handleSubmit = async (event) => {
-      event.preventDefault();
-      const error = await login(username, password);
-      if (error) {
-        isLoggedIn(false);
-        setError("Please enter the correct username and password");
-      } else {
-        navigate("/home");
-      }
-    };
+  };
 
 
 return (
-  <MDBContainer className="login-container">
+  <MDBContainer className="login-container pb-5">
     <br></br>
     <MDBRow>
       <MDBCol className="col-md-12">
@@ -62,15 +60,15 @@ return (
           <MDBRow>
             <MDBCol className="me-6 p-0 m-0">
               <MDBCardImage
-                src="https://media.istockphoto.com/id/183815157/photo/teamwork.jpg?s=612x612&w=0&k=20&c=CHHe43PQncGHw-b3u2PL6VifPsSBO_Z3TWUcsjGSE3Q="
+                src="https://www.hamptonveterinaryhospital.com/blog/wp-content/uploads/2019/01/iStock-876314938-1.jpg"
                 alt="..."
                 fluid
-                style={{ height: "100%", objectFit: "cover" }}
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
             </MDBCol>
             <MDBCol className="two p-0 m-0">
               <MDBCardBody>
-                <MDBCardTitle className="text-center fw-bold">
+                <MDBCardTitle className="text-center fw-bold pt-5">
                   Welcome back!
                 </MDBCardTitle>
                 <form onSubmit={handleSubmit}>
@@ -91,7 +89,6 @@ return (
                       value={password}
                       onChange={handlePasswordChange}
                     />
-                    {error && <div className="mb-3 text-danger">{error}</div>}
                     <div className="text-center mt-1 mb-0">
                       <MDBBtn
                         type="submit"

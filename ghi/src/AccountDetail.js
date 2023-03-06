@@ -14,15 +14,13 @@ import {
   MDBCardFooter,
   MDBInput,
 } from "mdb-react-ui-kit";
+import AccountUpdateModal from "./AccountUpdateModal";
 
 function AccountDetailPage() {
   const { isLoggedIn, setIsLoggedIn } = useAuthContext();
   const { accountId } = useParams();
   const [account, setAccount] = useState("");
-  const [accounts, setAccounts] = useState([]);
-  const [state, setState] = useState("");
   const [states, setStates] = useState([]);
-  const [city, setCity] = useState("");
   const [cities, setCities] = useState([]);
   const [token] = useToken();
   const [image, setImage] = useState("");
@@ -31,7 +29,7 @@ function AccountDetailPage() {
   const [following, setFollowing] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const [, setSubmitted] = useState(false);
 
   console.log("TOKEN IN ACCOUNT DETAIL: ", token);
   console.log("SET IS LOGGED IN: ", isLoggedIn);
@@ -82,7 +80,7 @@ function AccountDetailPage() {
       .then((response) => response.json())
       .then((data) => setStatuses(data))
       .catch((error) => console.log(error));
-  }, []);
+  }, [accountId]);
 
   useEffect(() => {
     fetch("http://localhost:8000/states")
@@ -169,11 +167,11 @@ function AccountDetailPage() {
 
   let FollowerIds = []
   for (let f of following) {
-    if (f["followee_id"] == accountId) {
+    if (f["followee_id"] === parseInt(accountId)) {
       FollowerIds.push(f["follower_id"])
     }
   }
-
+  console.log("FOLLOWERIDDSSSS:", FollowerIds)
 
   const handleFollow = async (event) => {
     event.preventDefault();
@@ -181,8 +179,6 @@ function AccountDetailPage() {
 
     data.follower_id = userId;
     data.followee_id = parseInt(accountId);
-
-    // console.log("THIS IS DATA IN HANDLE Follow", data);
 
     const eventUrl = "http://localhost:8000/following";
 
@@ -196,16 +192,13 @@ function AccountDetailPage() {
     const response = await fetch(eventUrl, fetchConfig);
     console.log(response);
     if (response.ok) {
-
       //const newEvent = await response.json;
     }
   };
 
   const handleUnfollow = async (event) => {
     event.preventDefault();
-
     const eventUrl = `http://localhost:8000/following/${accountId}?follower_id=${userId}`;
-
 
     const fetchConfig = {
       method: "delete",
@@ -219,7 +212,7 @@ function AccountDetailPage() {
     console.log(response);
 
     if (response.ok) {
-      // Do something after the unfollow is successful
+      window.location.reload();
     }
   };
 
@@ -252,12 +245,25 @@ function AccountDetailPage() {
         setImage("");
         setSubmitted(true);
       } else {
-        const error = await response.json();
+        await response.json();
         setSubmitted(false);
       }
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const formatTimeStamp = (timeStamp) => {
+    const date = new Date(timeStamp);
+    const formattedDate = `${
+      date.getMonth() + 1
+    }/${date.getDate()}/${date.getFullYear()}, `;
+    const formattedTime = date.toLocaleString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    });
+    return formattedDate + formattedTime;
   };
 
   const imgStyle = {
@@ -270,15 +276,15 @@ function AccountDetailPage() {
   return (
     <div
       className="list-bg"
-      style={{ paddingBottom: "50px", paddingTop: "30px" }}
+      // style={{ paddingBottom: "50px", paddingTop: "50px" }}
     >
-      <MDBRow>
-        <MDBCol md="4" className="mx-auto" style={{ paddingLeft: "30px" }}>
+      <MDBRow style={{ padding: "50px" }}>
+        <MDBCol md="4" className="mx-auto">
           <MDBCard
             className="text-center"
             style={{ backgroundColor: "rgba(255, 255, 255, 0.8)" }}
           >
-            <MDBCardBody>
+            <MDBCardBody style={{ paddingTop: "50px" }}>
               <MDBCardText>
                 <img
                   src={account.image_url}
@@ -327,77 +333,120 @@ function AccountDetailPage() {
             Picture: <img src={account.picture} alt={account.title} />
           </MDBCardText> */}
               <MDBCardFooter className="text-end">
-                {parseInt(accountId) !== userId && (
+                {parseInt(accountId) !== userId ? (
+                  // if accountId is not equal to userId
                   <>
-                    {FollowerIds.includes(userId) ?
+                    {FollowerIds.includes(userId) ? (
                       <form onSubmit={handleUnfollow}>
-                        <button className="btn btn-danger me-2" type="submit" onClick={(e) => {
-                            e.preventDefault();
-                            e.target.innerText = "Unfollowed";
-                            handleUnfollow(e);
-                          }}>Unfollow <MDBIcon icon="edit" className="ms-1" /></button>
+                        <MDBBtn
+                          className="btn me-2"
+                          type="submit"
+                          style={{
+                            margin: "10px",
+                            backgroundColor: "#9ecdc6",
+                            fontSize: "15px",
+                            padding: "5px 15px",
+                            boxShadow: "2px 2px 4px #888888",
+                            textTransform: "none",
+                          }}
+                          // onClick={(e) => {
+                          //   e.preventDefault();
+                          //   e.target.innerText = "Unfollowed";
+                          //   handleUnfollow(e);
+                          // }}
+                        >
+                          Unfollow <MDBIcon icon="edit" className="ms-1" />
+                        </MDBBtn>
                       </form>
-                      :
+                    ) : (
                       <form onSubmit={handleFollow}>
-                        <button className="btn btn-warning me-2" type="submit" onClick={(e) => {
+                        <button
+                          className="btn  me-2"
+                          type="submit"
+                          style={{
+                            margin: "10px",
+                            backgroundColor: "#9ecdc6",
+                            fontSize: "15px",
+                            padding: "5px 15px",
+                            boxShadow: "2px 2px 4px #888888",
+                            textTransform: "none",
+                          }}
+                          onClick={(e) => {
                             e.preventDefault();
                             e.target.innerText = "Following";
                             handleFollow(e);
-                          }}>Follow <MDBIcon icon="edit" className="ms-1" /></button>
+                          }}
+                        >
+                          Follow <MDBIcon fas icon="plus" />
+                        </button>
                       </form>
-                    }
+                    )}
                   </>
+                ) : (
+                  // if accountId is equal to userId
+                  <AccountUpdateModal />
                 )}
               </MDBCardFooter>
             </MDBCardBody>
           </MDBCard>
         </MDBCol>
-        <MDBCol md="7" className="mx-auto" style={{ paddingLeft: 0 }}>
+        <MDBCol md="8" className="mx-auto">
           {parseInt(accountId) === userId && (
             <>
-          <MDBRow>
-            <MDBCol md="12">
-              <h5>Post a Pupdate</h5>
-            </MDBCol>
-          </MDBRow>
+              <MDBRow style={{ paddingBottom: "5px" }}>
+                <MDBCol md="12">
+                  <h4>Post a Pupdate</h4>
+                </MDBCol>
+              </MDBRow>
 
-          <MDBRow id="boo1">
-            <MDBCol md="12">
-              <MDBCard
-                style={{
-                  backgroundColor: "rgba(255, 255, 255, 0.8)",
-                  padding: "4px 2%",
-                }}
-              >
-                  <form onSubmit={handleSubmit} id="status-update">
-                    <MDBInput
-                      onChange={handleStatusChange}
-                      value={status}
-                      label="Tell us about your day!"
-                      id="status_text"
-                      name="status_text"
-                      type="textarea"
-                      style={{ margin: "10px" }}
-                      required
-                    />
-                    <MDBInput
-                      onChange={handleImageChange}
-                      value={image}
-                      label="Post a photo! (Optional)"
-                      id="image_url"
-                      name="image_url"
-                      type="textarea"
-                    />
-                    <MDBBtn style={{ margin: "10px" }}>Post</MDBBtn>
-                  </form>
-              </MDBCard>
-            </MDBCol>
-          </MDBRow>
-          </>
+              <MDBRow id="boo1">
+                <MDBCol md="12">
+                  <MDBCard
+                    style={{
+                      backgroundColor: "rgba(255, 255, 255, 0.8)",
+                      padding: "2% 2%",
+                    }}
+                  >
+                    <form onSubmit={handleSubmit} id="status-update">
+                      <MDBInput
+                        onChange={handleStatusChange}
+                        value={status}
+                        label="Tell us about your day!"
+                        id="status_text"
+                        name="status_text"
+                        type="textarea"
+                        style={{ margin: "10px" }}
+                        required
+                      />
+                      <MDBInput
+                        onChange={handleImageChange}
+                        value={image}
+                        label="Post a photo! (Optional)"
+                        id="image_url"
+                        name="image_url"
+                        type="url"
+                      />
+                      <MDBBtn
+                        style={{
+                          margin: "10px",
+                          backgroundColor: "#9ecdc6",
+                          fontSize: "15px",
+                          padding: "5px 15px",
+                          boxShadow: "2px 2px 4px #888888",
+                          textTransform: "none",
+                        }}
+                      >
+                        Post
+                      </MDBBtn>
+                    </form>
+                  </MDBCard>
+                </MDBCol>
+              </MDBRow>
+            </>
           )}
-          <MDBRow>
+          <MDBRow style={{ paddingBottom: "5px", paddingTop: "10px" }}>
             <MDBCol md="12">
-              <h5>My Pupdates</h5>
+              <h4>My Pupdates</h4>
             </MDBCol>
           </MDBRow>
 
@@ -408,10 +457,12 @@ function AccountDetailPage() {
                   <MDBCard
                     style={{
                       backgroundColor: "rgba(255, 255, 255, 0.8)",
-                      padding: "4px 2%",
+                      padding: "2% 2%",
                     }}
                   >
-                    <div>{new Date(status.time_stamp).toLocaleString()}</div>
+                    <div style={{ fontWeight: 550 }}>
+                      {formatTimeStamp(status.time_stamp)}
+                    </div>
                     <MDBRow>
                       {status.image_url ? (
                         <>

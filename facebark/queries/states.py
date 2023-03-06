@@ -34,7 +34,7 @@ class StateRepository:
                     if record is None:
                         return None
                     return self.record_to_state_out(record)
-                
+
         except Exception as e:
             print(e)
             return {"message": "Could not get that event"}
@@ -64,8 +64,7 @@ class StateRepository:
         except Exception as e:
             print(e)
             return {"message": "Could not get all states"}
-        
-    
+
     def get_all_onid(self, state_id: int) -> Union[Error, List[StateOut]]:
         try:
             # connect the database
@@ -80,9 +79,9 @@ class StateRepository:
                         ORDER BY id;
                         WHERE states.state_id = %s
                         """,
-                        [state_id]
+                        [state_id],
                     )
-                    result =[]
+                    result = []
                     for record in db:
                         city = CityOut(
                             id=record[0], name=record[1], state_id=record[2]
