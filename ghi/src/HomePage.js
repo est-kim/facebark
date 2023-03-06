@@ -18,12 +18,12 @@ function HomePage() {
   const { isLoggedIn, setIsLoggedIn } = useAuthContext();
   const [userId, setUserId] = useState("");
   const [statuses, setStatuses] = useState([]);
-  const [status, setStatus] = useState([]);
+  // const [status, setStatus] = useState([]);
   const [token] = useToken();
-  const [account, setAccount] = useState("");
+  // const [account, setAccount] = useState("");
   const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [following, setFollowing] = useState([]);
+  // const [following, setFollowing] = useState([]);
   const navigate = useNavigate();
   const [event, setEvent] = useState("");
   const [events, setEvents] = useState([]);
@@ -60,67 +60,80 @@ function HomePage() {
         getUserId();
   }, [token]);
 
-  // console.log("DATAAAAAA USERRRR", (typeof userId))
 
   useEffect(() => {
-    const url = `http://localhost:8000/accounts/${userId}`;
-    const fetchData = async () => {
-      try {
-        const response = await fetch(url, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+        async function getStatusesOfAccountsFollowing() {
+            const url = `http://localhost:8000/feed/${userId}`;
+            const response = await fetch(url);
+            if (response.ok) {
+                const data = await response.json();
+                setStatuses(data)
+            }
         }
+        getStatusesOfAccountsFollowing();
+    }, [userId, token]);
 
-        const data = await response.json();
-        setAccount(data);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // console.log("DATAAAAAA USERRRR", (typeof userId))
 
-    if (token && isLoggedIn) {
-      fetchData();
-    }
-  }, [userId, isLoggedIn, token]);
+  // useEffect(() => {
+  //   const url = `http://localhost:8000/accounts/${userId}`;
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await fetch(url, {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       });
+
+  //       if (!response.ok) {
+  //         throw new Error(`HTTP error! Status: ${response.status}`);
+  //       }
+
+  //       const data = await response.json();
+  //       setAccount(data);
+  //     } catch (error) {
+  //       console.error(error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   if (token && isLoggedIn) {
+  //     fetchData();
+  //   }
+  // }, [userId, isLoggedIn, token]);
 
   // console.log("THIS DA ACCOUNT DATAAA", accountData)
 
-  useEffect(() => {
-      fetch("http://localhost:8000/statuses")
-      .then((response) => response.json())
-      .then((data) => {
-          setStatuses(data);
-          setLoading(false);
-      })
-      .catch((error) => console.log(error));
-  }, []);
+  // useEffect(() => {
+  //     fetch("http://localhost:8000/statuses")
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //         setStatuses(data);
+  //         setLoading(false);
+  //     })
+  //     .catch((error) => console.log(error));
+  // }, []);
 
-  useEffect(() => {
-      fetch("http://localhost:8000/accounts")
-      .then((response) => response.json())
-      .then((data) => {
-          setAccounts(data);
-          setLoading(false);
-      })
-      .catch((error) => console.log(error));
-  }, []);
+  // useEffect(() => {
+  //     fetch("http://localhost:8000/accounts")
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //         setAccounts(data);
+  //         setLoading(false);
+  //     })
+  //     .catch((error) => console.log(error));
+  // }, []);
 
-  useEffect(() => {
-      fetch("http://localhost:8000/following")
-      .then((response) => response.json())
-      .then((data) => {
-          setFollowing(data);
-          setLoading(false);
-      })
-      .catch((error) => console.log(error));
-  }, []);
+  // useEffect(() => {
+  //     fetch("http://localhost:8000/following")
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //         setFollowing(data);
+  //         setLoading(false);
+  //     })
+  //     .catch((error) => console.log(error));
+  // }, []);
 
   useEffect(() => {
       fetch("http://localhost:8000/events")
@@ -132,38 +145,38 @@ function HomePage() {
       .catch((error) => console.log(error));
   }, []);
 
-  let NewFollowing = [];
-  for (let f of following) {
-    if (f["follower_id"] == userId) {
-      NewFollowing.push(f["followee_id"]);
-    };
-  };
+  // let NewFollowing = [];
+  // for (let f of following) {
+  //   if (f["follower_id"] == userId) {
+  //     NewFollowing.push(f["followee_id"]);
+  //   };
+  // };
 
   // console.log(NewFollowing)
   // console.log(userId)
   // console.log(following)
 
-  let NewStatuses = [];
-  for (let s of statuses) {
-    if(NewFollowing.includes(s["account_id"])) {
-      NewStatuses.push(s);
-    };
-  };
-  console.log("NEWSTATTUSSESS:", NewStatuses)
+  // let NewStatuses = [];
+  // for (let s of statuses) {
+  //   if(NewFollowing.includes(s["account_id"])) {
+  //     NewStatuses.push(s);
+  //   };
+  // };
+  // console.log("NEWSTATTUSSESS:", NewStatuses)
 
-  let NewPics = {};
-  for(let a of accounts) {
-    if(NewFollowing.includes(a["id"])) {
-      NewPics[a["id"]] = a["image_url"];
-    };
-  };
+  // let NewPics = {};
+  // for(let a of accounts) {
+  //   if(NewFollowing.includes(a["id"])) {
+  //     NewPics[a["id"]] = a["image_url"];
+  //   };
+  // };
   // console.log(NewPics)
 
-  for (let n of NewStatuses) {
-    if(n["account_id"] in NewPics) {
-      n["picture"] = NewPics[n["account_id"]];
-    };
-  };
+  // for (let n of NewStatuses) {
+  //   if(n["account_id"] in NewPics) {
+  //     n["picture"] = NewPics[n["account_id"]];
+  //   };
+  // };
   // console.log(NewStatuses)
 
 
@@ -243,7 +256,7 @@ function HomePage() {
                     overflow: "auto",
                   }}
                 >
-                  {NewStatuses.map((status) => (
+                  {statuses.map((status) => (
                     <MDBCard
                       style={{
                         width: "80%",
@@ -268,7 +281,7 @@ function HomePage() {
                           alignItems: "center",
                         }}
                       >
-                        {status.picture && (
+                        {status.account_image_url && (
                           <MDBRipple
                             rippleColor="light"
                             rippleTag="div"
@@ -282,7 +295,7 @@ function HomePage() {
                             }}
                           >
                             <MDBCardImage
-                              src={status.picture}
+                              src={status.account_image_url}
                               className="img-thumbnail profile pic"
                               // style={{ width: "100%", height: "auto" }}
                               style={{
@@ -320,7 +333,20 @@ function HomePage() {
                           margin: "10px",
                         }}
                       >
-                        <MDBCardText
+                        <MDBCardText style={{ fontWeight: "bold", fontSize: "1.0em", marginBottom: "5px", textAlign: "center" }}>
+                At {
+                            new Date(status.time_stamp).toLocaleTimeString("en-US", {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                timeZone: "America/Los_Angeles",
+                                })} on {
+                            new Date(status.time_stamp).toLocaleDateString("en-US", {
+                                month: 'short',
+                                day: 'numeric',
+                                year: 'numeric',
+                                })}, {status.name} posted:
+              </MDBCardText>
+                        {/* <MDBCardText
                           style={{
                             fontWeight: "bold",
                             fontSize: "15px",
@@ -339,13 +365,13 @@ function HomePage() {
                             hour12: true,
                             timeZone: "America/Los_Angeles",
                           })}, {status.name} posted:
-                        </MDBCardText>
+                        </MDBCardText> */}
                         <MDBCardText style={{ textAlign: "start" }}>
                           {status.status_text}
                         </MDBCardText>
-                        {status.image_url && /^http/.test(status.image_url) && (
+                        {status.status_image_url && /^http/.test(status.status_image_url) && (
                           <img
-                            src={status.image_url}
+                            src={status.status_image_url}
                             className="img-thumbnail shoes"
                             style={{
                               width: "auto",
