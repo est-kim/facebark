@@ -129,64 +129,67 @@ function FollowingList() {
           paddingTop: "50px",
           paddingLeft: "30px",
           paddingRight: "30px",
-          height: "600px",
+          // height: "600px",
         }}
       >
         <MDBRow>
           <MDBCol md="12">
             <h4>Here are all the dog butts you sniff on the regular :</h4>
           </MDBCol>
-        </MDBRow>
-        <MDBRow className="justify-content-center">
-          <MDBCol></MDBCol>
-          {NewAccounts.map((account) => (
-            <MDBCard
-              style={{
-                ...cardStyle,
-              }}
-              key={account.id}
-            >
-              <MDBRipple
-                rippleColor="light"
-                rippleTag="div"
-                className="bg-image hover-overlay"
-                onClick={() => {
-                  if (token && setIsLoggedIn) {
-                    handleAccountClick(account.id);
-                  } else {
-                    navigate("/signup");
-                  }
+          {/* <MDBRow> */}
+          <MDBCol md="12">
+            {NewAccounts.map((account) => (
+              <MDBCard
+                style={{
+                  ...cardStyle,
                 }}
+                key={account.id}
               >
-                <MDBCardImage
-                  src={account.image_url}
-                  alt={account.name}
-                  style={imgStyle}
-                />
-                <a href={`${account.id}`}>
-                  <div
-                    className="mask"
-                    style={{ backgroundColor: "rgba(251, 251, 251, 0.15)" }}
-                  ></div>
-                </a>
-              </MDBRipple>
-              <MDBCardBody style={{ padding: "3px" }}>
-                <MDBCardTitle style={headerStyle}>{account.name}</MDBCardTitle>
-                <div
-                  style={{
-                    ...headerStyle,
-                    fontSize: "0.8em",
-                    fontWeight: "normal",
+                <MDBRipple
+                  rippleColor="light"
+                  rippleTag="div"
+                  className="bg-image hover-overlay"
+                  onClick={() => {
+                    if (token && setIsLoggedIn) {
+                      handleAccountClick(account.id);
+                    } else {
+                      navigate("/signup");
+                    }
                   }}
                 >
-                  {account.breed}
-                </div>
-                <MDBCardText style={bodyStyle}>
-                  "{account.description}"
-                </MDBCardText>
-              </MDBCardBody>
-            </MDBCard>
-          ))}
+                  <MDBCardImage
+                    src={account.image_url}
+                    alt={account.name}
+                    style={imgStyle}
+                  />
+                  <a href={`${account.id}`}>
+                    <div
+                      className="mask"
+                      style={{ backgroundColor: "rgba(251, 251, 251, 0.15)" }}
+                    ></div>
+                  </a>
+                </MDBRipple>
+                <MDBCardBody style={{ padding: "3px" }}>
+                  <MDBCardTitle style={headerStyle}>
+                    {account.name}
+                  </MDBCardTitle>
+                  <div
+                    style={{
+                      ...headerStyle,
+                      fontSize: "0.8em",
+                      fontWeight: "normal",
+                    }}
+                  >
+                    {account.breed}
+                  </div>
+                  <MDBCardText style={bodyStyle}>
+                    "{account.description}"
+                  </MDBCardText>
+                </MDBCardBody>
+              </MDBCard>
+            ))}
+          </MDBCol>
+          {/* </MDBRow> */}
         </MDBRow>
       </div>
     </>
