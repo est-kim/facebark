@@ -18,16 +18,11 @@ function HomePage() {
   const { isLoggedIn, setIsLoggedIn } = useAuthContext();
   const [userId, setUserId] = useState("");
   const [statuses, setStatuses] = useState([]);
-  // const [status, setStatus] = useState([]);
   const [token] = useToken();
-  // const [account, setAccount] = useState("");
-  const [accounts, setAccounts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  // const [following, setFollowing] = useState([]);
   const navigate = useNavigate();
-  const [event, setEvent] = useState("");
   const [events, setEvents] = useState([]);
   const carouselRef = useRef(null);
+
 
   const handleAccountClick = (id) => {
       if (!setIsLoggedIn) {
@@ -36,6 +31,7 @@ function HomePage() {
           navigate(`/accounts/${id}`);
       }
   };
+
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -73,130 +69,27 @@ function HomePage() {
         getStatusesOfAccountsFollowing();
     }, [userId, token]);
 
-  // console.log("DATAAAAAA USERRRR", (typeof userId))
-
-  // useEffect(() => {
-  //   const url = `http://localhost:8000/accounts/${userId}`;
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await fetch(url, {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       });
-
-  //       if (!response.ok) {
-  //         throw new Error(`HTTP error! Status: ${response.status}`);
-  //       }
-
-  //       const data = await response.json();
-  //       setAccount(data);
-  //     } catch (error) {
-  //       console.error(error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   if (token && isLoggedIn) {
-  //     fetchData();
-  //   }
-  // }, [userId, isLoggedIn, token]);
-
-  // console.log("THIS DA ACCOUNT DATAAA", accountData)
-
-  // useEffect(() => {
-  //     fetch("http://localhost:8000/statuses")
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //         setStatuses(data);
-  //         setLoading(false);
-  //     })
-  //     .catch((error) => console.log(error));
-  // }, []);
-
-  // useEffect(() => {
-  //     fetch("http://localhost:8000/accounts")
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //         setAccounts(data);
-  //         setLoading(false);
-  //     })
-  //     .catch((error) => console.log(error));
-  // }, []);
-
-  // useEffect(() => {
-  //     fetch("http://localhost:8000/following")
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //         setFollowing(data);
-  //         setLoading(false);
-  //     })
-  //     .catch((error) => console.log(error));
-  // }, []);
 
   useEffect(() => {
-      fetch("http://localhost:8000/events")
-      .then((response) => response.json())
-      .then((data) => {
-          setEvents(data);
-          setLoading(false);
-      })
-      .catch((error) => console.log(error));
-  }, []);
-
-  // let NewFollowing = [];
-  // for (let f of following) {
-  //   if (f["follower_id"] == userId) {
-  //     NewFollowing.push(f["followee_id"]);
-  //   };
-  // };
-
-  // console.log(NewFollowing)
-  // console.log(userId)
-  // console.log(following)
-
-  // let NewStatuses = [];
-  // for (let s of statuses) {
-  //   if(NewFollowing.includes(s["account_id"])) {
-  //     NewStatuses.push(s);
-  //   };
-  // };
-  // console.log("NEWSTATTUSSESS:", NewStatuses)
-
-  // let NewPics = {};
-  // for(let a of accounts) {
-  //   if(NewFollowing.includes(a["id"])) {
-  //     NewPics[a["id"]] = a["image_url"];
-  //   };
-  // };
-  // console.log(NewPics)
-
-  // for (let n of NewStatuses) {
-  //   if(n["account_id"] in NewPics) {
-  //     n["picture"] = NewPics[n["account_id"]];
-  //   };
-  // };
-  // console.log(NewStatuses)
+        async function getEventsInUserState() {
+            const url = `http://localhost:8000/feed/events/${userId}`;
+            const response = await fetch(url);
+            if (response.ok) {
+                const data = await response.json();
+                setEvents(data)
+            }
+        }
+        getEventsInUserState();
+    }, [userId, token]);
 
 
+  let NewStatuses = [];
+  for (let s of statuses) {
+    if (!s["status_text"].startsWith("<")) {
+      NewStatuses.push(s);
+    }
+  }
 
-  let UserState = ""
-  for (let a of accounts) {
-    if(a["id"] == userId) {
-      UserState = a["state_id"];
-    };
-  };
-  // console.log(UserState)
-
-  let NewEvents = []
-  for (let e of events) {
-    if(e["states_id"] == UserState) {
-      NewEvents.push(e);
-    };
-  };
-
-  // console.log(NewEvents)
 
   const cardStyle = {
     margin: "10px",
@@ -242,7 +135,6 @@ function HomePage() {
       <MDBRow>
         <MDBCol md="12">
           <section
-            // className="list-bg"
           >
             <MDBCard>
               <MDBCardBody className="list-bg">
@@ -256,11 +148,10 @@ function HomePage() {
                     overflow: "auto",
                   }}
                 >
-                  {statuses.map((status) => (
+                  {NewStatuses.map((status) => (
                     <MDBCard
                       style={{
                         width: "80%",
-                        // height: "320px",
                         margin: "5px",
                         padding: "5px",
                         boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
@@ -297,12 +188,9 @@ function HomePage() {
                             <MDBCardImage
                               src={status.account_image_url}
                               className="img-thumbnail profile pic"
-                              // style={{ width: "100%", height: "auto" }}
                               style={{
                                 width: "150px",
                                 margin: "0 auto",
-                                // display: "grid",
-                                // borderRadius: "100px",
                                 overflow: "hidden",
                                 height: "150px",
                                 objectFit: "cover",
@@ -324,7 +212,6 @@ function HomePage() {
                       <div
                         style={{
                           width: "80%",
-                          // marginLeft: "10px",
                           display: "flex",
                           flexDirection: "column",
                           justifyContent: "center",
@@ -346,26 +233,6 @@ function HomePage() {
                                 year: 'numeric',
                                 })}, {status.name} posted:
               </MDBCardText>
-                        {/* <MDBCardText
-                          style={{
-                            fontWeight: "bold",
-                            fontSize: "15px",
-                            marginBottom: "5px",
-                            textAlign: "start",
-                          }}
-                        >
-                          On {new Date(
-                            new Date(status.time_stamp) - 16 * 60 * 60 * 1000
-                          ).toLocaleString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                            hour: "numeric",
-                            minute: "numeric",
-                            hour12: true,
-                            timeZone: "America/Los_Angeles",
-                          })}, {status.name} posted:
-                        </MDBCardText> */}
                         <MDBCardText style={{ textAlign: "start" }}>
                           {status.status_text}
                         </MDBCardText>
@@ -407,7 +274,7 @@ function HomePage() {
           <div className="carousel-inner">
             <div className="carousel-item active">
               <div className="row">
-                {NewEvents.slice(0, 4).map((event) => (
+                {events.slice(0, 4).map((event) => (
                   <div className="col-md-3" key={event.id}>
                     <MDBCard style={cardStyle}>
                       {event.picture && (
@@ -447,47 +314,6 @@ function HomePage() {
                 ))}
               </div>
             </div>
-            {/* {NewEvents.slice(4).map((event, index) => (
-              <div className="carousel-item" key={index}>
-                <div className="row d-flex justify-content-center">
-                  <div className="col-md-3">
-                    <MDBCard style={cardStyle}>
-                      {event.picture && (
-                        <MDBRipple
-                          rippleColor="light"
-                          rippleTag="div"
-                          className="bg-image hover-overlay"
-                          onClick={() => navigate(`/events/${event.id}`)}
-                        >
-                          <MDBCardImage
-                            src={event.picture}
-                            alt="..."
-                            position="top"
-                            style={imgStyle}
-                          />
-                          <span>
-                            <div
-                              className="mask"
-                              style={{
-                                backgroundColor: "rgba(251, 251, 251, 0.15)",
-                              }}
-                            ></div>
-                          </span>
-                        </MDBRipple>
-                      )}
-                      <MDBCardBody>
-                        <MDBCardTitle style={headerStyle}>
-                          {event.title}
-                        </MDBCardTitle>
-                        <MDBCardText style={bodyStyle}>
-                          {event.description}
-                        </MDBCardText>
-                      </MDBCardBody>
-                    </MDBCard>
-                  </div>
-                </div>
-              </div>
-            ))} */}
           </div>
           <button
             className="carousel-control-prev"
