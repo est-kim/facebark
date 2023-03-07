@@ -40,6 +40,7 @@ class StatusOutVO(BaseModel):
     comment_id: Optional[int]
     name: str
     account_image_url: str
+    status_image_url: str
 
 
 class FollowingRepository:
@@ -168,9 +169,9 @@ class FollowingRepository:
                             , s.status_text
                             , s.time_stamp
                             , s.account_id
-                            , s.comment_id
                             , a.name
                             , a.image_url
+                            , s.image_url
                         FROM following AS f
                         INNER JOIN statuses AS s
                             ON (f.followee_id = s.account_id)
@@ -188,9 +189,9 @@ class FollowingRepository:
                             status_text=record[3],
                             time_stamp=record[4],
                             account_id=record[5],
-                            comment_id=record[6],
-                            name=record[7],
-                            account_image_url=record[8],
+                            name=record[6],
+                            account_image_url=record[7],
+                            status_image_url=record[8],
                         )
                         result.append(status)
                     return result

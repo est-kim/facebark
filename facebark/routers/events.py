@@ -52,3 +52,13 @@ def get_one_event(
             return record
     except Exception:
         return status.HTTP_404_NOT_FOUND
+
+
+@router.get(
+    "/feed/events/{account_id}", response_model=Union[List[EventsOut], Error]
+)
+def get_events_in_state(
+    account_id: int,
+    repo: EventsRepository = Depends(),
+):
+    return repo.get_events_in_your_state(account_id)

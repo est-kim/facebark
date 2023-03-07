@@ -211,6 +211,59 @@ class EventsRepository:
                 id = result.fetchone()[0]
                 return self.event_in_to_out(id, event)
 
+    def get_events_in_your_state(self, account_id: int) -> List[EventsOut]:
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    result = db.execute(
+                        """
+                        SELECT e.id
+                            , e.title
+                            , e.states_id
+                            , e.cities_id
+                            , e.dog_parks_id
+                            , e.address
+                            , e.date
+                            , e.start_time
+                            , e.end_time
+                            , e.description
+                            , e.picture
+                            , e.account_id
+                            , s.id
+                            , a.id
+                            , a.state_id
+                        FROM events AS e
+                        INNER JOIN states AS s
+                            ON (e.states_id = s.id)
+                        INNER JOIN accounts AS a
+                            ON (a.state_id = e.states_id)
+                        WHERE a.id = %s
+                        ORDER BY e.date;
+                        """,
+                        [account_id],
+                    )
+                    result = []
+                    for record in db:
+                        status = EventsOut(
+                            id=record[0],
+                            title=record[1],
+                            states_id=record[2],
+                            cities_id=record[3],
+                            dog_parks_id=record[4],
+                            address=record[5],
+                            date=record[6],
+                            start_time=record[7],
+                            end_time=record[8],
+                            description=record[9],
+                            picture=record[10],
+                            account_id=record[11],
+                        )
+                        result.append(status)
+                    return result
+        except Exception as e:
+            print(e)
+            return {"message": "Could not get those events"}
+
     def event_in_to_out(self, id: int, event: EventsIn):
         old_data = event.dict()
         return EventsOut(id=id, **old_data)
