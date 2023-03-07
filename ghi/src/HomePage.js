@@ -335,7 +335,7 @@ function HomePage() {
                       >
                         <MDBCardText style={{ fontWeight: "bold", fontSize: "1.0em", marginBottom: "5px", textAlign: "center" }}>
                 At {
-                            new Date(status.time_stamp).toLocaleTimeString("en-US", {
+                            new Date(new Date(status.time_stamp) - 16 * 60 * 60 * 1000).toLocaleString("en-US", {
                                 hour: '2-digit',
                                 minute: '2-digit',
                                 timeZone: "America/Los_Angeles",
