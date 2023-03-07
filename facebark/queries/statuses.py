@@ -76,17 +76,17 @@ class StatusRepository:
                 with conn.cursor() as db:
                     db.execute(
                         """
-                        SELECT
-                            s.id,
-                            s.status_text,
-                            s.time_stamp,
-                            s.account_id,
-                            s.image_url
-                        FROM statuses s
-                        LEFT JOIN accounts a
-                            ON (a.id = s.account_id)
-                        WHERE s.account_id = %s
-                        ORDER BY time_stamp DESC;
+                    SELECT
+                        s.id,
+                        s.status_text,
+                        s.time_stamp,
+                        s.account_id,
+                        s.image_url
+                    FROM statuses s
+                    LEFT JOIN accounts a
+                        ON (a.id = s.account_id)
+                    WHERE s.account_id = %s
+                    ORDER BY time_stamp DESC;
                         """,
                         [account_id],
                     )
@@ -95,7 +95,7 @@ class StatusRepository:
                         status = StatusOut(
                             id=record[0],
                             status_text=record[1],
-                            time_stamp=get_pst_time(),
+                            time_stamp=record[2],
                             account_id=record[3],
                             image_url=record[4],
                         )
@@ -105,7 +105,6 @@ class StatusRepository:
             print(e)
             return {"message": "Could not get all statuses by acc id"}
 
-    # add try and except after fixing post
     def create(self, status: StatusIn) -> Union[StatusOut, Error]:
         id = None
         # connect the database by creating pool of connections

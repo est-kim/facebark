@@ -180,7 +180,7 @@ function EventForm() {
     };
 
   return (
-    <MDBContainer fluid className="list-bg">
+    <MDBContainer fluid className="list-bg" style={{ minHeight: "80vh" }}>
       <MDBRow className="d-flex justify-content-center align-items-center">
         <MDBCol className="m-5">
           <MDBCard
@@ -384,6 +384,7 @@ function EventForm() {
                                 borderRadius: "5px",
                                 padding: "20px",
                                 overflow: "auto",
+                                textAlign: "left",
                               }}
                               onClick={(e) => e.stopPropagation()}
                             >
@@ -391,6 +392,7 @@ function EventForm() {
                                 style={{
                                   fontSize: "20px",
                                   marginBottom: "20px",
+                                  textAlign: "center",
                                 }}
                               >
                                 How to get a picture URL
@@ -430,18 +432,20 @@ function EventForm() {
                             </div>
                           </div>
                         )}
-                      </MDBCol>
-                      <MDBBtn
-                        color="white"
-                        size="md"
-                        className="text-center w-50 mx-auto"
-                        style={{
-                          fontSize: "16px",
-                          backgroundColor: "#bdd48c",
-                        }}
-                      >
-                        Create
-                      </MDBBtn>
+                        </MDBCol>
+                        {!showAlert && ( // Add this check
+                          <MDBBtn
+                            color="white"
+                            size="md"
+                            className="text-center w-50 mx-auto"
+                            style={{
+                              fontSize: "16px",
+                              backgroundColor: "#bdd48c",
+                            }}
+                          >
+                            Create
+                          </MDBBtn>
+                        )}
                       {success && (
                         <p style={{ marginTop: "15px", color: "green" }}>
                           Created event successfully!

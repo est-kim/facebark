@@ -19,7 +19,6 @@ function HomePage() {
   const [token] = useToken();
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
-  
 
   const handleAccountClick = (id) => {
     if (!setIsLoggedIn) {
@@ -28,7 +27,6 @@ function HomePage() {
       navigate(`/accounts/${id}`);
     }
   };
-
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -57,11 +55,13 @@ function HomePage() {
 
   useEffect(() => {
     async function getStatusesOfAccountsFollowing() {
-      const url = `http://localhost:8000/feed/${userId}`;
-      const response = await fetch(url);
-      if (response.ok) {
-        const data = await response.json();
-        setStatuses(data);
+      if (userId) {
+        const url = `http://localhost:8000/feed/${userId}`;
+        const response = await fetch(url);
+        if (response.ok) {
+          const data = await response.json();
+          setStatuses(data);
+        }
       }
     }
     getStatusesOfAccountsFollowing();
@@ -69,11 +69,13 @@ function HomePage() {
 
   useEffect(() => {
     async function getEventsInUserState() {
-      const url = `http://localhost:8000/feed/events/${userId}`;
-      const response = await fetch(url);
-      if (response.ok) {
-        const data = await response.json();
-        setEvents(data);
+      if (userId) {
+        const url = `http://localhost:8000/feed/events/${userId}`;
+        const response = await fetch(url);
+        if (response.ok) {
+          const data = await response.json();
+          setEvents(data);
+        }
       }
     }
     getEventsInUserState();
@@ -121,8 +123,9 @@ function HomePage() {
   const bodyStyle = {
     fontSize: "12px",
     marginTop: "1px",
-    padding: "0px",
+    paddingTop: "3px",
     paddingBottom: "0px",
+    textAlign: "left",
   };
 
   return (
@@ -219,7 +222,7 @@ function HomePage() {
                             fontWeight: "bold",
                             fontSize: "1.0em",
                             marginBottom: "5px",
-                            textAlign: "center",
+                            textAlign: "left",
                           }}
                         >
                           At{" "}
@@ -324,30 +327,6 @@ function HomePage() {
               </div>
             </div>
           </div>
-          <button
-            className="carousel-control-prev"
-            type="button"
-            data-bs-target=".carousel"
-            data-bs-slide="1"
-          >
-            <span
-              className="carousel-control-prev-icon"
-              aria-hidden="true"
-            ></span>
-            <span className="visually-hidden">Previous</span>
-          </button>
-          <button
-            className="carousel-control-next"
-            type="button"
-            data-bs-target=".carousel"
-            data-bs-slide="1"
-          >
-            <span
-              className="carousel-control-next-icon"
-              aria-hidden="true"
-            ></span>
-            <span className="visually-hidden">Next</span>
-          </button>
         </div>
       </section>
     </>

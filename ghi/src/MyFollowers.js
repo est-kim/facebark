@@ -86,8 +86,7 @@ function FollowingList() {
     border: "1px solid #ccc",
     borderRadius: "4px",
     paddingTop: "10px",
-    margin: "8px",
-    marginTop: "10px",
+    margin: "10px auto",
     width: "275px",
     height: "334px",
     boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
@@ -123,71 +122,73 @@ function FollowingList() {
         style={{
           display: "flex",
           flexWrap: "wrap",
-          justifyContent: "center",
           alignItems: "center",
           textAlign: "center",
           paddingBottom: "50px",
           paddingTop: "50px",
           paddingLeft: "30px",
           paddingRight: "30px",
-          height: "600px",
+          minHeight: "70vh",
         }}
       >
-        <MDBRow>
+        <MDBRow style={{ width: "100%" }}>
           <MDBCol md="12">
-            <h4>Here are all the dogs sniffing your butt on the regular :</h4>
+            <h4>Here are all the dogs that sniff your butt on the regular :</h4>
           </MDBCol>
-        </MDBRow>
-        <MDBRow className="justify-content-center">
-          <MDBCol></MDBCol>
+          {/* <MDBRow> */}
           {NewAccounts.map((account) => (
-            <MDBCard
-              style={{
-                ...cardStyle,
-              }}
-              key={account.id}
-            >
-              <MDBRipple
-                rippleColor="light"
-                rippleTag="div"
-                className="bg-image hover-overlay"
-                onClick={() => {
-                  if (token && setIsLoggedIn) {
-                    handleAccountClick(account.id);
-                  } else {
-                    navigate("/signup");
-                  }
+            <MDBCol md="3">
+              <MDBCard
+                style={{
+                  ...cardStyle,
                 }}
+                key={account.id}
               >
-                <MDBCardImage
-                  src={account.image_url}
-                  alt={account.name}
-                  style={imgStyle}
-                />
-                <a href={`${account.id}`}>
-                  <div
-                    className="mask"
-                    style={{ backgroundColor: "rgba(251, 251, 251, 0.15)" }}
-                  ></div>
-                </a>
-              </MDBRipple>
-              <MDBCardBody style={{ padding: "3px" }}>
-                <MDBCardTitle style={headerStyle}>{account.name}</MDBCardTitle>
-                <div
-                  style={{
-                    ...headerStyle,
-                    fontSize: "0.8em",
-                    fontWeight: "normal",
+                <MDBRipple
+                  rippleColor="light"
+                  rippleTag="div"
+                  className="bg-image hover-overlay"
+                  onClick={() => {
+                    if (token && setIsLoggedIn) {
+                      handleAccountClick(account.id);
+                    } else {
+                      navigate("/signup");
+                    }
                   }}
                 >
-                  {account.breed}
-                </div>
-                <MDBCardText style={bodyStyle}>
-                  "{account.description}"
-                </MDBCardText>
-              </MDBCardBody>
-            </MDBCard>
+                  <MDBCardImage
+                    src={account.image_url}
+                    alt={account.name}
+                    style={imgStyle}
+                  />
+                  <a href={`${account.id}`}>
+                    <div
+                      className="mask"
+                      style={{ backgroundColor: "rgba(251, 251, 251, 0.15)" }}
+                    ></div>
+                  </a>
+                </MDBRipple>
+                <MDBCardBody style={{ padding: "3px" }}>
+                  <MDBCardTitle style={headerStyle}>
+                    {account.name}
+                  </MDBCardTitle>
+                  <div
+                    style={{
+                      ...headerStyle,
+                      fontSize: "0.8em",
+                      fontWeight: "normal",
+                    }}
+                  >
+                    {account.breed}
+                  </div>
+                  <MDBCardText style={bodyStyle}>
+                    "{account.description}"
+                  </MDBCardText>
+                </MDBCardBody>
+              </MDBCard>
+            </MDBCol>
           ))}
+          {/* </MDBRow> */}
         </MDBRow>
       </div>
     </>

@@ -155,12 +155,12 @@ function Nav() {
                       >
                         <li>
                           <Link className="dropdown-item" to="/events">
-                            Events
+                            View all Events
                           </Link>
                         </li>
                         <li>
                           <Link className="dropdown-item" to="/events/new">
-                            Create An Event
+                            Create an Event
                           </Link>
                         </li>
                       </ul>

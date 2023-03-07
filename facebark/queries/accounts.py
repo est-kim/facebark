@@ -131,7 +131,8 @@ class AccountRepository:
                         LEFT JOIN cities c
                             ON (c.id = a.city_id)
                         LEFT JOIN breeds b
-                            ON (b.name = a.breed);
+                            ON (b.name = a.breed)
+                        ORDER BY a.id;
                         """,
                     )
                     return [

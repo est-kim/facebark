@@ -80,12 +80,6 @@ function EventDetailPage() {
         })
         .catch((error) => console.log(error));
     }, []);
-  // useEffect(() => {
-  //   fetch(`http://localhost:8000/events/${eventId}`)
-  //     .then((response) => response.json())
-  //     .then((data) => setEvent(data))
-  //     .catch((error) => console.log(error));
-  // }, []);
 
   useEffect(() => {
     const url = `http://localhost:8000/events/${eventId}`;
@@ -175,9 +169,7 @@ function EventDetailPage() {
       // Update the attendeeIds state with the new data
       const newAttendeeIds = [...attendeeIds, userId];
       setAttendeeIds(newAttendeeIds);
-
-
-
+      window.location.reload();
     }
   };
 
@@ -321,6 +313,7 @@ function EventDetailPage() {
                       style={{
                         fontSize: "16px",
                         backgroundColor: "#bdd48c",
+                        textTransform: "none",
                       }}
                       color="#bdd48c"
                       className="me-2"

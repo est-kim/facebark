@@ -198,8 +198,10 @@ function AccountUpdateModal() {
                         id="description"
                         name="description"
                         type="textarea"
-                        // style={{ height: "113px" }}
                       />
+                    </div>
+                    <div style={{ textAlign: "center" }}>
+                      Note: All fields must be filled in for changes to be applied
                     </div>
                   </MDBCol>
                 </MDBRow>
