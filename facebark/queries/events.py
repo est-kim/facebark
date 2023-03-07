@@ -1,11 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional, List, Union
-from datetime import date, time
+from datetime import date
 from queries.pool import pool
-
-
-class Error(BaseModel):
-    message: str
 
 
 class EventsIn(BaseModel):
@@ -138,6 +134,7 @@ class EventsRepository:
                     )
                     return self.event_in_to_out(event_id, event)
         except Exception as e:
+            print(e)
             return {"message": "could not update events"}
 
     def get_all(self) -> Union[List[EventsOut], Error]:

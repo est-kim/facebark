@@ -1,10 +1,9 @@
-from fastapi import APIRouter, Depends, Response, status
-from typing import List, Union, Optional
+from fastapi import APIRouter, Depends, status
+from typing import List, Union
 from queries.statuses import (
     Error,
     StatusIn,
     StatusOut,
-    StatusesOut,
     StatusRepository,
 )
 

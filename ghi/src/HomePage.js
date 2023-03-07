@@ -5,31 +5,28 @@ import {
   MDBCardText,
   MDBRow,
   MDBCol,
-  MDBBtn,
   MDBCardImage,
-  MDBRipple
+  MDBRipple,
 } from "mdb-react-ui-kit";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useAuthContext, getTokenInternal, useToken } from "./Authentication";
 import { useNavigate } from "react-router-dom";
 
-
 function HomePage() {
-  const { isLoggedIn, setIsLoggedIn } = useAuthContext();
+  const { setIsLoggedIn } = useAuthContext();
   const [userId, setUserId] = useState("");
   const [statuses, setStatuses] = useState([]);
   const [token] = useToken();
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
-  const carouselRef = useRef(null);
-
+  
 
   const handleAccountClick = (id) => {
-      if (!setIsLoggedIn) {
-          navigate("/signup");
-      } else {
-          navigate(`/accounts/${id}`);
-      }
+    if (!setIsLoggedIn) {
+      navigate("/signup");
+    } else {
+      navigate(`/accounts/${id}`);
+    }
   };
 
 
@@ -41,47 +38,46 @@ function HomePage() {
       }
     };
     fetchToken();
-  }, []);
-
+  }, [setIsLoggedIn]);
 
   useEffect(() => {
     async function getUserId() {
       const url = `http://localhost:8000/api/things`;
-      const response = await fetch(url, { method: "GET", headers: { Authorization: `Bearer ${token}` } });
+      const response = await fetch(url, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+      });
       if (response.ok) {
-          const data = await response.json();
-          setUserId(data)
+        const data = await response.json();
+        setUserId(data);
       }
     }
-        getUserId();
+    getUserId();
   }, [token]);
 
+  useEffect(() => {
+    async function getStatusesOfAccountsFollowing() {
+      const url = `http://localhost:8000/feed/${userId}`;
+      const response = await fetch(url);
+      if (response.ok) {
+        const data = await response.json();
+        setStatuses(data);
+      }
+    }
+    getStatusesOfAccountsFollowing();
+  }, [userId, token]);
 
   useEffect(() => {
-        async function getStatusesOfAccountsFollowing() {
-            const url = `http://localhost:8000/feed/${userId}`;
-            const response = await fetch(url);
-            if (response.ok) {
-                const data = await response.json();
-                setStatuses(data)
-            }
-        }
-        getStatusesOfAccountsFollowing();
-    }, [userId, token]);
-
-
-  useEffect(() => {
-        async function getEventsInUserState() {
-            const url = `http://localhost:8000/feed/events/${userId}`;
-            const response = await fetch(url);
-            if (response.ok) {
-                const data = await response.json();
-                setEvents(data)
-            }
-        }
-        getEventsInUserState();
-    }, [userId, token]);
-
+    async function getEventsInUserState() {
+      const url = `http://localhost:8000/feed/events/${userId}`;
+      const response = await fetch(url);
+      if (response.ok) {
+        const data = await response.json();
+        setEvents(data);
+      }
+    }
+    getEventsInUserState();
+  }, [userId, token]);
 
   let NewStatuses = [];
   for (let s of statuses) {
@@ -89,7 +85,6 @@ function HomePage() {
       NewStatuses.push(s);
     }
   }
-
 
   const cardStyle = {
     margin: "10px",
@@ -134,8 +129,7 @@ function HomePage() {
     <>
       <MDBRow>
         <MDBCol md="12">
-          <section
-          >
+          <section>
             <MDBCard>
               <MDBCardBody className="list-bg">
                 <h4 style={{ fontWeight: "bold" }}>My Feed</h4>
@@ -220,34 +214,49 @@ function HomePage() {
                           margin: "10px",
                         }}
                       >
-                        <MDBCardText style={{ fontWeight: "bold", fontSize: "1.0em", marginBottom: "5px", textAlign: "center" }}>
-                At {
-                            new Date(new Date(status.time_stamp) - 16 * 60 * 60 * 1000).toLocaleString("en-US", {
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                timeZone: "America/Los_Angeles",
-                                })} on {
-                            new Date(status.time_stamp).toLocaleDateString("en-US", {
-                                month: 'short',
-                                day: 'numeric',
-                                year: 'numeric',
-                                })}, {status.name} posted:
-              </MDBCardText>
+                        <MDBCardText
+                          style={{
+                            fontWeight: "bold",
+                            fontSize: "1.0em",
+                            marginBottom: "5px",
+                            textAlign: "center",
+                          }}
+                        >
+                          At{" "}
+                          {new Date(
+                            new Date(status.time_stamp) - 16 * 60 * 60 * 1000
+                          ).toLocaleString("en-US", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            timeZone: "America/Los_Angeles",
+                          })}{" "}
+                          on{" "}
+                          {new Date(status.time_stamp).toLocaleDateString(
+                            "en-US",
+                            {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            }
+                          )}
+                          , {status.name} posted:
+                        </MDBCardText>
                         <MDBCardText style={{ textAlign: "start" }}>
                           {status.status_text}
                         </MDBCardText>
-                        {status.status_image_url && /^http/.test(status.status_image_url) && (
-                          <img
-                            src={status.status_image_url}
-                            className="img-thumbnail shoes"
-                            style={{
-                              width: "auto",
-                              height: "200px",
-                              marginTop: "0",
-                            }}
-                            alt=""
-                          />
-                        )}
+                        {status.status_image_url &&
+                          /^http/.test(status.status_image_url) && (
+                            <img
+                              src={status.status_image_url}
+                              className="img-thumbnail shoes"
+                              style={{
+                                width: "auto",
+                                height: "200px",
+                                marginTop: "0",
+                              }}
+                              alt=""
+                            />
+                          )}
                       </div>
                     </MDBCard>
                   ))}
@@ -343,7 +352,6 @@ function HomePage() {
       </section>
     </>
   );
-
 }
 
 export default HomePage;

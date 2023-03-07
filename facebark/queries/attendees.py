@@ -1,8 +1,6 @@
 from pydantic import BaseModel
-from typing import Optional, List, Union
+from typing import List, Union
 from queries.pool import pool
-from queries.accounts import AccountOut
-from queries.statuses import StatusOut
 
 
 class Error(BaseModel):

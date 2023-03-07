@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends
 from queries.dog_parks import DogParkRepository, DogParkOut, Error
 from typing import Union, List, Optional
 

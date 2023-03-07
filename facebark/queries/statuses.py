@@ -105,7 +105,7 @@ class StatusRepository:
             print(e)
             return {"message": "Could not get all statuses by acc id"}
 
-    ##add try and except after fixing post
+    # add try and except after fixing post
     def create(self, status: StatusIn) -> Union[StatusOut, Error]:
         id = None
         # connect the database by creating pool of connections

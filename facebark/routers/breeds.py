@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends
 from queries.breeds import BreedRepository, BreedOut, Error
 from typing import Union, List
 
