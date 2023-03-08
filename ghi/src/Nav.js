@@ -9,6 +9,7 @@ import {
   MDBCollapse,
   MDBNavbarToggler
 } from "mdb-react-ui-kit";
+import facebark_logo from "./images/facebark_logo.png";
 
 
 function Nav() {
@@ -60,7 +61,7 @@ function Nav() {
       <MDBContainer fluid>
         <MDBNavbarBrand href="/">
           <img
-            src={`${process.env.REACT_APP_FACEBARK_API_HOST}/facebark_logo.png`}
+            src={facebark_logo}
             alt="facebark logo"
             width="150px"
           />
