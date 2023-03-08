@@ -30,6 +30,7 @@ function AccountDetailPage() {
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState("");
   const [, setSubmitted] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
 
   console.log("TOKEN IN ACCOUNT DETAIL: ", token);
   console.log("SET IS LOGGED IN: ", isLoggedIn);
@@ -61,7 +62,7 @@ function AccountDetailPage() {
 
   useEffect(() => {
     async function getUserId() {
-      const url = `http://localhost:8000/api/things`;
+      const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/api/things`;
       // const response = await fetch(url);
       const response = await fetch(url, {
         method: "GET",
@@ -76,35 +77,35 @@ function AccountDetailPage() {
   }, [token]);
 
   useEffect(() => {
-    fetch(`http://localhost:8000/statuses/${accountId}`)
+    fetch(`${process.env.REACT_APP_FACEBARK_API_HOST}/statuses/${accountId}`)
       .then((response) => response.json())
       .then((data) => setStatuses(data))
       .catch((error) => console.log(error));
   }, [accountId]);
 
   useEffect(() => {
-    fetch("http://localhost:8000/states")
+    fetch(`${process.env.REACT_APP_FACEBARK_API_HOST}/states`)
       .then((response) => response.json())
       .then((data) => setStates(data))
       .catch((error) => console.log(error));
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:8000/cities")
+    fetch(`${process.env.REACT_APP_FACEBARK_API_HOST}/cities`)
       .then((response) => response.json())
       .then((data) => setCities(data))
       .catch((error) => console.log(error));
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:8000/following")
+    fetch(`${process.env.REACT_APP_FACEBARK_API_HOST}/following`)
       .then((response) => response.json())
       .then((data) => setFollowing(data))
       .catch((error) => console.log(error));
   }, []);
 
   useEffect(() => {
-    const url = `http://localhost:8000/accounts/${accountId}`;
+    const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/accounts/${accountId}`;
     const fetchData = async () => {
       try {
         const response = await fetch(url, {
@@ -165,13 +166,13 @@ function AccountDetailPage() {
     }
   }
 
-  let FollowerIds = []
+  let FollowerIds = [];
   for (let f of following) {
     if (f["followee_id"] === parseInt(accountId)) {
-      FollowerIds.push(f["follower_id"])
+      FollowerIds.push(f["follower_id"]);
     }
   }
-  console.log("FOLLOWERIDDSSSS:", FollowerIds)
+  console.log("FOLLOWERIDDSSSS:", FollowerIds);
 
   const handleFollow = async (event) => {
     event.preventDefault();
@@ -180,7 +181,7 @@ function AccountDetailPage() {
     data.follower_id = userId;
     data.followee_id = parseInt(accountId);
 
-    const eventUrl = "http://localhost:8000/following";
+    const eventUrl = `${process.env.REACT_APP_FACEBARK_API_HOST}/following`;
 
     const fetchConfig = {
       method: "post",
@@ -198,7 +199,7 @@ function AccountDetailPage() {
 
   const handleUnfollow = async (event) => {
     event.preventDefault();
-    const eventUrl = `http://localhost:8000/following/${accountId}?follower_id=${userId}`;
+    const eventUrl = `${process.env.REACT_APP_FACEBARK_API_HOST}/following/${accountId}?follower_id=${userId}`;
 
     const fetchConfig = {
       method: "delete",
@@ -216,7 +217,6 @@ function AccountDetailPage() {
     }
   };
 
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = {};
@@ -225,7 +225,7 @@ function AccountDetailPage() {
     data.status_text = status;
     data.image_url = image;
 
-    const url = "http://localhost:8000/statuses";
+    const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/statuses`;
     const fetchConfig = {
       method: "post",
       body: JSON.stringify(data),
@@ -237,7 +237,9 @@ function AccountDetailPage() {
       const response = await fetch(url, fetchConfig);
       console.log("this the response!", response);
       if (response.ok) {
-        fetch(`http://localhost:8000/statuses/${accountId}`)
+        fetch(
+          `${process.env.REACT_APP_FACEBARK_API_HOST}/statuses/${accountId}`
+        )
           .then((response) => response.json())
           .then((data) => setStatuses(data))
           .catch((error) => console.log(error));
@@ -254,11 +256,17 @@ function AccountDetailPage() {
   };
 
   const formatTimeStamp = (timeStamp) => {
-    const date = new Date(timeStamp);
+    const date = new Date(timeStamp + "Z");
+    const pacificTime = new Date(
+      date.valueOf() -
+        date.getTimezoneOffset() * 60000 -
+        8 * 3600000 +
+        8 * 3600000
+    );
     const formattedDate = `${
-      date.getMonth() + 1
-    }/${date.getDate()}/${date.getFullYear()}, `;
-    const formattedTime = date.toLocaleString("en-US", {
+      pacificTime.getMonth() + 1
+    }/${pacificTime.getDate()}/${pacificTime.getFullYear()}, `;
+    const formattedTime = pacificTime.toLocaleString("en-US", {
       hour: "numeric",
       minute: "numeric",
       hour12: true,
@@ -271,13 +279,10 @@ function AccountDetailPage() {
     width: "100%",
     aspectRatio: "1 / 1",
   };
-  console.log("THIS THE ACCCOUNTTTTT:", account)
+  console.log("THIS THE ACCCOUNTTTTT:", account);
 
   return (
-    <div
-      className="list-bg"
-      // style={{ paddingBottom: "50px", paddingTop: "50px" }}
-    >
+    <div className="list-bg">
       <MDBRow style={{ padding: "50px" }}>
         <MDBCol md="4" className="mx-auto">
           <MDBCard
@@ -329,9 +334,6 @@ function AccountDetailPage() {
               <MDBCardText style={{ fontSize: "15px" }}>
                 <strong>Owner Name:</strong> {account.owner_name}
               </MDBCardText>
-              {/* <MDBCardText>
-            Picture: <img src={account.picture} alt={account.title} />
-          </MDBCardText> */}
               <MDBCardFooter className="text-end">
                 {parseInt(accountId) !== userId ? (
                   // if accountId is not equal to userId
@@ -349,19 +351,14 @@ function AccountDetailPage() {
                             boxShadow: "2px 2px 4px #888888",
                             textTransform: "none",
                           }}
-                          // onClick={(e) => {
-                          //   e.preventDefault();
-                          //   e.target.innerText = "Unfollowed";
-                          //   handleUnfollow(e);
-                          // }}
                         >
                           Unfollow <MDBIcon icon="edit" className="ms-1" />
                         </MDBBtn>
                       </form>
                     ) : (
                       <form onSubmit={handleFollow}>
-                        <button
-                          className="btn  me-2"
+                        <MDBBtn
+                          className="btn me-2"
                           type="submit"
                           style={{
                             margin: "10px",
@@ -370,15 +367,18 @@ function AccountDetailPage() {
                             padding: "5px 15px",
                             boxShadow: "2px 2px 4px #888888",
                             textTransform: "none",
+                            color: "white",
                           }}
+                          disabled={isFollowing}
                           onClick={(e) => {
                             e.preventDefault();
-                            e.target.innerText = "Following";
+                            setIsFollowing(true);
                             handleFollow(e);
                           }}
                         >
-                          Follow <MDBIcon fas icon="plus" />
-                        </button>
+                          {isFollowing ? "Following" : "Follow"}
+                          {isFollowing ? null : <MDBIcon fas icon="plus" />}
+                        </MDBBtn>
                       </form>
                     )}
                   </>
@@ -449,48 +449,53 @@ function AccountDetailPage() {
               <h4>My Pupdates</h4>
             </MDBCol>
           </MDBRow>
-
           {statuses.length > 0 &&
-            statuses.map((status) => (
-              <MDBRow className="mb-4" key={status.id}>
-                <MDBCol>
-                  <MDBCard
-                    style={{
-                      backgroundColor: "rgba(255, 255, 255, 0.8)",
-                      padding: "2% 2%",
-                    }}
-                  >
-                    <div style={{ fontWeight: 550 }}>
-                      {formatTimeStamp(status.time_stamp)}
-                    </div>
-                    <MDBRow>
-                      {status.image_url ? (
-                        <>
-                          <MDBCol md="8">
-                            <div>{status.status_text}</div>
-                          </MDBCol>
-                          <MDBCol md="4">
-                            <img
-                              src={status.image_url}
-                              alt="status"
-                              style={imgStyle}
-                            />
-                          </MDBCol>
-                        </>
-                      ) : (
-                        <MDBCol md="12">
-                          <div>{status.status_text}</div>
-                        </MDBCol>
-                      )}
-                    </MDBRow>
-                  </MDBCard>
-                </MDBCol>
-              </MDBRow>
-            ))}
-        </MDBCol>
-      </MDBRow>
-    </div>
-  );
-}
+            statuses.map(
+              (status) =>
+                (parseInt(accountId) === userId ||
+                  (parseInt(accountId) !== userId && status.status_text[0] !== "<")) && (
+                  <MDBRow className="mb-4" key={status.id}>
+                    <MDBCol>
+                      <MDBCard
+                        style={{
+                          backgroundColor: "rgba(255, 255, 255, 0.8)",
+                          padding: "2% 2%",
+                        }}
+                      >
+                        <div style={{ fontWeight: 550 }}>
+                          {formatTimeStamp(status.time_stamp)}
+                        </div>
+                        <MDBRow>
+                          {status.image_url ? (
+                            <>
+                              <MDBCol md="8">
+                                <div>{status.status_text}</div>
+                              </MDBCol>
+                              {status.image_url.substring(0, 4) === "http" && (
+                                <MDBCol md="4">
+                                  <img
+                                    src={status.image_url}
+                                    alt="status"
+                                    style={imgStyle}
+                                  />
+                                </MDBCol>
+                              )}
+                            </>
+                          ) : (
+                            <MDBCol md="12">
+                              <div>{status.status_text}</div>
+                            </MDBCol>
+                          )}
+                        </MDBRow>
+                      </MDBCard>
+                    </MDBCol>
+                  </MDBRow>
+                )
+            )}
+          </MDBCol>
+          </MDBRow>
+          </div>
+          );
+          }
 
 export default AccountDetailPage;

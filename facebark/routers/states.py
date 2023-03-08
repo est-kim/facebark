@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends
 from queries.states import StateRepository, StateOut, Error
-from typing import Union, List, Optional
+from typing import Union, List
 
 router = APIRouter()
 

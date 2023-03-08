@@ -20,7 +20,7 @@ function App() {
   const [, setAccounts] = useState([]);
 
   const getAccounts = async () => {
-    const url = "http://localhost:8000/accounts";
+    const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/accounts`;
     const response = await fetch(url);
 
     if (response.ok) {

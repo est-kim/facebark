@@ -36,7 +36,7 @@ function Nav() {
 
   useEffect(() => {
     async function getUserId() {
-      const url = `http://localhost:8000/api/things`;
+      const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/api/things`;
       const response = await fetch(url, {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
@@ -155,12 +155,12 @@ function Nav() {
                       >
                         <li>
                           <Link className="dropdown-item" to="/events">
-                            Events
+                            View all Events
                           </Link>
                         </li>
                         <li>
                           <Link className="dropdown-item" to="/events/new">
-                            Create An Event
+                            Create an Event
                           </Link>
                         </li>
                       </ul>

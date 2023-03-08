@@ -30,7 +30,7 @@ function LandingPage() {
         <p style={{ position: "absolute", top: "365px", left: "170px" }}>
           Join our community of dog lovers today!
         </p>
-        <Link to={isLoggedIn ? "/accounts/friends" : "/signup"}>
+        <Link to={isLoggedIn ? "/followinglist" : "/signup"}>
           <MDBBtn
             className="landing-page-signup-button"
             style={{

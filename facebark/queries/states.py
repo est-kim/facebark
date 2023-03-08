@@ -22,8 +22,8 @@ class StateRepository:
                     # Run our SELECT statement
                     result = db.execute(
                         """
-                        SELECT 
-                        id, 
+                        SELECT
+                        id,
                         name
                         FROM states
                         WHERE id = %s;
@@ -83,10 +83,10 @@ class StateRepository:
                     )
                     result = []
                     for record in db:
-                        city = CityOut(
+                        state = StateOut(
                             id=record[0], name=record[1], state_id=record[2]
                         )
-                        result.append(city)
+                        result.append(state)
                     print("RESULT", result)
                     return result
         except Exception as e:

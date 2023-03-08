@@ -1,5 +1,4 @@
 from fastapi import (
-    APIRouter,
     Depends,
     Response,
     HTTPException,
@@ -108,6 +107,13 @@ async def create_account(
     # print("this is the form: ", form)
     token = await authenticator.login(response, request, form, accounts)
     print("this is the TOKEN: ", token)
+    response.set_cookie(
+        key=authenticator.cookie_name,
+        value=token.access_token,
+        httponly=True,
+        max_age=None,  # set session timeout to None
+        samesite="strict",
+    )
     return AccountToken(account=account, **token.dict())
 
 

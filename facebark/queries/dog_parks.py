@@ -23,9 +23,9 @@ class DogParkRepository:
                     # Run our SELECT statement
                     result = db.execute(
                         """
-                        SELECT 
-                        id, 
-                        name, 
+                        SELECT
+                        id,
+                        name,
                         city_id
                         FROM dog_parks
                         WHERE id = %s;

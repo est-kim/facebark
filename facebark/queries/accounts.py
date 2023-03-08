@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 from typing import List, Optional
 from queries.pool import pool
-from pydantic import BaseModel
 
 
 class DuplicateAccountError(ValueError):
@@ -132,7 +131,8 @@ class AccountRepository:
                         LEFT JOIN cities c
                             ON (c.id = a.city_id)
                         LEFT JOIN breeds b
-                            ON (b.name = a.breed);
+                            ON (b.name = a.breed)
+                        ORDER BY a.id;
                         """,
                     )
                     return [
@@ -276,7 +276,6 @@ class AccountRepository:
         except Exception as e:
             print(e)
             return {"message": "Could not update account information"}
-
 
     def account_in_to_out(
         self, id: int, account: AccountIn, hashed_password: str

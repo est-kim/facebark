@@ -59,20 +59,20 @@ function Footer() {
               <h6 className="fw-bold mb-2">Furiends</h6>
               <p className="mb-1">
                 <Link
-                  to="/"
+                  to="/followinglist"
                   className="text-reset"
                   style={{ fontSize: "13px", textDecoration: "none" }}
                 >
-                  My Profile
+                  Following
                 </Link>
               </p>
               <p className="mb-1">
                 <Link
-                  to="/"
+                  to="/followers"
                   className="text-reset"
                   style={{ fontSize: "13px", textDecoration: "none" }}
                 >
-                  My Friends
+                  My Followers
                 </Link>
               </p>
             </MDBCol>
@@ -87,7 +87,7 @@ function Footer() {
               <h6 className="fw-bold mb-2">Events</h6>
               <p className="mb-1">
                 <Link
-                  to="/customers/new"
+                  to="/events"
                   className="text-reset"
                   style={{ fontSize: "13px", textDecoration: "none" }}
                 >
@@ -96,7 +96,7 @@ function Footer() {
               </p>
               <p className="mb-1">
                 <Link
-                  to="/customers/new"
+                  to="/events/new"
                   className="text-reset"
                   style={{ fontSize: "13px", textDecoration: "none" }}
                 >

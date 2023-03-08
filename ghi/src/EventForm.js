@@ -82,7 +82,7 @@ function EventForm() {
 
   useEffect(() => {
     async function getUserId() {
-      const url = `http://localhost:8000/api/things`;
+      const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/api/things`;
       const response = await fetch(url, {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
@@ -96,21 +96,21 @@ function EventForm() {
   }, [token]);
 
     useEffect(() => {
-        fetch("http://localhost:8000/states")
+        fetch(`${process.env.REACT_APP_FACEBARK_API_HOST}/states`)
         .then((response) => response.json())
         .then((data) => setStates(data))
         .catch((error) => console.log(error));
     }, []);
 
     useEffect(() => {
-        fetch("http://localhost:8000/cities")
+        fetch(`${process.env.REACT_APP_FACEBARK_API_HOST}/cities`)
         .then((response) => response.json())
         .then((data) => setCities(data))
         .catch((error) => console.log(error));
     }, []);
 
     useEffect(() => {
-        fetch("http://localhost:8000/dog_parks")
+        fetch(`${process.env.REACT_APP_FACEBARK_API_HOST}/dog_parks`)
         .then((response) => response.json())
         .then((data) => setDogParks(data))
         .catch((error) => console.log(error));
@@ -132,7 +132,7 @@ function EventForm() {
         data.account_id = userId;
         console.log(data);
 
-        const eventUrl = "http://localhost:8000/events";
+        const eventUrl = `${process.env.REACT_APP_FACEBARK_API_HOST}/events`;
 
         const fetchConfig = {
             method: "post",
@@ -180,7 +180,7 @@ function EventForm() {
     };
 
   return (
-    <MDBContainer fluid className="list-bg">
+    <MDBContainer fluid className="list-bg" style={{ minHeight: "80vh" }}>
       <MDBRow className="d-flex justify-content-center align-items-center">
         <MDBCol className="m-5">
           <MDBCard
@@ -384,6 +384,7 @@ function EventForm() {
                                 borderRadius: "5px",
                                 padding: "20px",
                                 overflow: "auto",
+                                textAlign: "left",
                               }}
                               onClick={(e) => e.stopPropagation()}
                             >
@@ -391,6 +392,7 @@ function EventForm() {
                                 style={{
                                   fontSize: "20px",
                                   marginBottom: "20px",
+                                  textAlign: "center",
                                 }}
                               >
                                 How to get a picture URL
@@ -430,18 +432,20 @@ function EventForm() {
                             </div>
                           </div>
                         )}
-                      </MDBCol>
-                      <MDBBtn
-                        color="white"
-                        size="md"
-                        className="text-center w-50 mx-auto"
-                        style={{
-                          fontSize: "16px",
-                          backgroundColor: "#bdd48c",
-                        }}
-                      >
-                        Create
-                      </MDBBtn>
+                        </MDBCol>
+                        {!showAlert && ( // Add this check
+                          <MDBBtn
+                            color="white"
+                            size="md"
+                            className="text-center w-50 mx-auto"
+                            style={{
+                              fontSize: "16px",
+                              backgroundColor: "#bdd48c",
+                            }}
+                          >
+                            Create
+                          </MDBBtn>
+                        )}
                       {success && (
                         <p style={{ marginTop: "15px", color: "green" }}>
                           Created event successfully!

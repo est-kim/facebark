@@ -4,7 +4,7 @@ steps = [
         """
         INSERT INTO accounts (username, hashed_password, email, phone_number, name, image_url, breed, sex, dob, owner_name, description, city_id, state_id) VALUES
 
-('cmccabe','string','cbm65@cornell.edu','3033866211','Pearl','https://scontent-den4-1.xx.fbcdn.net/v/t39.30808-6/330411369_584010066951995_7471751952405771281_n.jpg?stp=dst-jpg_p526x296&_nc_cat=100&ccb=1-7&_nc_sid=730e14&_nc_ohc=5DtYmiB7acEAX9fvhPM&_nc_ht=scontent-den4-1.xx&oh=00_AfDaqihdU7tx4svfiy1q52UUNIfxa6Z6y3U4ZDTXpb7JpQ&oe=6405FE79','Mixed','Female','2020-03-01','Conor McCabe','Ball is life',1751,6),
+('cmccabe','string','cbm65@cornell.edu','3033866211','Pearl','https://cdn.discordapp.com/attachments/733882968883593310/1082718172131643422/Screen_Shot_2023-03-07_at_9.35.21_AM.png','Mixed','Female','2020-03-01','Conor McCabe','Ball is life',1751,6),
 ('esther','string','kim.esther117@gmail.com','7141234567','Ginger','https://cdn.discordapp.com/attachments/733882968883593310/1080923919982264471/IMG_1463.png','Pembroke Welsh Corgi','Female','2009-04-13','Esther Kim','They see me rolling, they hating',3325,5),
 ('rudy','string','damir.rukavina@yahoo.com','1235553333','Rudy','https://i.ibb.co/QrgqL63/rudy-on-pillow.jpg','Shih Tzu','Male','2013-07-23','Damir Rukavina','boof. (translation: I love my toys, my dady, and my sister Olive)',733,6),
 ('carlos123','string','carlos@yahoo.com','3331234321','Bills','https://cdn.discordapp.com/attachments/733882968883593310/1082420122767069215/Screen_Shot_2023-03-06_at_1.51.00_PM.png','Mixed','Female','2022-01-30','Israel Navarrete','I love to steal socks',6130,5),

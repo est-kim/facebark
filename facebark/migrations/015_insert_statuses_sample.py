@@ -4,10 +4,10 @@ steps = [
         """
         INSERT INTO statuses (status_text, time_stamp, image_url, account_id) VALUES
 
-('ex1','2023-02-04T14:31:13.036232',0,1),
-('ex2','2023-03-04T14:31:13.036233',1,2),
-('ex3','2023-04-04T14:31:13.036234',2,3),
-('ex4','2023-05-04T14:31:13.036235',3,4),
+('Bark, bark! We are thrilled to have you on FaceBark, the best place on the internet for doggos.','2023-02-04T14:31:13.036232','https://cdn.discordapp.com/attachments/733882968883593310/1082746775372304404/Screen_Shot_2023-03-07_at_11.29.02_AM.png',1),
+('Welcome to the pack! Lets sniff out some new friends!','2023-02-04T14:31:13.036232','https://cdn.discordapp.com/attachments/733882968883593310/1082747456774742168/857CB938-2A1E-482C-9B50-6076A6FD640B.jpg',2),
+('This is where the dog days never end, and the tail-wagging is always at maximum capacity.','2023-02-04T14:31:13.036232','https://cdn.discordapp.com/attachments/733882968883593310/1082746962824155259/Screen_Shot_2023-03-07_at_11.29.45_AM.png',3),
+('Woof woof! Im thrilled to have you join me at FaceBark! Together, we can wag our tails and enjoy some pawsome fun!','2023-02-04T14:31:13.036232','https://cdn.discordapp.com/attachments/733882968883593310/1082751074814918706/Screen_Shot_2023-03-07_at_11.46.07_AM.png',4),
 ('Just ate a whole bag of treats. Life is good.','2023-03-04T14:31:13.036236',4,5),
 ('Barked at my own reflection again. That guy needs to learn some manners.','2023-03-04T14:31:13.036237',5,6),
 ('Im not begging, Im just staring at you while you eat.','2023-03-04T14:31:13.036238',6,7),
@@ -280,12 +280,36 @@ steps = [
 ('Just tried to bury my bone in the couch. Turns out that doesnt work.','2023-03-04T14:31:13.036505',273,274),
 ('Is it just me or does anyone else think its weird that humans put clothes on us but dont wear them themselves?','2023-03-04T14:31:13.036506',274,275),
 ('If you need me, Ill be napping on the couch. Its my favorite hobby.','2023-03-04T14:31:13.036507',275,276),
-('I dont always chase my tail, but when I do, its because I forgot where it went.','2023-03-04T14:31:13.036508',276,277)
-
-
-
-
-
+('I dont always chase my tail, but when I do, its because I forgot where it went.','2023-03-04T14:31:13.036508',276,277),
+('Just chased my tail for 10 minutes straight. I think I deserve a treat for that.','2023-03-04T14:31:13.036509',277,278),
+('Someone threw a ball and I went running after it, but then I forgot why I was running and just kept going. #dogbrain','2023-03-04T14:31:13.036510',278,279),
+('Its raining outside, but I dont mind. I love the smell of wet grass and mud.','2023-03-04T14:31:13.036511',279,280),
+('Just tried to catch a squirrel but it was too fast for me. One day Ill catch one, mark my words.','2023-03-04T14:31:13.036512',280,281),
+('Sometimes I like to howl at the moon just to see if itll howl back. So far, no luck.','2023-03-04T14:31:13.036513',281,282),
+('I heard my human say "Whos a good boy?" and Im pretty sure he was talking about me.','2023-03-04T14:31:13.036514',282,283),
+('Just saw a bird and tried to catch it but ended up face planting into a window. Im okay though, just a little embarrassed.','2023-03-04T14:31:13.036515',283,284),
+('Why do humans put shoes on their feet? Dont they know the best way to experience the world is through their paws?','2023-03-04T14:31:13.036516',284,285),
+('Today I learned that the vacuum cleaner is my arch-nemesis. Ill defeat you one day, evil machine.','2023-03-04T14:31:13.036517',285,286),
+('I love snuggling up on the couch with my human and watching TV. My favorite shows are ones with lots of barking.','2023-03-04T14:31:13.036518',286,287),
+('Just went for a walk and saw another dog. We barked at each other for a bit, then went on our separate ways. #doglife','2023-03-04T14:31:13.036519',287,288),
+('Humans may have thumbs, but I have a super sense of smell. Whos the real winner here?','2023-03-04T14:31:13.036520',288,289),
+('My human is taking me to the park today! Time to run around and make some new friends.','2023-03-04T14:31:13.036521',289,290),
+('Just stole a sock from the laundry pile. I know its wrong, but I just cant help myself.','2023-03-04T14:31:13.036522',290,291),
+('Does anyone else get excited when their human puts on their running shoes? It means its time for an adventure!','2023-03-04T14:31:13.036523',291,292),
+('I dont always bark at the mailman, but when I do, its because hes a threat to our home.','2023-03-04T14:31:13.036524',292,293),
+('Theres nothing better than a good belly rub. Its like doggy heaven.','2023-03-04T14:31:13.036525',293,294),
+('I cant believe my human gets mad at me for digging holes in the yard. Im just trying to make it more interesting!','2023-03-04T14:31:13.036526',294,295),
+('Just found a stick and its my new favorite toy. #simplepleasures','2023-03-04T14:31:13.036527',295,296),
+('Sometimes I like to pretend Im a wolf and howl at the sky. It makes me feel powerful.','2023-03-04T14:31:13.036528',296,297),
+('Im not sure what I did to deserve all the love and attention from my human, but Im not complaining.','2023-03-04T14:31:13.036529',297,298),
+('Just chased a butterfly and it was the most exhilarating experience of my life.','2023-03-04T14:31:13.036530',298,299),
+('If theres one thing Ive learned in my doggy life, its that the best things come in small packages. Like treats. And tennis balls.','2023-03-04T14:31:13.036531',299,300),
+('Every day is an adventure when youre a dog. Who knows what kind of trouble Ill get into today?','2023-03-04T14:31:13.036532',300,301),
+('I love the feeling of wind in my fur when I stick my head out the car window. Its like flying, but without wings.','2023-03-04T14:31:13.036533',301,302),
+('Theres nothing quite like the feeling of a warm sunbeam on your fur. Its pure bliss.','2023-03-04T14:31:13.036534',302,303),
+('I heard my human talking about taking me to the vet. I dont know what that means, but Im pretty sure I dont like it.','2023-03-04T14:31:13.036535',303,304),
+('Just had a bath and now I smell like lavender. Not sure how I feel about that.','2023-03-04T14:31:13.036536',304,305),
+('If theres one thing Im good at, its making my human smile. Its easy when youre this cute.','2023-03-04T14:31:13.036537',305,306)
 
 
 
