@@ -88,7 +88,7 @@ function SignUpForm() {
   };
 
   useEffect(() => {
-    fetch("http://localhost:8000/breeds")
+    fetch(`${process.env.REACT_APP_FACEBARK_API_HOST}/breeds`)
       .then((response) => response.json())
       .then((data) =>
         setBreeds(data.map((breed) => ({ id: breed.id, name: breed.name })))
@@ -97,7 +97,7 @@ function SignUpForm() {
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:8000/states")
+    fetch(`${process.env.REACT_APP_FACEBARK_API_HOST}/states`)
       .then((response) => response.json())
       .then((data) => setStates(data))
       .catch((error) => console.log(error));
@@ -105,7 +105,7 @@ function SignUpForm() {
 
   useEffect(() => {
     if (selectedStateId !== "") {
-      fetch(`http://localhost:8000/cities/${selectedStateId}`)
+      fetch(`${process.env.REACT_APP_FACEBARK_API_HOST}/cities/${selectedStateId}`)
         .then((response) => response.json())
         .then((data) => setCities(data));
     } else {
@@ -133,7 +133,7 @@ function SignUpForm() {
     data.city_id = selectedCityId;
     data.state_id = selectedStateId;
 
-    const url = "http://localhost:8000/accounts";
+    const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/accounts`;
     const fetchConfig = {
       method: "post",
       body: JSON.stringify(data),
@@ -159,7 +159,7 @@ function SignUpForm() {
         };
         console.log("Status data to be sent:", statusData);
 
-        const statusUrl = "http://localhost:8000/statuses";
+        const statusUrl = `${process.env.REACT_APP_FACEBARK_API_HOST}/statuses`;
         const statusFetchConfig = {
           method: "post",
           body: JSON.stringify(statusData),
@@ -191,7 +191,7 @@ function SignUpForm() {
           const followingData = followingsData[i];
           console.log("Following data to be sent:", followingData);
 
-          const followingUrl = "http://localhost:8000/following";
+          const followingUrl = `${process.env.REACT_APP_FACEBARK_API_HOST}/following`;
           const followingFetchConfig = {
             method: "post",
             body: JSON.stringify(followingData),

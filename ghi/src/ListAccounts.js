@@ -53,21 +53,21 @@ function AccountList() {
     };
 
     useEffect(() => {
-        fetch("http://localhost:8000/states")
+        fetch(`${process.env.REACT_APP_FACEBARK_API_HOST}/states`)
         .then((response) => response.json())
         .then((data) => setStates(data))
         .catch((error) => console.log(error));
     }, []);
 
     useEffect(() => {
-        fetch("http://localhost:8000/cities")
+        fetch(`${process.env.REACT_APP_FACEBARK_API_HOST}/cities`)
         .then((response) => response.json())
         .then((data) => setCities(data))
         .catch((error) => console.log(error));
     }, []);
 
     useEffect(() => {
-        fetch("http://localhost:8000/accounts")
+        fetch(`${process.env.REACT_APP_FACEBARK_API_HOST}/accounts`)
         .then((response) => response.json())
         .then((data) => {
             setAccounts(data);

@@ -36,7 +36,7 @@ function EventDetailPage() {
           navigate(`/accounts/${id}`);
       }
   };
-  // console.log(`http://localhost:8000/events/${eventId}`)
+
   useEffect(() => {
     const fetchToken = async () => {
       const token = await getTokenInternal();
@@ -49,7 +49,7 @@ function EventDetailPage() {
 
     useEffect(() => {
         async function getUserId() {
-          const url = `http://localhost:8000/api/things`;
+          const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/api/things`;
           // const response = await fetch(url);
           const response = await fetch(url, { method: "GET", headers: { Authorization: `Bearer ${token}` } });
           if (response.ok) {
@@ -62,7 +62,7 @@ function EventDetailPage() {
     }, [token]);
 
     useEffect(() => {
-        fetch("http://localhost:8000/accounts")
+        fetch(`${process.env.REACT_APP_FACEBARK_API_HOST}/accounts`)
         .then((response) => response.json())
         .then((data) => {
             setAccounts(data);
@@ -72,7 +72,7 @@ function EventDetailPage() {
     }, []);
 
     useEffect(() => {
-        fetch("http://localhost:8000/attendees")
+        fetch(`${process.env.REACT_APP_FACEBARK_API_HOST}/attendees`)
         .then((response) => response.json())
         .then((data) => {
             setAttendees(data);
@@ -82,7 +82,7 @@ function EventDetailPage() {
     }, []);
 
   useEffect(() => {
-    const url = `http://localhost:8000/events/${eventId}`;
+    const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/events/${eventId}`;
     const fetchData = async () => {
       try {
         const response = await fetch(url, {
@@ -154,7 +154,7 @@ function EventDetailPage() {
 
     console.log(data);
 
-    const eventUrl = "http://localhost:8000/attendees";
+    const eventUrl = `${process.env.REACT_APP_FACEBARK_API_HOST}/attendees`;
 
     const fetchConfig = {
       method: "post",

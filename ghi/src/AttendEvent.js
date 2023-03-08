@@ -1,5 +1,5 @@
 function AttendEvent() {
-  
+
   const [event, setEvent] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -7,7 +7,7 @@ function AttendEvent() {
   const [hasSignedUp, setHasSignedUp] = useState(false);
 
   const fetchData = async () => {
-    const url = 'http://localhost:8000/events/';
+    const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/events/`;
     const response = await fetch(url);
     if (response.ok) {
       const data = await response.json();
@@ -26,7 +26,7 @@ function AttendEvent() {
     data.name = name;
     data.email = email;
 
-    const accountUrl = 'http://localhost:8000/accounts/';
+    const accountUrl = `${process.env.REACT_APP_FACEBARK_API_HOST}/accounts/`;
     const fetchOptions = {
       method: 'post',
       body: JSON.stringify(data),

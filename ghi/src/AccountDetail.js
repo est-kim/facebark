@@ -62,7 +62,7 @@ function AccountDetailPage() {
 
   useEffect(() => {
     async function getUserId() {
-      const url = `http://localhost:8000/api/things`;
+      const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/api/things`;
       // const response = await fetch(url);
       const response = await fetch(url, {
         method: "GET",
@@ -77,35 +77,35 @@ function AccountDetailPage() {
   }, [token]);
 
   useEffect(() => {
-    fetch(`http://localhost:8000/statuses/${accountId}`)
+    fetch(`${process.env.REACT_APP_FACEBARK_API_HOST}/statuses/${accountId}`)
       .then((response) => response.json())
       .then((data) => setStatuses(data))
       .catch((error) => console.log(error));
   }, [accountId]);
 
   useEffect(() => {
-    fetch("http://localhost:8000/states")
+    fetch(`${process.env.REACT_APP_FACEBARK_API_HOST}/states`)
       .then((response) => response.json())
       .then((data) => setStates(data))
       .catch((error) => console.log(error));
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:8000/cities")
+    fetch(`${process.env.REACT_APP_FACEBARK_API_HOST}/cities`)
       .then((response) => response.json())
       .then((data) => setCities(data))
       .catch((error) => console.log(error));
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:8000/following")
+    fetch(`${process.env.REACT_APP_FACEBARK_API_HOST}/following`)
       .then((response) => response.json())
       .then((data) => setFollowing(data))
       .catch((error) => console.log(error));
   }, []);
 
   useEffect(() => {
-    const url = `http://localhost:8000/accounts/${accountId}`;
+    const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/accounts/${accountId}`;
     const fetchData = async () => {
       try {
         const response = await fetch(url, {
@@ -181,7 +181,7 @@ function AccountDetailPage() {
     data.follower_id = userId;
     data.followee_id = parseInt(accountId);
 
-    const eventUrl = "http://localhost:8000/following";
+    const eventUrl = `${process.env.REACT_APP_FACEBARK_API_HOST}/following`;
 
     const fetchConfig = {
       method: "post",
@@ -199,7 +199,7 @@ function AccountDetailPage() {
 
   const handleUnfollow = async (event) => {
     event.preventDefault();
-    const eventUrl = `http://localhost:8000/following/${accountId}?follower_id=${userId}`;
+    const eventUrl = `${process.env.REACT_APP_FACEBARK_API_HOST}/following/${accountId}?follower_id=${userId}`;
 
     const fetchConfig = {
       method: "delete",
@@ -225,7 +225,7 @@ function AccountDetailPage() {
     data.status_text = status;
     data.image_url = image;
 
-    const url = "http://localhost:8000/statuses";
+    const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/statuses`;
     const fetchConfig = {
       method: "post",
       body: JSON.stringify(data),
@@ -237,7 +237,9 @@ function AccountDetailPage() {
       const response = await fetch(url, fetchConfig);
       console.log("this the response!", response);
       if (response.ok) {
-        fetch(`http://localhost:8000/statuses/${accountId}`)
+        fetch(
+          `${process.env.REACT_APP_FACEBARK_API_HOST}/statuses/${accountId}`
+        )
           .then((response) => response.json())
           .then((data) => setStatuses(data))
           .catch((error) => console.log(error));

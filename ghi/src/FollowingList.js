@@ -31,7 +31,7 @@ function FollowingList() {
 
   useEffect(() => {
     async function getAccountId() {
-      const url = `http://localhost:8000/api/things`;
+      const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/api/things`;
       const response = await fetch(url, {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
@@ -47,7 +47,7 @@ function FollowingList() {
 
   useEffect(() => {
     async function getAccountsFollowing() {
-      const url = "http://localhost:8000/following";
+      const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/following`;
       const response = await fetch(url);
       if (response.ok) {
         const data = await response.json();
@@ -58,7 +58,7 @@ function FollowingList() {
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:8000/accounts")
+    fetch(`${process.env.REACT_APP_FACEBARK_API_HOST}/accounts`)
       .then((response) => response.json())
       .then((data) => {
         setAccounts(data);

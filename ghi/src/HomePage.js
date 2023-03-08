@@ -40,7 +40,7 @@ function HomePage() {
 
   useEffect(() => {
     async function getUserId() {
-      const url = `http://localhost:8000/api/things`;
+      const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/api/things`;
       const response = await fetch(url, {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
@@ -56,7 +56,7 @@ function HomePage() {
   useEffect(() => {
     async function getStatusesOfAccountsFollowing() {
       if (userId) {
-        const url = `http://localhost:8000/feed/${userId}`;
+        const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/feed/${userId}`;
         const response = await fetch(url);
         if (response.ok) {
           const data = await response.json();
@@ -70,7 +70,7 @@ function HomePage() {
   useEffect(() => {
     async function getEventsInUserState() {
       if (userId) {
-        const url = `http://localhost:8000/feed/events/${userId}`;
+        const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/feed/events/${userId}`;
         const response = await fetch(url);
         if (response.ok) {
           const data = await response.json();
