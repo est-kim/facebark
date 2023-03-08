@@ -18,8 +18,10 @@ lint-test-job:
 #   needs:
 #     - lint-test-job
 #   script:
-#     - cd sample_service
+#     - cd facebark
 #     - pip install -r requirements.txt
+#     = export DATABASE_URL='postgresql://facebark:password@srv-captain--facebarkdb/postgres'
+#     = export SIGNING_KEY='ec353f353873f5ede18b7377c34f72566490b4c7'
 #     - python -m pytest
 
 # Build the React/JavaScript front-end

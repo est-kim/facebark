@@ -133,7 +133,7 @@ function FollowingList() {
       >
         <MDBRow style={{ width: "100%" }}>
           <MDBCol md="12">
-            <h4>Here are all the dogs that sniff your butt on the regular :</h4>
+            <h4>Here are all the dogs that sniff your butt on the regular</h4>
           </MDBCol>
           {/* <MDBRow> */}
           {NewAccounts.map((account) => (

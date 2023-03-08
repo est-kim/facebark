@@ -5,9 +5,11 @@ from queries.following import FollowingRepository
 
 client = TestClient(app)
 
+
 class FollowingQueries:
     def get_all(self):
         return []
+
 
 def test_get_all_following_relationships():
     app.dependency_overrides[FollowingRepository] = FollowingQueries
