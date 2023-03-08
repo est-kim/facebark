@@ -450,8 +450,8 @@ function AccountDetailPage() {
           {statuses.length > 0 &&
             statuses.map(
               (status) =>
-                userId !== accountId &&
-                status.status_text[0] !== "<" && (
+                (parseInt(accountId) === userId ||
+                  (parseInt(accountId) !== userId && status.status_text[0] !== "<")) && (
                   <MDBRow className="mb-4" key={status.id}>
                     <MDBCol>
                       <MDBCard
@@ -490,10 +490,10 @@ function AccountDetailPage() {
                   </MDBRow>
                 )
             )}
-        </MDBCol>
-      </MDBRow>
-    </div>
-  );
-}
+          </MDBCol>
+          </MDBRow>
+          </div>
+          );
+          }
 
 export default AccountDetailPage;

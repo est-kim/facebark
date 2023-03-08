@@ -5,9 +5,9 @@ steps = [
         INSERT INTO statuses (status_text, time_stamp, image_url, account_id) VALUES
 
 ('Bark, bark! We are thrilled to have you on FaceBark, the best place on the internet for doggos.','2023-02-04T14:31:13.036232','https://cdn.discordapp.com/attachments/733882968883593310/1082746775372304404/Screen_Shot_2023-03-07_at_11.29.02_AM.png',1),
-('Welcome to the pack! Lets sniff out some new friends!','2023-03-04T14:31:13.036233','https://cdn.discordapp.com/attachments/733882968883593310/1082747456774742168/857CB938-2A1E-482C-9B50-6076A6FD640B.jpg',2),
-('This is where the dog days never end, and the tail-wagging is always at maximum capacity.','2023-04-04T14:31:13.036234','https://cdn.discordapp.com/attachments/733882968883593310/1082746962824155259/Screen_Shot_2023-03-07_at_11.29.45_AM.png',3),
-('Woof woof! Im thrilled to have you join me at FaceBark! Together, we can wag our tails and enjoy some pawsome fun!','2023-05-04T14:31:13.036235','https://cdn.discordapp.com/attachments/733882968883593310/1082751074814918706/Screen_Shot_2023-03-07_at_11.46.07_AM.png',4),
+('Welcome to the pack! Lets sniff out some new friends!','2023-02-04T14:31:13.036232','https://cdn.discordapp.com/attachments/733882968883593310/1082747456774742168/857CB938-2A1E-482C-9B50-6076A6FD640B.jpg',2),
+('This is where the dog days never end, and the tail-wagging is always at maximum capacity.','2023-02-04T14:31:13.036232','https://cdn.discordapp.com/attachments/733882968883593310/1082746962824155259/Screen_Shot_2023-03-07_at_11.29.45_AM.png',3),
+('Woof woof! Im thrilled to have you join me at FaceBark! Together, we can wag our tails and enjoy some pawsome fun!','2023-02-04T14:31:13.036232','https://cdn.discordapp.com/attachments/733882968883593310/1082751074814918706/Screen_Shot_2023-03-07_at_11.46.07_AM.png',4),
 ('Just ate a whole bag of treats. Life is good.','2023-03-04T14:31:13.036236',4,5),
 ('Barked at my own reflection again. That guy needs to learn some manners.','2023-03-04T14:31:13.036237',5,6),
 ('Im not begging, Im just staring at you while you eat.','2023-03-04T14:31:13.036238',6,7),
