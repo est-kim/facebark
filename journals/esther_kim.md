@@ -65,7 +65,7 @@
 
 3/1/23
 - Working on protecting endpoints from backend and frontend
-- Refactored code in different pages 
+- Refactored code in different pages
 
 3/2/23
 - Successful logout and protecting endpoints
@@ -79,4 +79,4 @@
 - Built out and styled updating profile information modal (AccountUpdateModal)
 
 3/5/23
--
+- working on bug fixes
