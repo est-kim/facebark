@@ -20,6 +20,7 @@ function HomePage() {
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
 
+
   const handleAccountClick = (id) => {
     if (!setIsLoggedIn) {
       navigate("/signup");
@@ -27,6 +28,7 @@ function HomePage() {
       navigate(`/accounts/${id}`);
     }
   };
+
 
   useEffect(() => {
     const fetchToken = async () => {
