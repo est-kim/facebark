@@ -34,6 +34,5 @@ class BreedRepository:
                         )
                         result.append(breed)
                     return result
-        except Exception as e:
-            print(e)
+        except Exception:
             return {"message": "Could not get all breeds"}

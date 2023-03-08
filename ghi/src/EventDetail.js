@@ -169,7 +169,7 @@ function EventDetailPage() {
       // Update the attendeeIds state with the new data
       const newAttendeeIds = [...attendeeIds, userId];
       setAttendeeIds(newAttendeeIds);
-      window.location.reload();
+      // window.location.reload();
     }
   };
 

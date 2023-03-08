@@ -53,7 +53,7 @@ function LandingPage() {
       </MDBCol>
       <MDBCol lg="7" className="text-center">
         <img
-          src={process.env.PUBLIC_URL + "/facebarkbgpic_clear.png"}
+          src={`${process.env.REACT_APP_FACEBARK_API_HOST}/facebarkbgpic_clear.png`}
           className="img-fluid"
           alt="Facebark Background"
         />

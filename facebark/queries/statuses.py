@@ -66,8 +66,7 @@ class StatusRepository:
                         )
                         result.append(status)
                     return result
-        except Exception as e:
-            print(e)
+        except Exception:
             return {"message": "Could not get all statuses"}
 
     def get_statuses_by_account_id(self, account_id: int) -> List[StatusOut]:
@@ -101,8 +100,7 @@ class StatusRepository:
                         )
                         result.append(status)
                     return result
-        except Exception as e:
-            print(e)
+        except Exception:
             return {"message": "Could not get all statuses by acc id"}
 
     def create(self, status: StatusIn) -> Union[StatusOut, Error]:

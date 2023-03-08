@@ -36,8 +36,7 @@ class AttendeesRepository:
                         self.record_to_attendees_out(record)
                         for record in result
                     ]
-        except Exception as e:
-            print(e)
+        except Exception:
             return {"message": "Could not get all attendees relationships"}
 
     def get_attendees_by_event_id(self, event_id: int) -> List[AttendeesOut]:
@@ -63,8 +62,7 @@ class AttendeesRepository:
                         )
                         result.append(attendee)
                     return result
-        except Exception as e:
-            print(e)
+        except Exception:
             return {"message": "Could not get all attendees by event id"}
 
     def create(self, attendees: AttendeesIn) -> AttendeesOut:

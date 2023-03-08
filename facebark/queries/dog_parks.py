@@ -36,8 +36,7 @@ class DogParkRepository:
                     if record is None:
                         return None
                     return self.record_to_dog_out(record)
-        except Exception as e:
-            print(e)
+        except Exception:
             return {"message": "Could not get that doggo park"}
 
     def get_all(self) -> Union[Error, List[DogParkOut]]:
@@ -61,8 +60,7 @@ class DogParkRepository:
                         )
                         result.append(dog_park)
                     return result
-        except Exception as e:
-            print(e)
+        except Exception:
             return {"message": "Could not get all dog parks"}
 
     def record_to_dog_out(self, record):

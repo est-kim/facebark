@@ -60,7 +60,7 @@ function Nav() {
       <MDBContainer fluid>
         <MDBNavbarBrand href="/">
           <img
-            src={process.env.PUBLIC_URL + "/facebark_logo.png"}
+            src={`${process.env.REACT_APP_FACEBARK_API_HOST}/facebark_logo.png`}
             alt="facebark logo"
             width="150px"
           />
