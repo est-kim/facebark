@@ -32,8 +32,8 @@ function AccountDetailPage() {
   const [, setSubmitted] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
 
-  console.log("TOKEN IN ACCOUNT DETAIL: ", token);
-  console.log("SET IS LOGGED IN: ", isLoggedIn);
+  // console.log("TOKEN IN ACCOUNT DETAIL: ", token);
+  // console.log("SET IS LOGGED IN: ", isLoggedIn);
 
   const handleStatusChange = (event) => {
     setStatus(event.target.value);
@@ -172,7 +172,7 @@ function AccountDetailPage() {
       FollowerIds.push(f["follower_id"]);
     }
   }
-  console.log("FOLLOWERIDDSSSS:", FollowerIds);
+  // console.log("FOLLOWERIDDSSSS:", FollowerIds);
 
   const handleFollow = async (event) => {
     event.preventDefault();
@@ -191,7 +191,7 @@ function AccountDetailPage() {
       },
     };
     const response = await fetch(eventUrl, fetchConfig);
-    console.log(response);
+    // console.log(response);
     if (response.ok) {
       //const newEvent = await response.json;
     }
@@ -210,7 +210,7 @@ function AccountDetailPage() {
 
     const response = await fetch(eventUrl, fetchConfig);
 
-    console.log(response);
+    // console.log(response);
 
     if (response.ok) {
       window.location.reload();
@@ -235,7 +235,7 @@ function AccountDetailPage() {
     };
     try {
       const response = await fetch(url, fetchConfig);
-      console.log("this the response!", response);
+      // console.log("this the response!", response);
       if (response.ok) {
         fetch(
           `${process.env.REACT_APP_FACEBARK_API_HOST}/statuses/${accountId}`
@@ -279,7 +279,7 @@ function AccountDetailPage() {
     width: "100%",
     aspectRatio: "1 / 1",
   };
-  console.log("THIS THE ACCCOUNTTTTT:", account);
+  // console.log("THIS THE ACCCOUNTTTTT:", account);
 
   return (
     <div className="list-bg">

@@ -200,6 +200,6 @@ export const useUser = (token) => {
 
     getUser();
   }, [token]);
-  console.log("THIS IS THE USERRRR", user)
+//   console.log("THIS IS THE USERRRR", user)
   return user;
 };

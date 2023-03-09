@@ -85,7 +85,6 @@ class StateRepository:
                             id=record[0], name=record[1], state_id=record[2]
                         )
                         result.append(state)
-                    print("RESULT", result)
                     return result
         except Exception:
             return {"message": "Could not get all cities"}

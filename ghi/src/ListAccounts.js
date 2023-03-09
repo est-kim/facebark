@@ -100,7 +100,7 @@ function AccountList() {
 
     let FinalAccounts = []
     for (let a of accounts) {
-        console.log("STATE TYPEEEE:", state)
+        // console.log("STATE TYPEEEE:", state)
         if (state === "") {
             FinalAccounts = accounts
         }

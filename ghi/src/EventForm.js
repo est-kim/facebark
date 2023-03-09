@@ -130,7 +130,7 @@ function EventForm() {
         data.description = description;
         data.picture = picture.startsWith("http") ? picture : "https://img.freepik.com/free-vector/many-dogs-running-park_1308-86675.jpg";
         data.account_id = userId;
-        console.log(data);
+        // console.log(data);
 
         const eventUrl = `${process.env.REACT_APP_FACEBARK_API_HOST}/events`;
 
