@@ -17,6 +17,8 @@ import FollowingList from './FollowingList.js';
 import MyFollowers from './MyFollowers.js';
 
 function App() {
+  const domain = /https:\/\/[^/]+/;
+  const basename = process.env.PUBLIC_URL.replace(domain, "");
   const [, setAccounts] = useState([]);
 
   const getAccounts = async () => {
@@ -36,7 +38,7 @@ function App() {
 
   return (
     <div>
-      <BrowserRouter>
+      <BrowserRouter basename={basename}>
         <AuthProvider>
           <Nav />
           <Routes>

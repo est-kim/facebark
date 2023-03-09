@@ -24,7 +24,7 @@ all_accounts_mock = {
     "owner_name": "string",
     "description": "string",
     "city_id": 0,
-    "state_id": 0
+    "state_id": 0,
 }
 
 mock_account = {
@@ -41,7 +41,7 @@ mock_account = {
     "owner_name": "string",
     "description": "string",
     "city_id": 0,
-    "state_id": 0
+    "state_id": 0,
 }
 
 
@@ -51,12 +51,8 @@ def account_override():
 
 def test_get_all_users():
     app.dependency_overrides[AccountRepository] = MockAccountQueries
-    # app.dependency_overrides[
-    #     authenticator.try_get_current_account_data
-    # ] = account_override
 
     response = client.get("/accounts")
-    print(response)
 
     assert response.status_code == 200
     assert response.json() == [all_accounts_mock]

@@ -42,8 +42,7 @@ class CityRepository:
                         self.record_to_city_out(record) for record in records
                     ]
                     return cities
-        except Exception as e:
-            print(e)
+        except Exception:
             return {"message": "Could not get cities for that state"}
 
     def get_all(self) -> Union[Error, List[CityOut]]:
@@ -71,6 +70,5 @@ class CityRepository:
                         )
                         result.append(city)
                     return result
-        except Exception as e:
-            print(e)
+        except Exception:
             return {"message": "Could not get all cities"}

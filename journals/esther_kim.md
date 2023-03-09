@@ -79,4 +79,15 @@
 - Built out and styled updating profile information modal (AccountUpdateModal)
 
 3/5/23
-- working on bug fixes
+- Working on bug fixes
+- Worked on styling
+- Refactored some frontend code
+
+3/6/23
+- More styling and bug fixes
+
+3/7/23
+- Bug fixes and worked on stage 3 deployment
+
+3/8/23
+- Debugged and successfully deployed application

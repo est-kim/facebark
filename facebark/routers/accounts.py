@@ -45,7 +45,6 @@ async def get_token(
     ),
 ) -> AccountToken | None:
     if account and authenticator.cookie_name in request.cookies:
-        print(account, " THIS IS ACCOUNT FROM TOKEN!!!!!", account)
         return {
             "access_token": request.cookies[authenticator.cookie_name],
             "type": "Bearer",
@@ -78,9 +77,7 @@ def get_account(
 
 @router.put("/accounts/{id}", response_model=AccountUpdate)
 def update(
-    id: int,
-    account: AccountUpdate,
-    repo: AccountRepository = Depends()
+    id: int, account: AccountUpdate, repo: AccountRepository = Depends()
 ) -> AccountIn:
     return repo.update(id, account)
 
@@ -93,20 +90,15 @@ async def create_account(
     accounts: AccountRepository = Depends(),
 ):
     hashed_password = authenticator.hash_password(info.password)
-    # print("this is the hashed pwd", hashed_password)
-    # print(isinstance(hashed_password, str))
     try:
         account = accounts.create(info, hashed_password)
-        print("this is the account!", account)
     except DuplicateAccountError:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Cannot create an account with those credentials",
         )
     form = AccountForm(username=info.username, password=info.password)
-    # print("this is the form: ", form)
     token = await authenticator.login(response, request, form, accounts)
-    print("this is the TOKEN: ", token)
     response.set_cookie(
         key=authenticator.cookie_name,
         value=token.access_token,

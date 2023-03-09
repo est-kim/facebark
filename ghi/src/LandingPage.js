@@ -6,6 +6,7 @@ import {
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useAuthContext, useToken } from "./Authentication";
+import facebarkbgpic_clear from "./images/facebarkbgpic_clear.png"
 
 function LandingPage() {
   const [, setButtonText] = useState("Sign up here!");
@@ -53,7 +54,7 @@ function LandingPage() {
       </MDBCol>
       <MDBCol lg="7" className="text-center">
         <img
-          src={process.env.PUBLIC_URL + "/facebarkbgpic_clear.png"}
+          src={facebarkbgpic_clear}
           className="img-fluid"
           alt="Facebark Background"
         />

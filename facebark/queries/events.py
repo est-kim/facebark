@@ -77,8 +77,7 @@ class EventsRepository:
                     if record is None:
                         return None
                     return self.record_to_event_out(record)
-        except Exception as e:
-            print(e)
+        except Exception:
             return {"message": "Could not get that event"}
 
     def delete(self, event_id: int) -> bool:
@@ -93,8 +92,7 @@ class EventsRepository:
                         [event_id],
                     )
                     return True
-        except Exception as e:
-            print(e)
+        except Exception:
             return False
 
     def update(self, event_id: int, event: EventsIn) -> EventsOut:
@@ -133,8 +131,7 @@ class EventsRepository:
                         ],
                     )
                     return self.event_in_to_out(event_id, event)
-        except Exception as e:
-            print(e)
+        except Exception:
             return {"message": "could not update events"}
 
     def get_all(self) -> Union[List[EventsOut], Error]:
@@ -173,8 +170,7 @@ class EventsRepository:
                     return [
                         self.record_to_event_out(record) for record in result
                     ]
-        except Exception as e:
-            print(e)
+        except Exception:
             return {"message": "could not get all events"}
 
     def create(self, event: EventsIn) -> EventsOut:
@@ -257,8 +253,7 @@ class EventsRepository:
                         )
                         result.append(status)
                     return result
-        except Exception as e:
-            print(e)
+        except Exception:
             return {"message": "Could not get those events"}
 
     def event_in_to_out(self, id: int, event: EventsIn):

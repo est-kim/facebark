@@ -35,8 +35,7 @@ class StateRepository:
                         return None
                     return self.record_to_state_out(record)
 
-        except Exception as e:
-            print(e)
+        except Exception:
             return {"message": "Could not get that event"}
 
     def get_all(self) -> Union[Error, List[StateOut]]:
@@ -61,8 +60,7 @@ class StateRepository:
                         )
                         result.append(state)
                     return result
-        except Exception as e:
-            print(e)
+        except Exception:
             return {"message": "Could not get all states"}
 
     def get_all_onid(self, state_id: int) -> Union[Error, List[StateOut]]:
@@ -87,10 +85,8 @@ class StateRepository:
                             id=record[0], name=record[1], state_id=record[2]
                         )
                         result.append(state)
-                    print("RESULT", result)
                     return result
-        except Exception as e:
-            print(e)
+        except Exception:
             return {"message": "Could not get all cities"}
 
     def record_to_state_out(self, record):

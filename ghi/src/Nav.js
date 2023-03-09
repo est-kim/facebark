@@ -4,11 +4,11 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   MDBContainer,
   MDBNavbar,
-  MDBNavbarBrand,
   MDBNavbarNav,
   MDBCollapse,
   MDBNavbarToggler
 } from "mdb-react-ui-kit";
+import facebark_logo from "./images/facebark_logo.png";
 
 
 function Nav() {
@@ -31,8 +31,8 @@ function Nav() {
     }
   }, [token, setIsLoggedIn]);
 
-  console.log("USERRRRR: ", userId)
-  console.log("USERRRRR: ", (typeof userId))
+  // console.log("USERRRRR: ", userId)
+  // console.log("USERRRRR: ", (typeof userId))
 
   useEffect(() => {
     async function getUserId() {
@@ -49,8 +49,8 @@ function Nav() {
     getUserId();
   }, [token]);
 
-  console.log("token:", token);
-  console.log("isLoggedIn:", isLoggedIn);
+  // console.log("token:", token);
+  // console.log("isLoggedIn:", isLoggedIn);
 
   return (
     <MDBNavbar
@@ -58,13 +58,13 @@ function Nav() {
       style={{ backgroundColor: "#FFFFFF", boxShadow: "none" }}
     >
       <MDBContainer fluid>
-        <MDBNavbarBrand href="/">
+        <Link to="/">
           <img
-            src={process.env.PUBLIC_URL + "/facebark_logo.png"}
+            src={facebark_logo}
             alt="facebark logo"
             width="150px"
           />
-        </MDBNavbarBrand>
+        </Link>
         <MDBNavbarToggler onClick={() => setShowNavRight(!showNavRight)} />
         <MDBCollapse navbar show={showNavRight}>
           <MDBNavbarNav right fullWidth={false} className="mb-2 mb-lg-0">

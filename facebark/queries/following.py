@@ -64,8 +64,7 @@ class FollowingRepository:
                         self.record_to_following_out(record)
                         for record in result
                     ]
-        except Exception as e:
-            print(e)
+        except Exception:
             return {"message": "Could not get all following relationships"}
 
     def create(self, following: FollowingIn) -> FollowingOut:
@@ -134,8 +133,7 @@ class FollowingRepository:
                         )
                         result.append(account)
                     return result
-        except Exception as e:
-            print(e)
+        except Exception:
             return {"message": "Could not get that following relationship"}
 
     def delete(self, follower_id: int, followee_id: int) -> bool:
@@ -151,8 +149,7 @@ class FollowingRepository:
                         [follower_id, followee_id],
                     )
                     return True
-        except Exception as e:
-            print(e)
+        except Exception:
             return False
 
     def get_all_statuses_for_accounts_following(
@@ -195,8 +192,7 @@ class FollowingRepository:
                         )
                         result.append(status)
                     return result
-        except Exception as e:
-            print(e)
+        except Exception:
             return {"message": "Could not get those status updates"}
 
     def following_in_to_out(self, id: int, following: FollowingIn):

@@ -152,7 +152,7 @@ function EventDetailPage() {
     data.event_id = eventId;
     data.attendee_id = userId;
 
-    console.log(data);
+    // console.log(data);
 
     const eventUrl = `${process.env.REACT_APP_FACEBARK_API_HOST}/attendees`;
 
@@ -164,12 +164,12 @@ function EventDetailPage() {
       },
     };
     const response = await fetch(eventUrl, fetchConfig);
-    console.log(response);
+    // console.log(response);
     if (response.ok) {
       // Update the attendeeIds state with the new data
       const newAttendeeIds = [...attendeeIds, userId];
       setAttendeeIds(newAttendeeIds);
-      window.location.reload();
+      // window.location.reload();
     }
   };
 

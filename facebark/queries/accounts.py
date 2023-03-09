@@ -97,7 +97,6 @@ class AccountRepository:
                     )
 
                     record = result.fetchone()
-                    print("THIS IS THE RECORD: ", record)
                     if record is None:
                         return None
                     return self.record_to_account_out(record)
@@ -154,8 +153,7 @@ class AccountRepository:
                         )
                         for record in db
                     ]
-        except Exception as e:
-            print(e)
+        except Exception:
             return {"message": "Could not get all accounts"}
 
     def get_account_by_id(self, id: int) -> Optional[AccountOut]:
@@ -268,13 +266,12 @@ class AccountRepository:
                             account.name,
                             account.image_url,
                             account.description,
-                            id
-                        ]
+                            id,
+                        ],
                     )
                     old_data = account.dict()
                     return AccountUpdate(**old_data)
-        except Exception as e:
-            print(e)
+        except Exception:
             return {"message": "Could not update account information"}
 
     def account_in_to_out(

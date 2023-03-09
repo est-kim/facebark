@@ -146,7 +146,7 @@ function SignUpForm() {
       if (response.ok) {
         const responseData = await response.json();
         const id = responseData.account.id;
-        console.log("User ID:", id); // Check if ID is being returned properly
+        // console.log("User ID:", id); // Check if ID is being returned properly
 
         // Create status for new account
         const statusData = {
@@ -157,7 +157,7 @@ function SignUpForm() {
             "https://thumbs.dreamstime.com/b/portrait-funny-dog-behind-wheel-car-jack-russell-terrier-sunglasses-151057370.jpg",
           account_id: id,
         };
-        console.log("Status data to be sent:", statusData);
+        // console.log("Status data to be sent:", statusData);
 
         const statusUrl = `${process.env.REACT_APP_FACEBARK_API_HOST}/statuses`;
         const statusFetchConfig = {
@@ -189,7 +189,7 @@ function SignUpForm() {
 
         for (let i = 0; i < followingsData.length; i++) {
           const followingData = followingsData[i];
-          console.log("Following data to be sent:", followingData);
+          // console.log("Following data to be sent:", followingData);
 
           const followingUrl = `${process.env.REACT_APP_FACEBARK_API_HOST}/following`;
           const followingFetchConfig = {
