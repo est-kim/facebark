@@ -79,7 +79,7 @@ Clicking on the picture of an event will take you to that event's detail page, w
 
 ### Create an event
 
-If you'd like to create an event where you can meet other dogs (and their owners), you can do so using this feature. To access the create event form, click the "Events" drop-down in the navbar and select "Cretae an Event".
+If you'd like to create an event where you can meet other dogs (and their owners), you can do so using this feature. To access the create event form, click the "Events" drop-down in the navbar and select "Create an Event".
 
 Once the form loads, you can enter the event's details in each respective field. If you'd like the event to be at a dog park, you can select the dog park from the "Choose a dog park..." drop-down (this list contains all dog parks in the selected city).
 

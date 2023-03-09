@@ -62,3 +62,4 @@ Prior to 2/13 brainstormed with team about app idea, functionality, wireframes, 
 
 3/9/23
 - Included wireframes in project files
+- Completed journal submission
