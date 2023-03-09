@@ -19,7 +19,7 @@ Each FaceBark account corresponds to one dog, so if you have more than one dog y
 
 FaceBark is a monolithic application built using a FastAPI framework with PostgreSQL on the back-end and React on the front-end.
 
-Click this link (or paste it into your web browser) for a visual overview of the application's design: https://i.ibb.co/Xs0y98s/Screen-Shot-2023-03-08-at-3-55-47-PM.png
+Click this link (or paste it into your web browser) for a visual overview of the application's data architecture: https://i.ibb.co/Xs0y98s/Screen-Shot-2023-03-08-at-3-55-47-PM.png
 
 ## How to run
 
@@ -59,6 +59,12 @@ Clicking on the profile picture of a dog on this page will take you to that dog'
 
 You can also filter the dogs by city and state, if you'd like. Select a state and a city from the drop-downs in the "Filter by Location" section, and only the dogs in that city will be displayed.
 
+### Follow/Un-follow
+
+If you'd like a particular dog's pupdates to show in your feed, you can follow them by navigating to their profile page and clicking the "Follow" button. (In this relationship, you are the "follower" and the dog you're following is the "followee".)
+
+To un-follow a particular dog, navigate to their profile page and click "Unfollow".
+
 ### View dogs you're following, or dogs following you
 
 These features allow you to view all the dogs you're following or all the dogs that are following you.
@@ -78,3 +84,261 @@ If you'd like to create an event where you can meet other dogs (and their owners
 Once the form loads, you can enter the event's details in each respective field. If you'd like the event to be at a dog park, you can select the dog park from the "Choose a dog park..." drop-down (this list contains all dog parks in the selected city).
 
 ## CRUD routes
+
+### Accounts (dog profiles)
+
+POST request to /accounts:
+
+```
+request:
+{
+  "username": "string",
+  "password": "string",
+  "email": "string",
+  "phone_number": "string",
+  "name": "string",
+  "image_url": "string",
+  "breed": "string",
+  "sex": "string",
+  "dob": "string",
+  "owner_name": "string",
+  "description": "string",
+  "city_id": int,
+  "state_id": int
+}
+
+returns:
+{
+  "access_token": "string",
+  "token_type": "Bearer",
+  "account": {
+    "id": 0,
+    "username": "string",
+    "hashed_password": "string",
+    "email": "string",
+    "phone_number": "string",
+    "name": "string",
+    "image_url": "string",
+    "breed": "string",
+    "sex": "string",
+    "dob": "string",
+    "owner_name": "string",
+    "description": "string",
+    "city_id": 0,
+    "state_id": 0
+  }
+}
+```
+
+GET and PUT request to /accounts/{id}:
+
+```
+request:
+{
+  "id": int,
+  "username": "string",
+  "hashed_password": "string",
+  "email": "string",
+  "phone_number": "string",
+  "name": "string",
+  "image_url": "string",
+  "breed": "string",
+  "sex": "string",
+  "dob": "yyyy-mm-dd",
+  "owner_name": "string",
+  "description": "string",
+  "city_id": int,
+  "state_id": int
+}
+
+returns:
+{
+  "id": 5,
+  "username": "CandyCactus",
+  "hashed_password": "$2b$12$AJPye./yTYUOaIcVq4AdyeiVE0h/ga.Ek5u9ClxyuNgptfxGySc6a",
+  "email": "CandyCactus@gmail.com",
+  "phone_number": "3035310111",
+  "name": "Charlie",
+  "image_url": "https://highlandcanine.com/wp-content/uploads/2020/09/golden-retriever-in-field-of-flowers.jpg",
+  "breed": "Golden Retriever",
+  "sex": "Male",
+  "dob": "2016-07-27",
+  "owner_name": "Carmen Blackwell",
+  "description": "Im always ready for a walk.",
+  "city_id": 3208,
+  "state_id": 44
+}
+```
+
+### Following relationships
+
+POST request to /following:
+
+```
+request:
+{
+  "follower_id": int,
+  "followee_id": int
+}
+
+returns:
+{
+  "id": 1,
+  "follower_id": 291,
+  "followee_id": 292
+}
+```
+
+GET request to /following/{id}:
+
+```
+request:
+{
+  "account_id": int,
+}
+
+returns:
+[
+  {
+    "id": 290,
+    "username": "rudy",
+    "hashed_password": "null",
+    "email": "damir.rukavina@yahoo.com",
+    "phone_number": "847-899-1526",
+    "name": "Rudy",
+    "image_url": "https://i.ibb.co/QrgqL63/rudy-on-pillow.jpg",
+    "breed": "Shih Tzu",
+    "sex": "Male",
+    "dob": "2013-07-23",
+    "owner_name": "Damir Rukavina",
+    "description": "boof (translation: I love my daddy, my toys, and my sister Olive!)",
+    "city_id": 733,
+    "state_id": 6
+  }, ...
+]
+```
+
+DELETE request to /following/{followee_id}?follower_id={follower_id}:
+
+```
+request:
+{
+  "followee_id": int,
+  "follower_id": int
+}
+
+returns:
+
+true
+```
+
+### Status updates (pupdates)
+
+POST request to /statuses:
+
+```
+request:
+{
+  "status_text": "string",
+  "image_url": "string",
+  "account_id": int
+}
+
+returns:
+{
+  "id": 10,
+  "status_text": "I'm hungry, feed me!",
+  "time_stamp": "2023-03-07T11:27:25.339794",
+  "image_url": "",
+  "account_id": 292
+}
+```
+
+GET request to /statuses:
+
+```
+
+returns:
+[
+  {
+    "id": 10,
+    "status_text": "I'm hungry, feed me!",
+    "time_stamp": "2023-03-07T11:27:25.339794",
+    "image_url": "",
+    "account_id": 292
+  }, ...
+]
+```
+
+DELETE request to /statuses/{status_id}:
+
+```
+request:
+{
+  "status_id": int,
+}
+
+returns:
+
+true
+```
+
+### Events
+
+POST request to /events:
+
+```
+request:
+{
+  "title": "string",
+  "states_id": int,
+  "cities_id": int,
+  "dog_parks_id": int,
+  "address": "string",
+  "date": "yyyy-mm-dd",
+  "start_time": "string",
+  "end_time": "string",
+  "description": "string",
+  "picture": "string",
+  "account_id": int
+}
+
+returns:
+{
+  "id": 1,
+  "title": "Pawsome Meetups for Pawesome Dogs!",
+  "states_id": "California",
+  "cities_id": "Los Angeles",
+  "dog_parks_id": "Arts District Dog Park",
+  "address": "123 Main St.",
+  "date": "2023-03-09",
+  "start_time": "10:00",
+  "end_time": "12:00",
+  "description": "The upcoming dog party is set to be a paw-some affair, with a variety of activities for dogs and their owners to enjoy.",
+  "picture": "https://www.kirbybuilt.com/media/catalog/category/Kirby%20Banner%20Images4.jpg",
+  "account_id": 1
+}
+```
+
+GET request to /events:
+
+```
+
+returns:
+[
+  {
+    "id": 1,
+    "title": "Pawsome Meetups for Pawesome Dogs!",
+    "states_id": "California",
+    "cities_id": "Los Angeles",
+    "dog_parks_id": "Arts District Dog Park",
+    "address": "123 Main St.",
+    "date": "2023-03-09",
+    "start_time": "10:00",
+    "end_time": "12:00",
+    "description": "The upcoming dog party is set to be a paw-some affair, with a variety of activities for dogs and their owners to enjoy.",
+    "picture": "https://www.kirbybuilt.com/media/catalog/category/Kirby%20Banner%20Images4.jpg",
+    "account_id": 1
+  }, ...
+]
+```
