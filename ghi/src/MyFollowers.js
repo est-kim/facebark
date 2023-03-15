@@ -156,11 +156,11 @@ function FollowingList() {
                     }
                   }}
                 >
-                  <MDBCardImage
-                    src={account.image_url}
-                    alt={account.name}
-                    style={imgStyle}
-                  />
+                <MDBCardImage
+                  src={account.new_image !== '0' ? account.new_image : account.image_url}
+                  alt={account.name}
+                  style={imgStyle}
+                />
                   <a href={`${account.id}`}>
                     <div
                       className="mask"

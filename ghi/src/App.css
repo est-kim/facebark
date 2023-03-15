@@ -12,3 +12,65 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
+
+.input-wrapper {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.file-input-container {
+  position: relative;
+  display: inline-block;
+}
+
+.custom-file-input label {
+  display: none;
+}
+
+.custom-label {
+  cursor: pointer;
+}
+
+.custom-file-input input[type="file"] {
+  display: none;
+}
+
+.custom-file-input-wrapper .file-path::before {
+  display: none;
+}
+
+.custom-file-input-container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.hidden-file-input {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+.custom-file-label {
+  cursor: pointer;
+  margin-top: -10px;
+  transition: 0.3s;
+}
+
+.custom-file-label:hover {
+  color: blue;
+}
+
+.file-upload-success {
+  display: inline-block;
+  margin-left: 10px;
+  color: green;
+}
+
+.input-wrapper:hover .custom-file-label {
+  color: blue;
+}

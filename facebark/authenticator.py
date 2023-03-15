@@ -51,6 +51,7 @@ class AccountAuthenticator(Authenticator):
             description=account.__getitem__("description"),
             city_id=account.__getitem__("city_id"),
             state_id=account.__getitem__("state_id"),
+            new_image=account.__getitem__("new_image"),
         )
 
 

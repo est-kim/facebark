@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import Spinner from "./Spinner";
 import { useAuthContext, useToken, getTokenInternal } from "./Authentication";
@@ -15,6 +15,7 @@ import {
   MDBInput,
 } from "mdb-react-ui-kit";
 import AccountUpdateModal from "./AccountUpdateModal";
+import CustomFileInput from './CustomFileInput';
 
 function AccountDetailPage() {
   const { isLoggedIn, setIsLoggedIn } = useAuthContext();
@@ -31,7 +32,26 @@ function AccountDetailPage() {
   const [userId, setUserId] = useState("");
   const [, setSubmitted] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
+  const fileInputRef = useRef(null);
+  const defaultLabelRef = useRef();
+  const [resetInput, setResetInput] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
+  const isVideo = (url) => {
+    const videoExtensions = [
+      '.mp4', '.webm', '.ogg', '.mov', // Previously included formats
+      '.mkv', '.flv', '.avi', '.wmv', '.mpeg', '.m4v', '.3gp', '.f4v', '.f4p', '.f4a', '.f4b'
+    ];
+    return videoExtensions.some((ext) => url.endsWith(ext));
+  };
+
+  useEffect(() => {
+    if (defaultLabelRef.current) {
+      defaultLabelRef.current.innerHTML = `
+        <i class="fas fa-cloud-upload-alt"></i> Choose Picture (Optional)
+      `;
+    }
+  }, [defaultLabelRef]);
   // console.log("TOKEN IN ACCOUNT DETAIL: ", token);
   // console.log("SET IS LOGGED IN: ", isLoggedIn);
 
@@ -40,7 +60,15 @@ function AccountDetailPage() {
   };
 
   const handleImageChange = (event) => {
-    setImage(event.target.value);
+    const file = event.target.files[0];
+    if (file) {
+      setImage(file);
+      // Show the success message when an image is successfully uploaded
+      setShowSuccessMessage(true);
+    } else {
+      setImage("");
+      setShowSuccessMessage(false);
+    }
   };
 
   useEffect(() => {
@@ -219,11 +247,33 @@ function AccountDetailPage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+  const imageData = new FormData();
+    imageData.append("file", image);
+    imageData.append("new_image", image.name);
+
+    console.log("Image type:", image.type);
+    console.log("Image name:", image.name);
+    const imageResponse = await fetch(
+      `${process.env.REACT_APP_FACEBARK_API_HOST}/accounts/image`,
+      {
+        method: "POST",
+        body: imageData,
+      }
+    );
+
+    const imageUrl = await imageResponse.text();
+
+    if (imageUrl) {
+      // Show the success message when an image is successfully uploaded
+      setShowSuccessMessage(true);
+    }
+
     const data = {};
 
     data.account_id = parseInt(accountId);
     data.status_text = status;
-    data.image_url = image;
+    data.image_url = imageUrl.replace(/['"]+/g, '');
 
     const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/statuses`;
     const fetchConfig = {
@@ -235,7 +285,6 @@ function AccountDetailPage() {
     };
     try {
       const response = await fetch(url, fetchConfig);
-      // console.log("this the response!", response);
       if (response.ok) {
         fetch(
           `${process.env.REACT_APP_FACEBARK_API_HOST}/statuses/${accountId}`
@@ -246,6 +295,15 @@ function AccountDetailPage() {
         setStatus("");
         setImage("");
         setSubmitted(true);
+        setResetInput(true);
+        setShowSuccessMessage(false);
+
+    // After a short delay, set it back to false
+        setTimeout(() => {
+          setResetInput(false);
+        }, 500);
+
+        fileInputRef.current.value = '';
       } else {
         await response.json();
         setSubmitted(false);
@@ -279,7 +337,8 @@ function AccountDetailPage() {
     width: "100%",
     aspectRatio: "1 / 1",
   };
-  // console.log("THIS THE ACCCOUNTTTTT:", account);
+
+
 
   return (
     <div className="list-bg">
@@ -292,7 +351,7 @@ function AccountDetailPage() {
             <MDBCardBody style={{ paddingTop: "50px" }}>
               <MDBCardText>
                 <img
-                  src={account.image_url}
+                  src={account.new_image !== "0" ? account.new_image : account.image_url}
                   alt={account.name}
                   className="card-img-top img-fluid"
                   style={{
@@ -418,13 +477,11 @@ function AccountDetailPage() {
                         style={{ margin: "10px" }}
                         required
                       />
-                      <MDBInput
+                      <CustomFileInput
                         onChange={handleImageChange}
-                        value={image}
-                        label="Post a photo! (Optional)"
-                        id="image_url"
-                        name="image_url"
-                        type="url"
+                        reset={resetInput}
+                        showSuccessMessage={showSuccessMessage}
+                        inputRef={fileInputRef} // Pass the fileInputRef as the inputRef prop here
                       />
                       <MDBBtn
                         style={{
@@ -465,28 +522,41 @@ function AccountDetailPage() {
                         <div style={{ fontWeight: 550 }}>
                           {formatTimeStamp(status.time_stamp)}
                         </div>
-                        <MDBRow>
-                          {status.image_url ? (
-                            <>
-                              <MDBCol md="8">
+                          <MDBRow>
+                            {status.image_url ? (
+                              <>
+                                <MDBCol md="8">
+                                  <div>{status.status_text}</div>
+                                </MDBCol>
+                                  {status.image_url.substring(0, 4) === "http" && (
+                                    <MDBCol md="4">
+                                      {isVideo(status.image_url) ? (
+                                        <video
+                                          src={status.image_url}
+                                          alt="status"
+                                          style={imgStyle}
+                                          controls
+                                          preload="metadata"
+                                          playsInline
+                                        >
+                                          Your browser does not support the video tag.
+                                        </video>
+                                      ) : (
+                                        <img
+                                          src={status.image_url}
+                                          alt="status"
+                                          style={imgStyle}
+                                        />
+                                      )}
+                                    </MDBCol>
+                                  )}
+                              </>
+                            ) : (
+                              <MDBCol md="12">
                                 <div>{status.status_text}</div>
                               </MDBCol>
-                              {status.image_url.substring(0, 4) === "http" && (
-                                <MDBCol md="4">
-                                  <img
-                                    src={status.image_url}
-                                    alt="status"
-                                    style={imgStyle}
-                                  />
-                                </MDBCol>
-                              )}
-                            </>
-                          ) : (
-                            <MDBCol md="12">
-                              <div>{status.status_text}</div>
-                            </MDBCol>
-                          )}
-                        </MDBRow>
+                            )}
+                          </MDBRow>
                       </MDBCard>
                     </MDBCol>
                   </MDBRow>

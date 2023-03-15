@@ -41,6 +41,7 @@ class StatusOutVO(BaseModel):
     name: str
     account_image_url: str
     status_image_url: str
+    account_new_image: str
 
 
 class FollowingRepository:
@@ -106,6 +107,7 @@ class FollowingRepository:
                             , a.description
                             , a.city_id
                             , a.state_id
+                            , a.new_image
                         FROM following AS f
                         INNER JOIN accounts AS a
                             ON (f.followee_id = a.id)
@@ -130,6 +132,7 @@ class FollowingRepository:
                             description=record[12],
                             city_id=record[13],
                             state_id=record[14],
+                            new_image=record[15],
                         )
                         result.append(account)
                     return result
@@ -169,6 +172,7 @@ class FollowingRepository:
                             , a.name
                             , a.image_url
                             , s.image_url
+                            , a.new_image
                         FROM following AS f
                         INNER JOIN statuses AS s
                             ON (f.followee_id = s.account_id)
@@ -189,6 +193,7 @@ class FollowingRepository:
                             name=record[6],
                             account_image_url=record[7],
                             status_image_url=record[8],
+                            account_new_image=record[9],
                         )
                         result.append(status)
                     return result

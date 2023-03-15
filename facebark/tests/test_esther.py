@@ -25,6 +25,7 @@ all_accounts_mock = {
     "description": "string",
     "city_id": 0,
     "state_id": 0,
+    "new_image": "string",
 }
 
 mock_account = {
@@ -42,6 +43,7 @@ mock_account = {
     "description": "string",
     "city_id": 0,
     "state_id": 0,
+    "new_image": "string",
 }
 
 

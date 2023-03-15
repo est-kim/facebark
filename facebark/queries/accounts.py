@@ -25,6 +25,7 @@ class AccountIn(BaseModel):
     description: str
     city_id: int
     state_id: int
+    new_image: str
 
 
 class AccountOut(BaseModel):
@@ -42,6 +43,7 @@ class AccountOut(BaseModel):
     description: str
     city_id: int
     state_id: int
+    new_image: str
 
 
 class AccountOutWithPassword(AccountOut):
@@ -55,6 +57,7 @@ class AccountUpdate(BaseModel):
     name: Optional[str]
     image_url: Optional[str]
     description: Optional[str]
+    new_image: Optional[str]
 
 
 class AccountsOut(BaseModel):
@@ -62,6 +65,7 @@ class AccountsOut(BaseModel):
 
 
 class AccountRepository:
+
     def record_to_account_out(self, record) -> AccountOutWithPassword:
         account_dict = {
             "id": record[0],
@@ -78,6 +82,7 @@ class AccountRepository:
             "description": record[11],
             "city_id": record[12],
             "state_id": record[13],
+            "new_image": record[14],
         }
         return account_dict
 
@@ -89,7 +94,7 @@ class AccountRepository:
                         """
                         SELECT id, username, hashed_password, email,
                         phone_number, name, image_url, breed, sex,
-                        dob, owner_name, description, city_id, state_id
+                        dob, owner_name, description, city_id, state_id, new_image
                         FROM accounts
                         WHERE username = %s
                         """,
@@ -123,7 +128,8 @@ class AccountRepository:
                         a.owner_name,
                         a.description,
                         a.city_id,
-                        a.state_id
+                        a.state_id,
+                        a.new_image
                         FROM accounts a
                         LEFT JOIN states s
                             ON (s.id = a.state_id)
@@ -150,6 +156,7 @@ class AccountRepository:
                             description=record[11],
                             city_id=record[12],
                             state_id=record[13],
+                            new_image=record[14],
                         )
                         for record in db
                     ]
@@ -176,7 +183,8 @@ class AccountRepository:
                         a.owner_name,
                         a.description,
                         a.state_id,
-                        a.city_id
+                        a.city_id,
+                        a.new_image
                         FROM accounts a
                         LEFT JOIN states s
                             ON (s.id = a.state_id)
@@ -220,17 +228,18 @@ class AccountRepository:
                     account.description,
                     account.city_id,
                     account.state_id,
+                    account.new_image,
                     hashed_password,
                 ]
                 db.execute(
                     """
                         INSERT INTO accounts (username, email, phone_number,
                         name, image_url, breed, sex, dob, owner_name, description,
-                        city_id, state_id, hashed_password)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        city_id, state_id, new_image, hashed_password)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                         RETURNING id, username, email, phone_number,
                         name, image_url, breed, sex, dob, owner_name, description,
-                        city_id, state_id, hashed_password;
+                        city_id, state_id, new_image, hashed_password;
                         """,
                     params,
                 )
@@ -256,7 +265,8 @@ class AccountRepository:
                         phone_number = %s,
                         name = %s,
                         image_url = %s,
-                        description = %s
+                        description = %s,
+                        new_image = %s
                         WHERE id = %s
                         """,
                         [
@@ -266,6 +276,7 @@ class AccountRepository:
                             account.name,
                             account.image_url,
                             account.description,
+                            account.new_image,
                             id,
                         ],
                     )

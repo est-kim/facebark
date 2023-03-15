@@ -156,7 +156,7 @@ function FollowingList() {
                   }}
                 >
                   <MDBCardImage
-                    src={account.image_url}
+                    src={account.new_image !== '0' ? account.new_image : account.image_url}
                     alt={account.name}
                     style={imgStyle}
                   />

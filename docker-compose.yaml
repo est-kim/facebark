@@ -36,6 +36,8 @@ services:
         - ./facebark:/app
     environment:
       SIGNING_KEY: eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY3NjkzMDc5MSwiaWF0IjoxNjc2OTMwNzkxfQ.IS0uv-T4hBkH_Jn2JtVe7zKu0FiiOYYSotKxLTfWKmE
+      AWS_ACCESS_KEY: AKIAX5NY4QUFBRKBLF5I
+      AWS_SECRET_ACCESS_KEY: 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
       DATABASE_URL: postgresql://facebark:password@postgres/facebark
       WAIT_HOSTS: postgres:5432
       WAIT_BEFORE: 5
