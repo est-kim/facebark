@@ -14,14 +14,14 @@ from queries.likes import (
 router = APIRouter()
 
 
-# @router.get("/following", response_model=Union[List[FollowingOut], Error])
-# def get_all(
-#     repo: FollowingRepository = Depends(),
-# ):
-#     return repo.get_all()
+@router.get("/likes", response_model=Union[List[LikeOut], Error])
+def get_all(
+    repo: LikeRepository = Depends(),
+):
+    return repo.get_all()
 
 
-@router.post("/like", response_model=Union[LikeOut, Error])
+@router.post("/likes", response_model=Union[LikeOut, Error])
 def create_like(
     like: LikeIn,
     response: Response,

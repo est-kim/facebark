@@ -45,28 +45,24 @@ class StatusOutVO(BaseModel):
 
 
 class LikeRepository:
-    # def get_all(self) -> Union[List[LikeOut], Error]:
-    #     try:
-    #         with pool.connection() as conn:
-    #             with conn.cursor() as db:
-    #                 result = db.execute(
-    #                     """
-    #                     SELECT l.id
-    #                         , l.status_id
-    #                         , l.account_id
-    #                     FROM likes l
-    #                     LEFT JOIN statuses s
-    #                         ON (l.status_id = s.id)
-    #                     LEFT JOIN accounts a
-    #                         ON (l.account_id = a.id);
-    #                     """
-    #                 )
-    #                 return [
-    #                     self.record_to_like_out(record)
-    #                     for record in result
-    #                 ]
-    #     except Exception:
-    #         return {"message": "Could not get all likes"}
+    def get_all(self) -> Union[List[LikeOut], Error]:
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    result = db.execute(
+                        """
+                        SELECT l.id
+                            , l.status_id
+                            , l.account_id
+                        FROM likes l
+                        """
+                    )
+                    return [
+                        self.record_to_like_out(record)
+                        for record in result
+                    ]
+        except Exception:
+            return {"message": "Could not get all likes"}
 
     def create(self, like: LikeIn) -> LikeOut:
         with pool.connection() as conn:
@@ -177,9 +173,9 @@ class LikeRepository:
         old_data = like.dict()
         return LikeOut(id=id, **old_data)
 
-    # def record_to_like_out(self, record):
-    #     return LikeOut(
-    #         id=record[0],
-    #         status_id=record[1],
-    #         account_id=record[2],
-    #     )
+    def record_to_like_out(self, record):
+        return LikeOut(
+            id=record[0],
+            status_id=record[1],
+            account_id=record[2],
+        )
