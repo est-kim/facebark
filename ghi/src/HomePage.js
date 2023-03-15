@@ -247,7 +247,7 @@ function HomePage() {
                           , {status.name} posted:
                         </MDBCardText>
                         <MDBCardText style={{ textAlign: "start" }}>
-                          {status.status_text}
+                          {status.status_text} Likes: {status.likes}
                         </MDBCardText>
                         {status.status_image_url &&
                           /^http/.test(status.status_image_url) && (
