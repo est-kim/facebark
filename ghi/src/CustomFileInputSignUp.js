@@ -32,7 +32,7 @@ const CustomFileInputSignup = ({ onChange, reset, showSuccessMessage }) => {
           accept="image/*,video/*" // Add this line to accept both image and video files
         />
         <label htmlFor="new_image" className="custom-file-label">
-          <MDBIcon icon="cloud-upload-alt" /> Choose Picture or Video (Optional)
+          <MDBIcon icon="cloud-upload-alt" /> Choose Profile Picture
         </label>
       </div>
       {showSuccessMessage && fileName && (

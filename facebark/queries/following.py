@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Optional, List, Union
+from typing import List, Union
 from queries.pool import pool
 from queries.accounts import AccountOut
 from datetime import datetime, timedelta, timezone

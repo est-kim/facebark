@@ -13,7 +13,6 @@ import {
   MDBCardText,
   MDBCardFooter,
   MDBInput,
-  MDBSpinner,
 } from "mdb-react-ui-kit";
 import AccountUpdateModal from "./AccountUpdateModal";
 import CustomFileInput from "./CustomFileInput";
@@ -261,7 +260,6 @@ function AccountDetailPage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setLoading(true);
 
     const imageData = new FormData();
     imageData.append("file", image);
@@ -325,8 +323,6 @@ function AccountDetailPage() {
       }
     } catch (error) {
       console.log(error);
-    } finally {
-      setLoading(false); // Set loading back to false after the request is completed
     }
   };
 
@@ -485,11 +481,6 @@ function AccountDetailPage() {
                       padding: "2% 2%",
                     }}
                   >
-                    {loading && (
-                      <div className="spinner-container">
-                        <MDBSpinner grow />
-                      </div>
-                    )}
                     <form onSubmit={handleSubmit} id="status-update">
                       <MDBInput
                         onChange={handleStatusChange}

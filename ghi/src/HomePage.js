@@ -384,7 +384,7 @@ function HomePage() {
                               }}
                               alt=""
                             />
-                          ) : /\.(mp4|webm|ogg|avi|mkv|mpg)$/i.test(
+                          ) : /\.(mp4|webm|ogg|avi|mkv|mpg|mov)$/i.test(
                               status.status_image_url
                             ) ? (
                             <video
