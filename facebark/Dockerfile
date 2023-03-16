@@ -15,7 +15,7 @@ COPY routers routers
 
 # If you're using a relational database with migrations,
 # uncomment the following line
-# COPY migrations migrations
+COPY migrations migrations
 COPY authenticator.py authenticator.py
 
 RUN python -m pip install -r requirements.txt
