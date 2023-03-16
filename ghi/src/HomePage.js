@@ -26,6 +26,7 @@ function HomePage() {
   const [likes, setLikes] = useState([]);
 
 
+
   const handleAccountClick = (id) => {
     if (!setIsLoggedIn) {
       navigate("/signup");
@@ -165,7 +166,7 @@ function HomePage() {
     paddingBottom: "0px",
     textAlign: "left",
   };
-
+  console.log(NewStatuses)
   return (
     <>
       <MDBRow>
@@ -285,18 +286,31 @@ function HomePage() {
                         <MDBCardText style={{ textAlign: "start" }}>
                           {status.status_text}
                         </MDBCardText>
-                        {status.status_image_url &&
-                          /^http/.test(status.status_image_url) && (
-                            <img
-                              src={status.status_image_url}
-                              className="img-thumbnail shoes"
-                              style={{
-                                width: "auto",
-                                height: "200px",
-                                marginTop: "0",
-                              }}
-                              alt=""
-                            />
+                            {
+                              status.status_image_url && /^http/.test(status.status_image_url) && (
+                                /\.(gif|jpe?g|tiff|png|webp|bmp)$/i.test(status.status_image_url) ? (
+                                  <img
+                                    src={status.status_image_url}
+                                    className="img-thumbnail shoes"
+                                    style={{
+                                      width: "auto",
+                                      height: "200px",
+                                      marginTop: "0",
+                                    }}
+                                    alt=""
+                                  />
+                                ) : /\.(mp4|webm|ogg|avi|mkv|mpg)$/i.test(status.status_image_url) ? (
+                                  <video
+                                    src={status.status_image_url}
+                                    className="img-thumbnail shoes"
+                                    style={{
+                                      width: "auto",
+                                      height: "400px",
+                                      marginTop: "0",
+                                    }}
+                                    controls
+                                  />
+                                ) : null
                           )}
                           <MDBCardFooter style={{ paddingLeft: "0px" }}>
                           <a href="#" onClick={handleLikeClick} data-status-id={status.id} className="d-flex align-items-center">

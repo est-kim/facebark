@@ -21,7 +21,6 @@ function SignUpForm() {
   const [dogName, setDogName] = useState("");
   const [selectedGender, setGender] = useState("");
   const [selectedBreed, setBreed] = useState("");
-  const [dogImage, setDogImage] = useState("");
   const [birthday, setBirthday] = useState("");
   const [description, setDescription] = useState("");
   const [breeds, setBreeds] = useState([]);
@@ -31,7 +30,7 @@ function SignUpForm() {
   const [existing, setExisting] = useState(false);
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
-  const [showAlert, setShowAlert] = useState(false);
+  const [dogImage, setDogImage] = useState("");
 
   const handleOwnerNameChange = (event) => {
     setOwnerName(event.target.value);
@@ -68,7 +67,7 @@ function SignUpForm() {
   };
 
   const handleDogImageChange = (event) => {
-    setDogImage(event.target.value);
+    setDogImage(event.target.files[0]);
   };
 
   const handleBirthdayChange = (event) => {
@@ -77,14 +76,6 @@ function SignUpForm() {
 
   const handleDescriptionChange = (event) => {
     setDescription(event.target.value);
-  };
-
-  const handleAlertClick = () => {
-    setShowAlert(true);
-  };
-
-  const handleCloseAlert = () => {
-    setShowAlert(false);
   };
 
   useEffect(() => {
@@ -113,8 +104,22 @@ function SignUpForm() {
     }
   }, [selectedStateId]);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+    const handleSubmit = async (event) => {
+      event.preventDefault();
+
+    const imageData = new FormData();
+    imageData.append("file", dogImage);
+    imageData.append("new_image", dogImage.name);
+
+    const imageResponse = await fetch(
+      `${process.env.REACT_APP_FACEBARK_API_HOST}/accounts/image`,
+      {
+        method: "POST",
+        body: imageData,
+      }
+    );
+
+    const imageUrl = await imageResponse.text();
 
     const data = {};
     data.name = dogName;
@@ -124,14 +129,13 @@ function SignUpForm() {
     data.phone_number = phoneNumber;
     data.owner_name = ownerName;
     data.breed = selectedBreed;
-    data.image_url = dogImage.startsWith("http")
-      ? dogImage
-      : "https://cdn2.vectorstock.com/i/1000x1000/23/81/clip-art-animal-dog-dog-body-position-sitting-vector-25502381.jpg";
+    data.new_image = imageUrl.replace(/['"]+/g, '');
     data.dob = birthday;
     data.description = description;
     data.sex = selectedGender;
     data.city_id = selectedCityId;
     data.state_id = selectedStateId;
+    data.image_url = "0";
 
     const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/accounts`;
     const fetchConfig = {
@@ -141,6 +145,7 @@ function SignUpForm() {
         "Content-Type": "application/json",
       },
     };
+
     try {
       const response = await fetch(url, fetchConfig);
       if (response.ok) {
@@ -228,7 +233,38 @@ function SignUpForm() {
         setDescription("");
         setSubmitted(true);
         setExisting(false);
-        navigate("/login");
+
+        const signInData = new URLSearchParams();
+        console.log(username)
+        signInData.append("username", username);
+        console.log(password)
+        signInData.append("password", password);
+
+        const signInUrl = `${process.env.REACT_APP_FACEBARK_API_HOST}/token`;
+        const signInFetchConfig = {
+          method: "POST",
+          body: signInData,
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        };
+
+
+        const signInResponse = await fetch(signInUrl, signInFetchConfig);
+
+        if (signInResponse.ok) {
+          const signInResult = await signInResponse.json();
+
+          // Store the access token (you may use cookies, local storage, or other methods)
+          localStorage.setItem("access_token", signInResult.access_token);
+
+          // Redirect to the home page
+          navigate("/home");
+        } else {
+          const error = await signInResponse.json();
+          console.log("Error signing in:", error);
+        }
+
       } else {
         const error = await response.json();
         setExisting(true);
@@ -438,15 +474,14 @@ function SignUpForm() {
                           </select>
                         </MDBCol>
                       </MDBRow>
-                      <MDBInput
-                        onChange={handleDogImageChange}
-                        wrapperClass="mb-4"
-                        label="Photo URL"
-                        size="lg"
-                        id="image_url"
-                        name="image_url"
-                        type="url"
-                      />
+                        <MDBInput
+                          onChange={handleDogImageChange}
+                          wrapperClass="mb-4"
+                          size="lg"
+                          id="new_image"
+                          name="new_image"
+                          type="file"
+                        />
 
                       <MDBRow>
                         <MDBCol md="5">
@@ -505,104 +540,11 @@ function SignUpForm() {
                       {errorMessage && (
                         <p style={{ color: "red" }}>{errorMessage}</p>
                       )}
-                      <MDBRow>
-                        <MDBCol md="6">
-                          <span
-                            href="#"
-                            onClick={handleAlertClick}
-                            style={{
-                              textDecoration: "none",
-                              cursor: "pointer",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              height: "100%",
-                            }}
-                          >
-                            How do I get a picture URL?
-                          </span>
-                          {showAlert && (
-                            <div
-                              style={{
-                                position: "fixed",
-                                top: "0",
-                                left: "0",
-                                width: "100%",
-                                height: "100%",
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                backgroundColor: "rgba(0, 0, 0, 0.8)",
-                                zIndex: "9999",
-                              }}
-                              onClick={handleCloseAlert}
-                            >
-                              <div
-                                style={{
-                                  width: "50%",
-                                  height: "70%",
-                                  backgroundColor: "#fff",
-                                  border: "1px solid #ccc",
-                                  borderRadius: "5px",
-                                  padding: "20px",
-                                  overflow: "auto",
-                                }}
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                <div
-                                  style={{
-                                    fontSize: "20px",
-                                    marginBottom: "20px",
-                                  }}
-                                >
-                                  How to get a picture URL
-                                </div>
-                                <div
-                                  style={{
-                                    marginBottom: "20px",
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  To get the URL of a picture on your phone or
-                                  computer:
-                                </div>
-                                <ol style={{ textAlign: "left" }}>
-                                  <li>Find the picture you want to use</li>
-                                  <li>
-                                    Upload the picture to a hosting service or
-                                    cloud storage platform. Many free and paid
-                                    options are available, such as Facebook (not
-                                    Instagram), Imgur, Dropbox, or Google Drive
-                                  </li>
-                                  <li>
-                                    Once the picture is uploaded, right-click on
-                                    it and select "Copy image address" or "Copy
-                                    image URL"
-                                  </li>
-                                  <li>
-                                    Paste the picture URL in the "Photo URL" box
-                                  </li>
-                                </ol>
-                                <br />
-                                <MDBBtn
-                                  onClick={handleCloseAlert}
-                                  style={{
-                                    backgroundColor: "#FFBA00",
-                                    borderColor: "#FFBA00",
-                                    color: "#FFFFFF",
-                                  }}
-                                >
-                                  Close
-                                </MDBBtn>
-                              </div>
-                            </div>
-                          )}
-                        </MDBCol>
+                      <MDBRow className="justify-content-center">
                         <MDBCol md="6">
                           <MDBBtn
                             color="light"
                             size="md"
-                            className="text-center"
                             style={{ fontSize: "15px", textTransform: "none" }}
                           >
                             Sign Up

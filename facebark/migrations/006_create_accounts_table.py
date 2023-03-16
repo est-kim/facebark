@@ -16,7 +16,8 @@ steps = [
             owner_name VARCHAR(200) NOT NULL,
             description TEXT,
             city_id INT NOT NULL REFERENCES cities(id),
-            state_id INT NOT NULL REFERENCES states(id)
+            state_id INT NOT NULL REFERENCES states(id),
+            new_image TEXT
         );
         """,
         # "Down" SQL statement

@@ -16,38 +16,44 @@ import {
 } from "mdb-react-ui-kit";
 
 function AccountUpdateModal() {
-    const { token } = useAuthContext();
-    const [, setAccount] = useState([]);
-    const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
-    const [phone_number, setPhoneNumber] = useState("");
-    const [name, setName] = useState("");
-    const [image_url, setImageUrl] = useState("");
-    const [description, setDescription] = useState("");
-    const [updateModal, setUpdateModal] = useState(false);
-    const toggleShow = () => setUpdateModal(!updateModal);
-    const { accountId } = useParams();
+  const { token } = useAuthContext();
+  const [, setAccount] = useState([]);
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone_number, setPhoneNumber] = useState("");
+  const [name, setName] = useState("");
+  const [, setImageUrl] = useState("");
+  const [new_image, setNewImage] = useState("");
+  const [description, setDescription] = useState("");
+  const [updateModal, setUpdateModal] = useState(false);
+  const toggleShow = () => setUpdateModal(!updateModal);
+  const { accountId } = useParams();
 
-    useEffect(() => {
-        const fetchAccountData = async () => {
-            const URL = `${process.env.REACT_APP_FACEBARK_API_HOST}/accounts`;
-            const response = await fetch(URL, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+  useEffect(() => {
+    const fetchAccountData = async () => {
+      const URL = `${process.env.REACT_APP_FACEBARK_API_HOST}/accounts`;
+      const response = await fetch(URL, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-            if (response.ok) {
-            const data = await response.json();
-                setAccount(data);
-                setUsername(data.username);
-                setEmail(data.email);
-                setPhoneNumber(data.phone_number);
-                setName(data.name);
-                setImageUrl(data.image_url);
-                setDescription(data.description);
-            }
-        };
-        fetchAccountData();
-    }, [token]);
+      if (response.ok) {
+        const data = await response.json();
+        setAccount(data);
+
+        // Find the account with the matching ID and set the form input values
+        const currentAccount = data.find((a) => a.id === parseInt(accountId));
+        if (currentAccount) {
+          setUsername(currentAccount.username);
+          setEmail(currentAccount.email);
+          setPhoneNumber(currentAccount.phone_number);
+          setName(currentAccount.name);
+          setImageUrl(currentAccount.image_url);
+          setDescription(currentAccount.description);
+        }
+      }
+    };
+    fetchAccountData();
+  }, [token, accountId]);
 
 
     const handleUsernameChange = (event) => {
@@ -70,9 +76,8 @@ function AccountUpdateModal() {
         setName(value);
     };
 
-    const handleImageUrlChange = (event) => {
-        const value = event.target.value;
-        setImageUrl(value);
+    const handleNewImageChange = (event) => {
+      setNewImage(event.target.files[0]);
     };
 
     const handleDescriptionChange = (event) => {
@@ -83,6 +88,19 @@ function AccountUpdateModal() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+    const imageData = new FormData();
+    imageData.append("file", new_image);
+    imageData.append("new_image", new_image.name);
+
+    const imageResponse = await fetch(
+      `${process.env.REACT_APP_FACEBARK_API_HOST}/accounts/image`,
+      {
+        method: "POST",
+        body: imageData,
+      }
+    );
+
+    const imageUrl = await imageResponse.text();
         const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/accounts/${accountId}`;
         const fetchConfig = {
             method: "put",
@@ -91,8 +109,10 @@ function AccountUpdateModal() {
                 email: email,
                 phone_number: phone_number,
                 name: name,
-                image_url: image_url,
+                image_url: "0",
                 description: description,
+                new_image: imageUrl.replace(/['"]+/g, ''),
+
             }),
             headers: {
                 "Content-Type": "application/json",
@@ -106,6 +126,11 @@ function AccountUpdateModal() {
             window.location.reload();
         };
     };
+
+
+    // for (let a of account)
+    //   if(a["id"] == accountId)
+    //     my_account = a
 
     return (
       <>
@@ -152,6 +177,8 @@ function AccountUpdateModal() {
                         id="username"
                         name="username"
                         type="text"
+                        value={username}
+                        required
                       />
                       <MDBInput
                         onChange={handleEmailChange}
@@ -161,6 +188,8 @@ function AccountUpdateModal() {
                         id="email"
                         name="email"
                         type="email"
+                        value={email}
+                        required
                       />
                       <MDBInput
                         onChange={handlePhoneNumberChange}
@@ -171,6 +200,8 @@ function AccountUpdateModal() {
                         name="phone_number"
                         type="tel"
                         maxLength={12}
+                        value={phone_number}
+                        required
                       />
                       <MDBInput
                         onChange={handleNameChange}
@@ -180,16 +211,19 @@ function AccountUpdateModal() {
                         id="name"
                         name="name"
                         type="text"
+                        value={name}
+                        required
                       />
-                      <MDBInput
-                        onChange={handleImageUrlChange}
-                        wrapperClass="mb-4"
-                        label="Photo URL"
-                        size="lg"
-                        id="image_url"
-                        name="image_url"
-                        type="url"
-                      />
+                        <MDBInput
+                          onChange={handleNewImageChange}
+                          wrapperClass="mb-4"
+                          size="lg"
+                          id="new_image"
+                          name="new_image"
+                          type="file"
+                          required
+
+                        />
                       <MDBInput
                         onChange={handleDescriptionChange}
                         wrapperClass="mb-4"
@@ -198,6 +232,8 @@ function AccountUpdateModal() {
                         id="description"
                         name="description"
                         type="textarea"
+                        value={description}
+                        required
                       />
                     </div>
                     <div style={{ textAlign: "center" }}>

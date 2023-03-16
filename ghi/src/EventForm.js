@@ -398,21 +398,12 @@ function EventForm() {
                                 How to get a picture URL
                               </div>
                               <div style={{ marginBottom: "20px" }}>
-                                To get the URL of a picture on your phone or
-                                computer:
+                                To get the URL of a picture:
                               </div>
                               <ol>
-                                <li>Find the picture you want to use</li>
+                                <li>Find a picture of the park or location you want to use on the internet</li>
                                 <li>
-                                  Upload the picture to a hosting service or
-                                  cloud storage platform. Many free and paid
-                                  options are available, such as Facebook (not
-                                  Instagram), Imgur, Dropbox, or Google Drive
-                                </li>
-                                <li>
-                                  Once the picture is uploaded, right-click on
-                                  it and select "Copy image address" or "Copy
-                                  image URL"
+                                  Right click on the picture and select either "Copy Image Address" or "Copy Image Link"
                                 </li>
                                 <li>
                                   Paste the picture URL in the "Picture" box

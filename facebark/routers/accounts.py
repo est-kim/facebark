@@ -5,6 +5,8 @@ from fastapi import (
     APIRouter,
     Request,
     status,
+    File,
+    UploadFile
 )
 from jwtdown_fastapi.authentication import Token
 from authenticator import authenticator
@@ -19,6 +21,10 @@ from queries.accounts import (
     AccountRepository,
     DuplicateAccountError,
 )
+import boto3
+from mimetypes import guess_type
+from tempfile import NamedTemporaryFile
+from moviepy.editor import VideoFileClip
 
 
 class AccountForm(BaseModel):
@@ -34,7 +40,68 @@ class AccountToken(Token):
     account: AccountOutWithPassword
 
 
+AWS_ACCESS_KEY = "AKIAX5NY4QUFBRKBLF5I"
+AWS_SECRET_ACCESS_KEY = "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"
+
+
+s3 = boto3.client("s3",
+                  region_name="us-west-1",
+                  aws_access_key_id=AWS_ACCESS_KEY,
+                  aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+
+BUCKET_NAME = "facebark-pictures"
+
+
 router = APIRouter()
+
+
+def convert_mov_to_mp4(input_file, output_file):
+    clip = VideoFileClip(input_file)
+    clip.write_videofile(output_file, codec='libx264', audio_codec='aac')
+
+
+@router.post("/accounts/image")
+async def upload_image(
+    file: UploadFile = File(...),
+) -> str:
+    print("Received file:", file.filename)
+    print("Content type:", file.content_type)
+
+    try:
+        contents = await file.read()
+        key = file.filename
+
+        # Check if the file is a .MOV video
+        if file.content_type == "video/quicktime":
+            print("Converting .mov to .mp4...")
+            with NamedTemporaryFile(delete=False, suffix=".mov") as temp_input_file:
+                temp_input_file.write(contents)
+                temp_input_file.flush()  # Make sure the contents are written to the file
+
+                with NamedTemporaryFile(delete=False, suffix=".mp4") as temp_output_file:
+                    convert_mov_to_mp4(temp_input_file.name, temp_output_file.name)  # Call the conversion function here
+
+                    with open(temp_output_file.name, "rb") as f:
+                        contents = f.read()
+
+                key = key.replace(".MOV", ".mp4")
+
+        content_type, _ = guess_type(key)
+        print("Uploading the file to S3...")
+        s3.put_object(
+            Bucket=BUCKET_NAME,
+            Key=key,
+            Body=contents,
+            ContentType=content_type,
+            Metadata={
+                "Content-Type": content_type,
+            },
+        )
+        image_url = f"https://{BUCKET_NAME}.s3.amazonaws.com/{key}"
+        return image_url
+    except Exception as e:
+        print("Error during conversion or upload:", str(e))  # Add this line
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.get("/token", response_model=AccountToken | None)
