@@ -27,7 +27,6 @@ class StatusOut(BaseModel):
     time_stamp: datetime = Field(default_factory=get_pst_time)
     image_url: str
     account_id: int
-    likes: int
 
 
 class StatusesOut(BaseModel):
@@ -49,14 +48,10 @@ class StatusRepository:
                             s.status_text,
                             s.time_stamp,
                             s.account_id,
-                            s.image_url,
-                            COUNT(l.*)
+                            s.image_url
                         FROM statuses s
                         LEFT JOIN accounts a
                             ON (a.id = s.account_id)
-                        LEFT JOIN likes l
-                            ON (l.status_id = s.id)
-                        GROUP BY s.id
                         ORDER BY time_stamp DESC;
                         """,
                     )
@@ -68,7 +63,6 @@ class StatusRepository:
                             time_stamp=record[2],
                             account_id=record[3],
                             image_url=record[4],
-                            likes=record[5],
                         )
                         result.append(status)
                     return result
@@ -86,15 +80,11 @@ class StatusRepository:
                         s.status_text,
                         s.time_stamp,
                         s.account_id,
-                        s.image_url,
-                        COUNT(l.*)
+                        s.image_url
                     FROM statuses s
-                    LEFT JOIN likes l
-                        ON (l.status_id = s.id)
                     LEFT JOIN accounts a
                         ON (a.id = s.account_id)
                     WHERE s.account_id = %s
-                    GROUP BY s.id
                     ORDER BY time_stamp DESC;
                         """,
                         [account_id],
@@ -107,7 +97,6 @@ class StatusRepository:
                             time_stamp=record[2],
                             account_id=record[3],
                             image_url=record[4],
-                            likes=record[5],
                         )
                         result.append(status)
                     return result
@@ -127,7 +116,7 @@ class StatusRepository:
                         (status_text, account_id, image_url)
                     VALUES
                         (%s, %s, %s)
-                    RETURNING id, status_text, time_stamp, account_id, image_url, likes;
+                    RETURNING id, status_text, time_stamp, account_id, image_url;
                     """,
                     # to pass in values to our SQL statement
                     [status.status_text, status.account_id, status.image_url],
@@ -165,7 +154,6 @@ class StatusRepository:
             time_stamp=time_stamp,
             account_id=record[3],
             image_url=record[4],
-            likes=record[5],
         )
 
     def status_record_to_dict(self, row, description):
@@ -178,7 +166,6 @@ class StatusRepository:
                 "time_stamp",
                 "account_id",
                 "image_url",
-                "likes",
             ]
             for i, column in enumerate(description):
                 if column.name in status_fields:

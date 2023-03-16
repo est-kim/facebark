@@ -1,4 +1,6 @@
 import {
+  MDBBtn,
+  MDBIcon,
   MDBCard,
   MDBCardBody,
   MDBCardTitle,
@@ -7,6 +9,7 @@ import {
   MDBCol,
   MDBCardImage,
   MDBRipple,
+  MDBCardFooter
 } from "mdb-react-ui-kit";
 import { useEffect, useState } from "react";
 import { useAuthContext, getTokenInternal, useToken } from "./Authentication";
@@ -19,6 +22,8 @@ function HomePage() {
   const [token] = useToken();
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
+  const [liked, setLiked] = useState(false);
+  const [likes, setLikes] = useState([]);
 
 
   const handleAccountClick = (id) => {
@@ -28,6 +33,37 @@ function HomePage() {
       navigate(`/accounts/${id}`);
     }
   };
+
+  const handleLikeClick = async (event) => {
+    event.preventDefault();
+    const statusId = event.currentTarget.getAttribute("data-status-id");
+    const data = {};
+    data.status_id = statusId;
+    data.account_id = userId;
+    const eventUrl = `${process.env.REACT_APP_FACEBARK_API_HOST}/likes`; // insert api call here
+    const fetchConfig = {
+      method: "post",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
+    try {
+      const response = await fetch(eventUrl, fetchConfig);
+      if (response.ok) {
+        fetch(`${process.env.REACT_APP_FACEBARK_API_HOST}/likes/${statusId}`)
+          .then((response) => response.json())
+          .then((data) => setLikes(data.likes))
+          .catch((error) => console.log(error));
+        setLiked(true);
+      } else {
+        await response.json();
+        setLiked(false);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
 
   useEffect(() => {
@@ -247,7 +283,7 @@ function HomePage() {
                           , {status.name} posted:
                         </MDBCardText>
                         <MDBCardText style={{ textAlign: "start" }}>
-                          {status.status_text} Likes: {status.likes}
+                          {status.status_text}
                         </MDBCardText>
                         {status.status_image_url &&
                           /^http/.test(status.status_image_url) && (
@@ -262,6 +298,20 @@ function HomePage() {
                               alt=""
                             />
                           )}
+                          <MDBCardFooter style={{ paddingLeft: "0px" }}>
+                          <a href="#" onClick={handleLikeClick} data-status-id={status.id} className="d-flex align-items-center">
+                            <MDBIcon
+                              far
+                              icon="heart"
+                              size="lg"
+                              style={{ color: "#FFA7A7", marginRight: "5px" }}
+                            />
+                            <h5 className="m-0" style={{ color: "#444444" }}>
+                              {status.likes}
+                            </h5>
+                          </a>
+                        </MDBCardFooter>
+
                       </div>
                     </MDBCard>
                   ))}
