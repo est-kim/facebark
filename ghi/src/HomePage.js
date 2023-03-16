@@ -31,10 +31,10 @@ function HomePage() {
   const [token] = useToken();
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
+  const [likedStatuses, setLikedStatuses] = useState([]);
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState([]);
   const [isLiking, setIsLiking] = useState(false);
-  const [likedStatuses, setLikedStatuses] = useState([]);
   // const currentLikedStatusIds = likes.map((like) => like.status_id.toString());
 
 
@@ -46,6 +46,20 @@ function HomePage() {
     }
   };
 
+  useEffect(() => {
+    async function fetchLikedStatuses() {
+      const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/likes`;
+      const response = await fetch(url);
+      if (response.ok) {
+        const data = await response.json();
+        setLikedStatuses(data);
+      }
+    }
+
+    fetchLikedStatuses();
+  }, []);
+
+  // handle the like click event
   const handleLikeClick = async (event) => {
     event.preventDefault();
     const statusId = event.currentTarget.getAttribute("data-status-id");
@@ -54,13 +68,14 @@ function HomePage() {
     data.account_id = userId;
     const eventUrl = `${process.env.REACT_APP_FACEBARK_API_HOST}/likes`;
 
-    // Fetch the list of likes for the given status ID
-    const likesUrl = `${process.env.REACT_APP_FACEBARK_API_HOST}/likes/${statusId}`;
-    const likesResponse = await fetch(likesUrl);
-    const likesData = await likesResponse.json();
-
     // Check if the current user has already liked the status
-    if (likesData.some((like) => like.account_id === parseInt(userId))) {
+    if (
+      likedStatuses.some(
+        (like) =>
+          like.status_id === parseInt(statusId) &&
+          like.account_id === parseInt(userId)
+      )
+    ) {
       // Disable the like button
       return;
     }
@@ -75,14 +90,17 @@ function HomePage() {
     try {
       const response = await fetch(eventUrl, fetchConfig);
       if (response.ok) {
+        // Update the liked statuses in the state
+        const updatedLikedStatuses = [...likedStatuses, data];
+        setLikedStatuses(updatedLikedStatuses);
+
         const updatedStatuses = statuses.map((status) => {
           if (status.id === parseInt(statusId)) {
-            const isLiked = isStatusLiked(statusId, userId, likesData);
             return {
               ...status,
               likes: status.likes + 1,
               liked: true,
-              isLiked: isLiked, // Add a new property to the status object
+              isLiked: true,
             };
           } else {
             return status;
@@ -98,6 +116,32 @@ function HomePage() {
   };
 
 
+  async function getStatusesOfAccountsFollowing() {
+    if (userId) {
+      const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/feed/${userId}`;
+      const response = await fetch(url);
+      if (response.ok) {
+        const data = await response.json();
+        // Check if the current user has liked each status
+        const updatedStatuses = data.map((status) => {
+          const isLiked = isStatusLiked(status.id, userId, likedStatuses);
+          return {
+            ...status,
+            liked: isLiked,
+            isLiked: isLiked,
+          };
+        });
+        setStatuses(updatedStatuses);
+        setLiked(updatedStatuses.some((status) => status.liked));
+      }
+    }
+  }
+
+  useEffect(() => {
+    getStatusesOfAccountsFollowing();
+  }, [userId, token]);
+
+
   useEffect(() => {
     async function fetchLikedStatuses() {
       const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/likes`;
@@ -107,8 +151,10 @@ function HomePage() {
         setLikedStatuses(data);
       }
     }
+
     fetchLikedStatuses();
   }, []);
+
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -135,19 +181,19 @@ function HomePage() {
     getUserId();
   }, [token]);
 
-  useEffect(() => {
-    async function getStatusesOfAccountsFollowing() {
-      if (userId) {
-        const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/feed/${userId}`;
-        const response = await fetch(url);
-        if (response.ok) {
-          const data = await response.json();
-          setStatuses(data);
-        }
-      }
-    }
-    getStatusesOfAccountsFollowing();
-  }, [userId, token]);
+  // useEffect(() => {
+  //   async function getStatusesOfAccountsFollowing() {
+  //     if (userId) {
+  //       const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/feed/${userId}`;
+  //       const response = await fetch(url);
+  //       if (response.ok) {
+  //         const data = await response.json();
+  //         setStatuses(data);
+  //       }
+  //     }
+  //   }
+  //   getStatusesOfAccountsFollowing();
+  // }, [userId, token]);
 
   useEffect(() => {
     async function getEventsInUserState() {
