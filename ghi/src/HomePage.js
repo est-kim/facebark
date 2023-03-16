@@ -220,7 +220,11 @@ function HomePage() {
                             }}
                           >
                             <MDBCardImage
-                              src={status.account_image_url === "0" ? status.account_new_image : status.account_image_url}
+                              src={
+                                status.account_image_url === "0"
+                                  ? status.account_new_image
+                                  : status.account_image_url
+                              }
                               className="img-thumbnail profile pic"
                               style={{
                                 width: "150px",
@@ -284,34 +288,42 @@ function HomePage() {
                         <MDBCardText style={{ textAlign: "start" }}>
                           {status.status_text}
                         </MDBCardText>
-                           {
-                              status.status_image_url && /^http/.test(status.status_image_url) && (
-                                /\.(gif|jpe?g|tiff|png|webp|bmp)$/i.test(status.status_image_url) ? (
-                                  <img
-                                    src={status.status_image_url}
-                                    className="img-thumbnail shoes"
-                                    style={{
-                                      width: "auto",
-                                      height: "200px",
-                                      marginTop: "0",
-                                    }}
-                                    alt=""
-                                  />
-                                ) : /\.(mp4|webm|ogg|avi|mkv|mpg)$/i.test(status.status_image_url) ? (
-                                  <video
-                                    src={status.status_image_url}
-                                    className="img-thumbnail shoes"
-                                    style={{
-                                      width: "auto",
-                                      height: "400px",
-                                      marginTop: "0",
-                                    }}
-                                    controls
-                                  />
-                                ) : null
-                          )}
-                          <MDBCardFooter style={{ paddingLeft: "0px" }}>
-                          <a href="#" onClick={handleLikeClick} data-status-id={status.id} className="d-flex align-items-center">
+                        {status.status_image_url &&
+                          /^http/.test(status.status_image_url) &&
+                          (/\.(gif|jpe?g|tiff|png|webp|bmp)$/i.test(
+                            status.status_image_url
+                          ) ? (
+                            <img
+                              src={status.status_image_url}
+                              className="img-thumbnail shoes"
+                              style={{
+                                width: "auto",
+                                height: "200px",
+                                marginTop: "0",
+                              }}
+                              alt=""
+                            />
+                          ) : /\.(mp4|webm|ogg|avi|mkv|mpg)$/i.test(
+                              status.status_image_url
+                            ) ? (
+                            <video
+                              src={status.status_image_url}
+                              className="img-thumbnail shoes"
+                              style={{
+                                width: "auto",
+                                height: "400px",
+                                marginTop: "0",
+                              }}
+                              controls
+                            />
+                          ) : null)}
+                        <MDBCardFooter style={{ paddingLeft: "0px" }}>
+                          <a
+                            href="#"
+                            onClick={handleLikeClick}
+                            data-status-id={status.id}
+                            className="d-flex align-items-center"
+                          >
                             <MDBIcon
                               far
                               icon="heart"
@@ -323,7 +335,6 @@ function HomePage() {
                             </h5>
                           </a>
                         </MDBCardFooter>
-
                       </div>
                     </MDBCard>
                   ))}

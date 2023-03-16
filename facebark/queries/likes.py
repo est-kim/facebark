@@ -1,10 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional, List, Union, Dict
 from queries.pool import pool
-from queries.accounts import AccountOut
 from datetime import datetime, timedelta, timezone
-
-# from queries.statuses import StatusOut
 
 
 def get_pst_time() -> datetime:
@@ -97,20 +94,6 @@ class LikeRepository:
                         return LikeOut(id=id, status_id=status_id, account_id=account_id)
                     else:
                         return {"detail": "Failed to create like record"}
-        # with pool.connection() as conn:
-        #     with conn.cursor() as db:
-        #         result = db.execute(
-        #             """
-        #             INSERT INTO likes
-        #                 (status_id, account_id)
-        #             VALUES
-        #                 (%s, %s)
-        #             RETURNING id;
-        #             """,
-        #             [like.status_id, like.account_id],
-        #         )
-        #         id = result.fetchone()[0]
-        #         return self.like_in_to_out(id, like)
 
     def get_likes_by_status_id(self, status_id: int) -> List[LikeOut]:
         try:
@@ -142,95 +125,6 @@ class LikeRepository:
                     return result
         except Exception:
             return {"message": "Could not get all likes by status id"}
-
-    # def get_all_likes_for_one_status(
-    #     self, status_id: int
-    # ) -> List[LikeOut]:
-    #     try:
-    #         with pool.connection() as conn:
-    #             with conn.cursor() as db:
-    #                 result = db.execute(
-    #                     """
-    #                     SELECT l.id
-    #                         , l.status_id
-    #                         , l.account_id
-    #                     FROM likes AS l
-    #                     WHERE l.status_id = %s
-    #                     """,
-    #                     [status_id],
-    #                 )
-    #                 result = []
-    #                 for record in db:
-    #                     like = LikeOut(
-    #                         id=record[0],
-    #                         status_id=record[1],
-    #                         account_id=record[2],
-    #                     )
-    #                     result.append(like)
-    #                 return result
-    #     except Exception:
-    #         return {"message": "Could not get those likes"}
-
-    # def delete(self, follower_id: int, followee_id: int) -> bool:
-    #     try:
-    #         with pool.connection() as conn:
-    #             with conn.cursor() as db:
-    #                 db.execute(
-    #                     """
-    #                     DELETE FROM following
-    #                     WHERE follower_id = %s
-    #                     AND followee_id = %s
-    #                     """,
-    #                     [follower_id, followee_id],
-    #                 )
-    #                 return True
-    #     except Exception:
-    #         return False
-
-    # def get_all_statuses_for_accounts_following(
-    #     self, account_id: int
-    # ) -> List[StatusOutVO]:
-    #     try:
-    #         with pool.connection() as conn:
-    #             with conn.cursor() as db:
-    #                 result = db.execute(
-    #                     """
-    #                     SELECT f.follower_id
-    #                         , f.followee_id
-    #                         , s.id
-    #                         , s.status_text
-    #                         , s.time_stamp
-    #                         , s.account_id
-    #                         , a.name
-    #                         , a.image_url
-    #                         , s.image_url
-    #                         , s.likes
-    #                     FROM following AS f
-    #                     INNER JOIN statuses AS s
-    #                         ON (f.followee_id = s.account_id)
-    #                     INNER JOIN accounts AS a
-    #                         ON (a.id = f.followee_id)
-    #                     WHERE f.follower_id = %s
-    #                     ORDER BY s.time_stamp DESC;
-    #                     """,
-    #                     [account_id],
-    #                 )
-    #                 result = []
-    #                 for record in db:
-    #                     status = StatusOutVO(
-    #                         id=record[2],
-    #                         status_text=record[3],
-    #                         time_stamp=record[4],
-    #                         account_id=record[5],
-    #                         name=record[6],
-    #                         account_image_url=record[7],
-    #                         status_image_url=record[8],
-    #                         likes=record[9],
-    #                     )
-    #                     result.append(status)
-    #                 return result
-    #     except Exception:
-    #         return {"message": "Could not get those status updates"}
 
     def like_in_to_out(self, id: int, like: LikeIn):
         old_data = like.dict()

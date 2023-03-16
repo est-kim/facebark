@@ -2,7 +2,6 @@ from fastapi import APIRouter, Depends, Response
 from typing import Union, List
 from queries.likes import LikeOut
 
-# from queries.statuses import StatusOut
 from queries.likes import (
     Error,
     LikeIn,
