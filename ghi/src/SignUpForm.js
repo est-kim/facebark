@@ -9,7 +9,6 @@ import {
   MDBCardBody,
   MDBInput,
 } from "mdb-react-ui-kit";
-import CustomFileInputSignUp from "./CustomFileInputSignUp";
 import CustomFileInputSignup from "./CustomFileInputSignUp";
 
 function SignUpForm() {
