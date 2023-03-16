@@ -24,8 +24,7 @@ from queries.accounts import (
 import boto3
 from mimetypes import guess_type
 from tempfile import NamedTemporaryFile
-# from moviepy.editor import VideoFileClip, vfx
-# import imageio
+import imageio
 
 
 class AccountForm(BaseModel):
