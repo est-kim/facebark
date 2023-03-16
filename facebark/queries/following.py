@@ -180,7 +180,7 @@ class FollowingRepository:
                         INNER JOIN accounts AS a
                             ON (a.id = f.followee_id)
                         WHERE f.follower_id = %s
-                        GROUP BY s.id, a.name, a.image_url
+                        GROUP BY s.id, a.name, a.image_url, a.new_image
                         ORDER BY s.time_stamp DESC;
                         """,
                         [account_id],

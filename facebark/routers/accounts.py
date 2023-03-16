@@ -24,8 +24,8 @@ from queries.accounts import (
 import boto3
 from mimetypes import guess_type
 from tempfile import NamedTemporaryFile
-from moviepy.editor import VideoFileClip
-
+from moviepy.editor import VideoFileClip, vfx
+import imageio
 
 class AccountForm(BaseModel):
     username: str
@@ -56,8 +56,20 @@ router = APIRouter()
 
 
 def convert_mov_to_mp4(input_file, output_file):
-    clip = VideoFileClip(input_file)
-    clip.write_videofile(output_file, codec='libx264', audio_codec='aac')
+    # Read the video file
+    reader = imageio.get_reader(input_file)
+
+    # Create a writer with the desired output format and codec
+    fps = reader.get_meta_data()['fps']
+    writer = imageio.get_writer(output_file, fps=fps, codec='libx264', format='mp4')
+
+    # Write each frame to the output file
+    for frame in reader:
+        writer.append_data(frame)
+
+    # Close the reader and writer
+    reader.close()
+    writer.close()
 
 
 @router.post("/accounts/image")
