@@ -59,6 +59,11 @@ function HomePage() {
     fetchLikedStatuses();
   }, []);
 
+
+  useEffect(() => {
+    getStatusesOfAccountsFollowing();
+  }, [userId, token, likedStatuses]);
+
   // handle the like click event
   const handleLikeClick = async (event) => {
     event.preventDefault();
@@ -116,6 +121,7 @@ function HomePage() {
   };
 
 
+
   async function getStatusesOfAccountsFollowing() {
     if (userId) {
       const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/feed/${userId}`;
@@ -137,23 +143,7 @@ function HomePage() {
     }
   }
 
-  useEffect(() => {
-    getStatusesOfAccountsFollowing();
-  }, [userId, token]);
 
-
-  useEffect(() => {
-    async function fetchLikedStatuses() {
-      const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/likes`;
-      const response = await fetch(url);
-      if (response.ok) {
-        const data = await response.json();
-        setLikedStatuses(data);
-      }
-    }
-
-    fetchLikedStatuses();
-  }, []);
 
 
   useEffect(() => {
