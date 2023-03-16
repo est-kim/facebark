@@ -176,20 +176,6 @@ function HomePage() {
     getUserId();
   }, [token]);
 
-  // useEffect(() => {
-  //   async function getStatusesOfAccountsFollowing() {
-  //     if (userId) {
-  //       const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/feed/${userId}`;
-  //       const response = await fetch(url);
-  //       if (response.ok) {
-  //         const data = await response.json();
-  //         setStatuses(data);
-  //       }
-  //     }
-  //   }
-  //   getStatusesOfAccountsFollowing();
-  // }, [userId, token]);
-
   useEffect(() => {
     async function getEventsInUserState() {
       if (userId) {
