@@ -4,9 +4,6 @@ from queries.pool import pool
 from queries.accounts import AccountOut
 from datetime import datetime, timedelta, timezone
 
-# from queries.statuses import StatusOut
-
-
 def get_pst_time() -> datetime:
     utc_time = datetime.utcnow()
     pst_offset = timedelta(hours=-8)
