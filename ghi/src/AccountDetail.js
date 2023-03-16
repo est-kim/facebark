@@ -15,7 +15,7 @@ import {
   MDBInput,
 } from "mdb-react-ui-kit";
 import AccountUpdateModal from "./AccountUpdateModal";
-import CustomFileInput from './CustomFileInput';
+import CustomFileInput from "./CustomFileInput";
 
 function AccountDetailPage() {
   const { isLoggedIn, setIsLoggedIn } = useAuthContext();
@@ -39,8 +39,21 @@ function AccountDetailPage() {
 
   const isVideo = (url) => {
     const videoExtensions = [
-      '.mp4', '.webm', '.ogg', '.mov', // Previously included formats
-      '.mkv', '.flv', '.avi', '.wmv', '.mpeg', '.m4v', '.3gp', '.f4v', '.f4p', '.f4a', '.f4b'
+      ".mp4",
+      ".webm",
+      ".ogg",
+      ".mov", // Previously included formats
+      ".mkv",
+      ".flv",
+      ".avi",
+      ".wmv",
+      ".mpeg",
+      ".m4v",
+      ".3gp",
+      ".f4v",
+      ".f4p",
+      ".f4a",
+      ".f4b",
     ];
     return videoExtensions.some((ext) => url.endsWith(ext));
   };
@@ -248,7 +261,7 @@ function AccountDetailPage() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-  const imageData = new FormData();
+    const imageData = new FormData();
     imageData.append("file", image);
     imageData.append("new_image", image.name);
 
@@ -273,7 +286,7 @@ function AccountDetailPage() {
 
     data.account_id = parseInt(accountId);
     data.status_text = status;
-    data.image_url = imageUrl.replace(/['"]+/g, '');
+    data.image_url = imageUrl.replace(/['"]+/g, "");
 
     const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/statuses`;
     const fetchConfig = {
@@ -298,12 +311,12 @@ function AccountDetailPage() {
         setResetInput(true);
         setShowSuccessMessage(false);
 
-    // After a short delay, set it back to false
+        // After a short delay, set it back to false
         setTimeout(() => {
           setResetInput(false);
         }, 500);
 
-        fileInputRef.current.value = '';
+        fileInputRef.current.value = "";
       } else {
         await response.json();
         setSubmitted(false);
@@ -338,8 +351,6 @@ function AccountDetailPage() {
     aspectRatio: "1 / 1",
   };
 
-
-
   return (
     <div className="list-bg">
       <MDBRow style={{ padding: "50px" }}>
@@ -351,7 +362,11 @@ function AccountDetailPage() {
             <MDBCardBody style={{ paddingTop: "50px" }}>
               <MDBCardText>
                 <img
-                  src={account.new_image !== "0" ? account.new_image : account.image_url}
+                  src={
+                    account.new_image !== "0"
+                      ? account.new_image
+                      : account.image_url
+                  }
                   alt={account.name}
                   className="card-img-top img-fluid"
                   style={{
@@ -510,7 +525,8 @@ function AccountDetailPage() {
             statuses.map(
               (status) =>
                 (parseInt(accountId) === userId ||
-                  (parseInt(accountId) !== userId && status.status_text[0] !== "<")) && (
+                  (parseInt(accountId) !== userId &&
+                    status.status_text[0] !== "<")) && (
                   <MDBRow className="mb-4" key={status.id}>
                     <MDBCol>
                       <MDBCard
@@ -522,50 +538,51 @@ function AccountDetailPage() {
                         <div style={{ fontWeight: 550 }}>
                           {formatTimeStamp(status.time_stamp)}
                         </div>
-                          <MDBRow>
-                            {status.image_url ? (
-                              <>
-                                <MDBCol md="8">
-                                  <div>{status.status_text}</div>
-                                </MDBCol>
-                                  {status.image_url.substring(0, 4) === "http" && (
-                                    <MDBCol md="4">
-                                      {isVideo(status.image_url) ? (
-                                        <video
-                                          src={status.image_url}
-                                          alt="status"
-                                          style={imgStyle}
-                                          controls
-                                          preload="metadata"
-                                          playsInline
-                                        >
-                                          Your browser does not support the video tag.
-                                        </video>
-                                      ) : (
-                                        <img
-                                          src={status.image_url}
-                                          alt="status"
-                                          style={imgStyle}
-                                        />
-                                      )}
-                                    </MDBCol>
-                                  )}
-                              </>
-                            ) : (
-                              <MDBCol md="12">
+                        <MDBRow>
+                          {status.image_url ? (
+                            <>
+                              <MDBCol md="8">
                                 <div>{status.status_text}</div>
                               </MDBCol>
-                            )}
-                          </MDBRow>
+                              {status.image_url.substring(0, 4) === "http" && (
+                                <MDBCol md="4">
+                                  {isVideo(status.image_url) ? (
+                                    <video
+                                      src={status.image_url}
+                                      alt="status"
+                                      style={imgStyle}
+                                      controls
+                                      preload="metadata"
+                                      playsInline
+                                    >
+                                      Your browser does not support the video
+                                      tag.
+                                    </video>
+                                  ) : (
+                                    <img
+                                      src={status.image_url}
+                                      alt="status"
+                                      style={imgStyle}
+                                    />
+                                  )}
+                                </MDBCol>
+                              )}
+                            </>
+                          ) : (
+                            <MDBCol md="12">
+                              <div>{status.status_text}</div>
+                            </MDBCol>
+                          )}
+                        </MDBRow>
                       </MDBCard>
                     </MDBCol>
                   </MDBRow>
                 )
             )}
-          </MDBCol>
-          </MDBRow>
-          </div>
-          );
-          }
+        </MDBCol>
+      </MDBRow>
+    </div>
+  );
+}
 
 export default AccountDetailPage;

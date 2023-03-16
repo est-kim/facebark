@@ -1,10 +1,8 @@
 from pydantic import BaseModel, Field
-from typing import Optional, List, Union
+from typing import List, Union
 from queries.pool import pool
 from queries.accounts import AccountOut
 from datetime import datetime, timedelta, timezone
-
-# from queries.statuses import StatusOut
 
 
 def get_pst_time() -> datetime:
@@ -37,10 +35,10 @@ class StatusOutVO(BaseModel):
     status_text: str
     time_stamp: datetime = Field(default_factory=lambda: get_pst_time())
     account_id: int
-    comment_id: Optional[int]
     name: str
     account_image_url: str
     status_image_url: str
+    likes: int
     account_new_image: str
 
 
@@ -163,9 +161,7 @@ class FollowingRepository:
                 with conn.cursor() as db:
                     result = db.execute(
                         """
-                        SELECT f.follower_id
-                            , f.followee_id
-                            , s.id
+                        SELECT s.id
                             , s.status_text
                             , s.time_stamp
                             , s.account_id
@@ -173,12 +169,16 @@ class FollowingRepository:
                             , a.image_url
                             , s.image_url
                             , a.new_image
+                            , COUNT(l.*)
                         FROM following AS f
-                        INNER JOIN statuses AS s
+                        LEFT JOIN statuses AS s
                             ON (f.followee_id = s.account_id)
+                        LEFT JOIN likes AS l
+                            ON (l.status_id = s.id)
                         INNER JOIN accounts AS a
                             ON (a.id = f.followee_id)
                         WHERE f.follower_id = %s
+                        GROUP BY s.id, a.name, a.image_url, a.new_image
                         ORDER BY s.time_stamp DESC;
                         """,
                         [account_id],
@@ -186,14 +186,15 @@ class FollowingRepository:
                     result = []
                     for record in db:
                         status = StatusOutVO(
-                            id=record[2],
-                            status_text=record[3],
-                            time_stamp=record[4],
-                            account_id=record[5],
-                            name=record[6],
-                            account_image_url=record[7],
-                            status_image_url=record[8],
-                            account_new_image=record[9],
+                            id=record[0],
+                            status_text=record[1],
+                            time_stamp=record[2],
+                            account_id=record[3],
+                            name=record[4],
+                            account_image_url=record[5],
+                            status_image_url=record[6],
+                            account_new_image=record[7],
+                            likes=record[8],
                         )
                         result.append(status)
                     return result

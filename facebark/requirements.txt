@@ -63,3 +63,5 @@ boto3==1.18.64
 Pillow==8.4.0
 imageio-ffmpeg
 moviepy
+ffmpeg-python==0.2.0
+imageio

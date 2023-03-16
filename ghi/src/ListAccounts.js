@@ -8,7 +8,9 @@ import {
   MDBCardImage,
   MDBCardTitle,
   MDBRipple,
-  MDBCardText
+  MDBCardText,
+  MDBInput,
+  MDBBtn
 } from "mdb-react-ui-kit";
 
 
@@ -193,7 +195,7 @@ function AccountList() {
               }}
               className="shadow p-4 mt-4"
             >
-              <h5>Sniff Out Other Dogs  </h5>
+              <h5>Sniff Out Other Dogs </h5>
               <form id="create-account-form">
                 <div className="mb-3">
                   <select
@@ -237,19 +239,29 @@ function AccountList() {
               </form>
               <form onSubmit={handleSubmit} id="create-account-form">
                 <div className="form-floating mb-3">
-                  <input
+                  <MDBInput
                     onChange={handleNameChange}
                     value={name}
-                    placeholder="Name"
-                    required
+                    label="Enter name"
                     type="text"
                     name="name"
                     id="name"
+                    size="lg"
                     className="form-control"
                   />
-                  <label htmlFor="vin">Enter Name </label>
                 </div>
-                <button className="btn btn-outline-warning">Search</button>
+                <MDBBtn
+                  style={{
+                    margin: "10px",
+                    backgroundColor: "#9ecdc6",
+                    fontSize: "15px",
+                    padding: "5px 15px",
+                    boxShadow: "2px 2px 4px #888888",
+                    textTransform: "none",
+                  }}
+                >
+                  Search
+                </MDBBtn>
               </form>
             </div>
           </div>
@@ -284,11 +296,15 @@ function AccountList() {
                 className="bg-image
             hover-overlay"
               >
-              <MDBCardImage
-                src={account.new_image === "0" ? account.image_url : account.new_image}
-                alt={account.name}
-                style={imgStyle}
-              />
+                <MDBCardImage
+                  src={
+                    account.new_image === "0"
+                      ? account.image_url
+                      : account.new_image
+                  }
+                  alt={account.name}
+                  style={imgStyle}
+                />
                 <span>
                   <div
                     className="mask"

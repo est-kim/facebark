@@ -9,6 +9,7 @@ import {
   MDBCardBody,
   MDBInput,
 } from "mdb-react-ui-kit";
+import CustomFileInputSignup from "./CustomFileInputSignUp";
 
 function SignUpForm() {
   const [ownerName, setOwnerName] = useState("");
@@ -31,6 +32,7 @@ function SignUpForm() {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
   const [dogImage, setDogImage] = useState("");
+  const [uploadSuccess, setUploadSuccess] = useState(false);
 
   const handleOwnerNameChange = (event) => {
     setOwnerName(event.target.value);
@@ -68,6 +70,7 @@ function SignUpForm() {
 
   const handleDogImageChange = (event) => {
     setDogImage(event.target.files[0]);
+    setUploadSuccess(event.target.files.length > 0);
   };
 
   const handleBirthdayChange = (event) => {
@@ -96,7 +99,9 @@ function SignUpForm() {
 
   useEffect(() => {
     if (selectedStateId !== "") {
-      fetch(`${process.env.REACT_APP_FACEBARK_API_HOST}/cities/${selectedStateId}`)
+      fetch(
+        `${process.env.REACT_APP_FACEBARK_API_HOST}/cities/${selectedStateId}`
+      )
         .then((response) => response.json())
         .then((data) => setCities(data));
     } else {
@@ -104,8 +109,8 @@ function SignUpForm() {
     }
   }, [selectedStateId]);
 
-    const handleSubmit = async (event) => {
-      event.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
     const imageData = new FormData();
     imageData.append("file", dogImage);
@@ -129,7 +134,7 @@ function SignUpForm() {
     data.phone_number = phoneNumber;
     data.owner_name = ownerName;
     data.breed = selectedBreed;
-    data.new_image = imageUrl.replace(/['"]+/g, '');
+    data.new_image = imageUrl.replace(/['"]+/g, "");
     data.dob = birthday;
     data.description = description;
     data.sex = selectedGender;
@@ -233,38 +238,7 @@ function SignUpForm() {
         setDescription("");
         setSubmitted(true);
         setExisting(false);
-
-        const signInData = new URLSearchParams();
-        console.log(username)
-        signInData.append("username", username);
-        console.log(password)
-        signInData.append("password", password);
-
-        const signInUrl = `${process.env.REACT_APP_FACEBARK_API_HOST}/token`;
-        const signInFetchConfig = {
-          method: "POST",
-          body: signInData,
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-        };
-
-
-        const signInResponse = await fetch(signInUrl, signInFetchConfig);
-
-        if (signInResponse.ok) {
-          const signInResult = await signInResponse.json();
-
-          // Store the access token (you may use cookies, local storage, or other methods)
-          localStorage.setItem("access_token", signInResult.access_token);
-
-          // Redirect to the home page
-          navigate("/home");
-        } else {
-          const error = await signInResponse.json();
-          console.log("Error signing in:", error);
-        }
-
+        navigate("/login");
       } else {
         const error = await response.json();
         setExisting(true);
@@ -380,11 +354,13 @@ function SignUpForm() {
                             id="password"
                             name="password"
                             type="password"
+                            required
                           />
                         </MDBCol>
                         <MDBCol md="6">
                           <select
                             id="city_id"
+                            required
                             name="city_id"
                             value={selectedCityId || ""}
                             disabled={cities.length === 0}
@@ -453,6 +429,7 @@ function SignUpForm() {
                             name="breed"
                             value={selectedBreed}
                             onChange={handleBreedChange}
+                            required
                             style={{
                               backgroundColor: "transparent",
                               width: "100%",
@@ -474,20 +451,27 @@ function SignUpForm() {
                           </select>
                         </MDBCol>
                       </MDBRow>
-                        <MDBInput
-                          onChange={handleDogImageChange}
-                          wrapperClass="mb-4"
-                          size="lg"
-                          id="new_image"
-                          name="new_image"
-                          type="file"
-                        />
-
+                      <MDBRow>
+                        <MDBCol md="12">
+                          <CustomFileInputSignup
+                            onChange={handleDogImageChange}
+                            reset={false}
+                            showSuccessMessage={uploadSuccess}
+                            labelText="Choose Profile Picture"
+                            additionalStyles={{
+                              marginTop: "10px",
+                              marginBottom: "35px",
+                            }}
+                            isRequired
+                          />
+                        </MDBCol>
+                      </MDBRow>
                       <MDBRow>
                         <MDBCol md="5">
                           <select
                             id="sex"
                             name="sex"
+                            required
                             value={selectedGender}
                             onChange={handleGenderChange}
                             style={{
@@ -517,6 +501,7 @@ function SignUpForm() {
                             id="dob"
                             name="dob"
                             type="date"
+                            required
                           />
                         </MDBCol>
                       </MDBRow>
@@ -530,6 +515,7 @@ function SignUpForm() {
                         name="description"
                         type="textarea"
                         style={{ height: "113px" }}
+                        required
                       />
                       {existing && (
                         <p>

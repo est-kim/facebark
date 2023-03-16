@@ -1,4 +1,5 @@
 import {
+  MDBIcon,
   MDBCard,
   MDBCardBody,
   MDBCardTitle,
@@ -7,10 +8,19 @@ import {
   MDBCol,
   MDBCardImage,
   MDBRipple,
+  MDBCardFooter
 } from "mdb-react-ui-kit";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useAuthContext, getTokenInternal, useToken } from "./Authentication";
 import { useNavigate } from "react-router-dom";
+
+function isStatusLiked(statusId, userId, likedStatusIds) {
+  return likedStatusIds.some(
+    (likedStatus) =>
+      likedStatus.account_id === parseInt(userId) &&
+      likedStatus.status_id === parseInt(statusId)
+  );
+}
 
 function HomePage() {
   const { setIsLoggedIn } = useAuthContext();
@@ -19,8 +29,15 @@ function HomePage() {
   const [token] = useToken();
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
+  const [likedStatuses, setLikedStatuses] = useState([]);
+  const [liked, setLiked] = useState(false);
 
-
+  let NewStatuses = [];
+  for (let s of statuses) {
+    if (!s["status_text"].startsWith("<")) {
+      NewStatuses.push(s);
+    }
+  }
 
   const handleAccountClick = (id) => {
     if (!setIsLoggedIn) {
@@ -29,6 +46,109 @@ function HomePage() {
       navigate(`/accounts/${id}`);
     }
   };
+
+  useEffect(() => {
+    async function fetchLikedStatuses() {
+      const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/likes`;
+      const response = await fetch(url);
+      if (response.ok) {
+        const data = await response.json();
+        setLikedStatuses(data);
+        const isLiked = data.some(
+          (like) => like.account_id === parseInt(userId)
+        );
+        setLiked(isLiked);
+      }
+    }
+
+    fetchLikedStatuses();
+  }, [userId]);
+
+  const handleLikeClick = async (event) => {
+    event.preventDefault();
+    const statusId = event.currentTarget.getAttribute("data-status-id");
+    const data = {};
+    data.status_id = statusId;
+    data.account_id = userId;
+    const eventUrl = `${process.env.REACT_APP_FACEBARK_API_HOST}/likes`;
+
+    // Check if the current user has already liked the status
+    const alreadyLiked = likedStatuses.some(
+      (like) =>
+        like.status_id === parseInt(statusId) &&
+        like.account_id === parseInt(userId)
+    );
+
+    if (alreadyLiked) {
+      // Disable the like button
+      return;
+    }
+
+    const fetchConfig = {
+      method: "post",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
+    try {
+      const response = await fetch(eventUrl, fetchConfig);
+      if (response.ok) {
+        setLiked(true);
+        // Update the liked statuses in the state
+        const updatedLikedStatuses = [...likedStatuses];
+        updatedLikedStatuses.push(data);
+
+        setLikedStatuses(updatedLikedStatuses);
+        const updatedStatuses = NewStatuses.map((status) => {
+          if (status.id === parseInt(statusId)) {
+            return {
+              ...status,
+              likes: status.likes + 1,
+              liked: true,
+              isLiked: true,
+            };
+
+          } else {
+            return status;
+          }
+        });
+
+        setStatuses(updatedStatuses);
+      } else {
+        await response.json();
+        setLiked(false);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+  const getStatusesOfAccountsFollowing = useCallback(async () => {
+    if (userId) {
+      const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/feed/${userId}`;
+      const response = await fetch(url);
+      if (response.ok) {
+        const data = await response.json();
+        // Check if the current user has liked each status
+        const updatedStatuses = data.map((status) => {
+          const isLiked = isStatusLiked(status.id, userId, likedStatuses);
+          return {
+            ...status,
+            liked: isLiked,
+            isLiked: isLiked,
+          };
+        });
+        setStatuses(updatedStatuses);
+        setLiked(updatedStatuses.some((status) => status.liked));
+      }
+    }
+  }, [userId, likedStatuses]);
+
+  useEffect(() => {
+    getStatusesOfAccountsFollowing();
+  }, [userId, token, likedStatuses, liked, getStatusesOfAccountsFollowing]);
 
 
   useEffect(() => {
@@ -56,19 +176,19 @@ function HomePage() {
     getUserId();
   }, [token]);
 
-  useEffect(() => {
-    async function getStatusesOfAccountsFollowing() {
-      if (userId) {
-        const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/feed/${userId}`;
-        const response = await fetch(url);
-        if (response.ok) {
-          const data = await response.json();
-          setStatuses(data);
-        }
-      }
-    }
-    getStatusesOfAccountsFollowing();
-  }, [userId, token]);
+  // useEffect(() => {
+  //   async function getStatusesOfAccountsFollowing() {
+  //     if (userId) {
+  //       const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/feed/${userId}`;
+  //       const response = await fetch(url);
+  //       if (response.ok) {
+  //         const data = await response.json();
+  //         setStatuses(data);
+  //       }
+  //     }
+  //   }
+  //   getStatusesOfAccountsFollowing();
+  // }, [userId, token]);
 
   useEffect(() => {
     async function getEventsInUserState() {
@@ -84,12 +204,7 @@ function HomePage() {
     getEventsInUserState();
   }, [userId, token]);
 
-  let NewStatuses = [];
-  for (let s of statuses) {
-    if (!s["status_text"].startsWith("<")) {
-      NewStatuses.push(s);
-    }
-  }
+
 
   const cardStyle = {
     margin: "10px",
@@ -130,7 +245,7 @@ function HomePage() {
     paddingBottom: "0px",
     textAlign: "left",
   };
-  console.log(NewStatuses)
+
   return (
     <>
       <MDBRow>
@@ -186,7 +301,11 @@ function HomePage() {
                             }}
                           >
                             <MDBCardImage
-                              src={status.account_image_url}
+                              src={
+                                status.account_image_url === "0"
+                                  ? status.account_new_image
+                                  : status.account_image_url
+                              }
                               className="img-thumbnail profile pic"
                               style={{
                                 width: "150px",
@@ -250,32 +369,62 @@ function HomePage() {
                         <MDBCardText style={{ textAlign: "start" }}>
                           {status.status_text}
                         </MDBCardText>
-                            {
-                              status.status_image_url && /^http/.test(status.status_image_url) && (
-                                /\.(gif|jpe?g|tiff|png|webp|bmp)$/i.test(status.status_image_url) ? (
-                                  <img
-                                    src={status.status_image_url}
-                                    className="img-thumbnail shoes"
-                                    style={{
-                                      width: "auto",
-                                      height: "200px",
-                                      marginTop: "0",
-                                    }}
-                                    alt=""
-                                  />
-                                ) : /\.(mp4|webm|ogg|avi|mkv|mpg)$/i.test(status.status_image_url) ? (
-                                  <video
-                                    src={status.status_image_url}
-                                    className="img-thumbnail shoes"
-                                    style={{
-                                      width: "auto",
-                                      height: "400px",
-                                      marginTop: "0",
-                                    }}
-                                    controls
-                                  />
-                                ) : null
-                          )}
+                        {status.status_image_url &&
+                          /^http/.test(status.status_image_url) &&
+                          (/\.(gif|jpe?g|tiff|png|webp|bmp)$/i.test(
+                            status.status_image_url
+                          ) ? (
+                            <img
+                              src={status.status_image_url}
+                              className="img-thumbnail shoes"
+                              style={{
+                                width: "auto",
+                                height: "200px",
+                                marginTop: "0",
+                              }}
+                              alt=""
+                            />
+                          ) : /\.(mp4|webm|ogg|avi|mkv|mpg|mov)$/i.test(
+                              status.status_image_url
+                            ) ? (
+                            <video
+                              src={status.status_image_url}
+                              className="img-thumbnail shoes"
+                              style={{
+                                width: "auto",
+                                height: "400px",
+                                marginTop: "0",
+                              }}
+                              controls
+                            />
+                          ) : null)}
+                        <MDBCardFooter style={{ paddingLeft: "0px" }}>
+                          <span
+                            onClick={handleLikeClick}
+                            data-status-id={status.id}
+                            className="d-flex align-items-center"
+                            style={{ cursor: "pointer" }}
+                          >
+                            {status.liked ? (
+                              <MDBIcon
+                                fas
+                                icon="heart"
+                                size="lg"
+                                style={{ color: "#FFA7A7", marginRight: "5px" }}
+                              />
+                            ) : (
+                              <MDBIcon
+                                far
+                                icon="heart"
+                                size="lg"
+                                style={{ color: "#FFA7A7", marginRight: "5px" }}
+                              />
+                            )}
+                            <h5 className="m-0" style={{ color: "#444444" }}>
+                              {status.likes}
+                            </h5>
+                          </span>
+                        </MDBCardFooter>
                       </div>
                     </MDBCard>
                   ))}

@@ -6,7 +6,7 @@ from fastapi import (
     Request,
     status,
     File,
-    UploadFile
+    UploadFile,
 )
 from jwtdown_fastapi.authentication import Token
 from authenticator import authenticator
@@ -24,7 +24,7 @@ from queries.accounts import (
 import boto3
 from mimetypes import guess_type
 from tempfile import NamedTemporaryFile
-from moviepy.editor import VideoFileClip
+import imageio
 
 
 class AccountForm(BaseModel):
@@ -44,10 +44,12 @@ AWS_ACCESS_KEY = "AKIAX5NY4QUFBRKBLF5I"
 AWS_SECRET_ACCESS_KEY = "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"
 
 
-s3 = boto3.client("s3",
-                  region_name="us-west-1",
-                  aws_access_key_id=AWS_ACCESS_KEY,
-                  aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+s3 = boto3.client(
+    "s3",
+    region_name="us-west-1",
+    aws_access_key_id=AWS_ACCESS_KEY,
+    aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+)
 
 BUCKET_NAME = "facebark-pictures"
 
@@ -56,8 +58,22 @@ router = APIRouter()
 
 
 def convert_mov_to_mp4(input_file, output_file):
-    clip = VideoFileClip(input_file)
-    clip.write_videofile(output_file, codec='libx264', audio_codec='aac')
+    # Read the video file
+    reader = imageio.get_reader(input_file)
+
+    # Create a writer with the desired output format and codec
+    fps = reader.get_meta_data()["fps"]
+    writer = imageio.get_writer(
+        output_file, fps=fps, codec="libx264", format="mp4"
+    )
+
+    # Write each frame to the output file
+    for frame in reader:
+        writer.append_data(frame)
+
+    # Close the reader and writer
+    reader.close()
+    writer.close()
 
 
 @router.post("/accounts/image")
@@ -74,12 +90,18 @@ async def upload_image(
         # Check if the file is a .MOV video
         if file.content_type == "video/quicktime":
             print("Converting .mov to .mp4...")
-            with NamedTemporaryFile(delete=False, suffix=".mov") as temp_input_file:
+            with NamedTemporaryFile(
+                delete=False, suffix=".mov"
+            ) as temp_input_file:
                 temp_input_file.write(contents)
                 temp_input_file.flush()  # Make sure the contents are written to the file
 
-                with NamedTemporaryFile(delete=False, suffix=".mp4") as temp_output_file:
-                    convert_mov_to_mp4(temp_input_file.name, temp_output_file.name)  # Call the conversion function here
+                with NamedTemporaryFile(
+                    delete=False, suffix=".mp4"
+                ) as temp_output_file:
+                    convert_mov_to_mp4(
+                        temp_input_file.name, temp_output_file.name
+                    )  # Call the conversion function here
 
                     with open(temp_output_file.name, "rb") as f:
                         contents = f.read()

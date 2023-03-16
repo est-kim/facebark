@@ -12,6 +12,7 @@ from routers import (
     breeds,
     following,
     attendees,
+    likes,
 )
 
 
@@ -27,6 +28,7 @@ app.include_router(following.router)
 app.include_router(authenticator.router)
 app.include_router(breeds.router)
 app.include_router(attendees.router)
+app.include_router(likes.router)
 
 
 app.add_middleware(
