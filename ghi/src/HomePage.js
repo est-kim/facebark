@@ -15,6 +15,15 @@ import { useEffect, useState } from "react";
 import { useAuthContext, getTokenInternal, useToken } from "./Authentication";
 import { useNavigate } from "react-router-dom";
 
+
+function isStatusLiked(statusId, userId, likedStatusIds) {
+  return likedStatusIds.some(
+    (likedStatus) =>
+      likedStatus.account_id === parseInt(userId) &&
+      likedStatus.status_id === parseInt(statusId)
+  );
+}
+
 function HomePage() {
   const { setIsLoggedIn } = useAuthContext();
   const [userId, setUserId] = useState("");
@@ -25,8 +34,8 @@ function HomePage() {
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState([]);
   const [isLiking, setIsLiking] = useState(false);
-  const [likedStatusIds, setLikedStatusIds] = useState([]);
-  const currentLikedStatusIds = likes.map((like) => like.status_id.toString());
+  const [likedStatuses, setLikedStatuses] = useState([]);
+  // const currentLikedStatusIds = likes.map((like) => like.status_id.toString());
 
 
   const handleAccountClick = (id) => {
@@ -68,7 +77,13 @@ function HomePage() {
       if (response.ok) {
         const updatedStatuses = statuses.map((status) => {
           if (status.id === parseInt(statusId)) {
-            return { ...status, likes: status.likes + 1, liked: true };
+            const isLiked = isStatusLiked(statusId, userId, likesData);
+            return {
+              ...status,
+              likes: status.likes + 1,
+              liked: true,
+              isLiked: isLiked, // Add a new property to the status object
+            };
           } else {
             return status;
           }
@@ -81,6 +96,19 @@ function HomePage() {
       console.log(error);
     }
   };
+
+
+  useEffect(() => {
+    async function fetchLikedStatuses() {
+      const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/likes`;
+      const response = await fetch(url);
+      if (response.ok) {
+        const data = await response.json();
+        setLikedStatuses(data);
+      }
+    }
+    fetchLikedStatuses();
+  }, []);
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -341,12 +369,21 @@ function HomePage() {
                             data-status-id={status.id}
                             className="d-flex align-items-center"
                           >
-                            <MDBIcon
-                              far
-                              icon="heart"
-                              size="lg"
-                              style={{ color: "#FFA7A7", marginRight: "5px" }}
-                            />
+                            {status.liked ? (
+                              <MDBIcon
+                                fas
+                                icon="heart"
+                                size="lg"
+                                style={{ color: "#FFA7A7", marginRight: "5px" }}
+                              />
+                            ) : (
+                              <MDBIcon
+                                far
+                                icon="heart"
+                                size="lg"
+                                style={{ color: "#FFA7A7", marginRight: "5px" }}
+                              />
+                            )}
                             <h5 className="m-0" style={{ color: "#444444" }}>
                               {status.likes}
                             </h5>
