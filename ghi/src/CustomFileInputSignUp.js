@@ -1,24 +1,26 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 import { MDBIcon } from "mdb-react-ui-kit";
 
-const CustomFileInput = ({ onChange, reset, showSuccessMessage }) => {
-  const [fileName, setFileName] = useState('');
+const CustomFileInputSignup = ({ onChange, reset, showSuccessMessage }) => {
+  const [fileName, setFileName] = useState("");
   const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (reset && fileInputRef.current) {
-      setFileName('');
-      fileInputRef.current.value = '';
+      setFileName("");
+      fileInputRef.current.value = "";
     }
   }, [reset]);
 
   const handleFileChange = (event) => {
     onChange(event);
-    setFileName(event.target.files.length > 0 ? event.target.files[0].name : '');
+    setFileName(
+      event.target.files.length > 0 ? event.target.files[0].name : ""
+    );
   };
 
   return (
-    <div className="custom-file-input-container">
+    <div className="custom-file-input-signup-container">
       <div className="input-wrapper">
         <input
           type="file"
@@ -40,4 +42,4 @@ const CustomFileInput = ({ onChange, reset, showSuccessMessage }) => {
   );
 };
 
-export default CustomFileInput;
+export default CustomFileInputSignup;

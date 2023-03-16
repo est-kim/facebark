@@ -65,7 +65,6 @@ class AccountsOut(BaseModel):
 
 
 class AccountRepository:
-
     def record_to_account_out(self, record) -> AccountOutWithPassword:
         account_dict = {
             "id": record[0],

@@ -1,5 +1,4 @@
 import {
-  MDBBtn,
   MDBIcon,
   MDBCard,
   MDBCardBody,
@@ -11,10 +10,9 @@ import {
   MDBRipple,
   MDBCardFooter
 } from "mdb-react-ui-kit";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useAuthContext, getTokenInternal, useToken } from "./Authentication";
 import { useNavigate } from "react-router-dom";
-
 
 function isStatusLiked(statusId, userId, likedStatusIds) {
   return likedStatusIds.some(
@@ -33,10 +31,13 @@ function HomePage() {
   const [events, setEvents] = useState([]);
   const [likedStatuses, setLikedStatuses] = useState([]);
   const [liked, setLiked] = useState(false);
-  const [likes, setLikes] = useState([]);
-  const [isLiking, setIsLiking] = useState(false);
-  // const currentLikedStatusIds = likes.map((like) => like.status_id.toString());
 
+  let NewStatuses = [];
+  for (let s of statuses) {
+    if (!s["status_text"].startsWith("<")) {
+      NewStatuses.push(s);
+    }
+  }
 
   const handleAccountClick = (id) => {
     if (!setIsLoggedIn) {
@@ -53,18 +54,16 @@ function HomePage() {
       if (response.ok) {
         const data = await response.json();
         setLikedStatuses(data);
+        const isLiked = data.some(
+          (like) => like.account_id === parseInt(userId)
+        );
+        setLiked(isLiked);
       }
     }
 
     fetchLikedStatuses();
-  }, []);
+  }, [userId]);
 
-
-  useEffect(() => {
-    getStatusesOfAccountsFollowing();
-  }, [userId, token, likedStatuses]);
-
-  // handle the like click event
   const handleLikeClick = async (event) => {
     event.preventDefault();
     const statusId = event.currentTarget.getAttribute("data-status-id");
@@ -74,13 +73,13 @@ function HomePage() {
     const eventUrl = `${process.env.REACT_APP_FACEBARK_API_HOST}/likes`;
 
     // Check if the current user has already liked the status
-    if (
-      likedStatuses.some(
-        (like) =>
-          like.status_id === parseInt(statusId) &&
-          like.account_id === parseInt(userId)
-      )
-    ) {
+    const alreadyLiked = likedStatuses.some(
+      (like) =>
+        like.status_id === parseInt(statusId) &&
+        like.account_id === parseInt(userId)
+    );
+
+    if (alreadyLiked) {
       // Disable the like button
       return;
     }
@@ -95,11 +94,13 @@ function HomePage() {
     try {
       const response = await fetch(eventUrl, fetchConfig);
       if (response.ok) {
+        setLiked(true);
         // Update the liked statuses in the state
-        const updatedLikedStatuses = [...likedStatuses, data];
-        setLikedStatuses(updatedLikedStatuses);
+        const updatedLikedStatuses = [...likedStatuses];
+        updatedLikedStatuses.push(data);
 
-        const updatedStatuses = statuses.map((status) => {
+        setLikedStatuses(updatedLikedStatuses);
+        const updatedStatuses = NewStatuses.map((status) => {
           if (status.id === parseInt(statusId)) {
             return {
               ...status,
@@ -107,13 +108,16 @@ function HomePage() {
               liked: true,
               isLiked: true,
             };
+
           } else {
             return status;
           }
         });
+
         setStatuses(updatedStatuses);
       } else {
         await response.json();
+        setLiked(false);
       }
     } catch (error) {
       console.log(error);
@@ -121,8 +125,7 @@ function HomePage() {
   };
 
 
-
-  async function getStatusesOfAccountsFollowing() {
+  const getStatusesOfAccountsFollowing = useCallback(async () => {
     if (userId) {
       const url = `${process.env.REACT_APP_FACEBARK_API_HOST}/feed/${userId}`;
       const response = await fetch(url);
@@ -141,9 +144,11 @@ function HomePage() {
         setLiked(updatedStatuses.some((status) => status.liked));
       }
     }
-  }
+  }, [userId, likedStatuses]);
 
-
+  useEffect(() => {
+    getStatusesOfAccountsFollowing();
+  }, [userId, token, likedStatuses, liked, getStatusesOfAccountsFollowing]);
 
 
   useEffect(() => {
@@ -199,12 +204,7 @@ function HomePage() {
     getEventsInUserState();
   }, [userId, token]);
 
-  let NewStatuses = [];
-  for (let s of statuses) {
-    if (!s["status_text"].startsWith("<")) {
-      NewStatuses.push(s);
-    }
-  }
+
 
   const cardStyle = {
     margin: "10px",
@@ -399,11 +399,11 @@ function HomePage() {
                             />
                           ) : null)}
                         <MDBCardFooter style={{ paddingLeft: "0px" }}>
-                          <a
-                            href="#"
+                          <span
                             onClick={handleLikeClick}
                             data-status-id={status.id}
                             className="d-flex align-items-center"
+                            style={{ cursor: "pointer" }}
                           >
                             {status.liked ? (
                               <MDBIcon
@@ -423,7 +423,7 @@ function HomePage() {
                             <h5 className="m-0" style={{ color: "#444444" }}>
                               {status.likes}
                             </h5>
-                          </a>
+                          </span>
                         </MDBCardFooter>
                       </div>
                     </MDBCard>

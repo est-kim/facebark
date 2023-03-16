@@ -55,8 +55,7 @@ class LikeRepository:
                         """
                     )
                     return [
-                        self.record_to_like_out(record)
-                        for record in result
+                        self.record_to_like_out(record) for record in result
                     ]
         except Exception:
             return {"message": "Could not get all likes"}
@@ -77,7 +76,9 @@ class LikeRepository:
                 if existing_like:
                     # a like record with the given status_id and account_id already exists
                     id, status_id, account_id = existing_like
-                    return LikeOut(id=id, status_id=status_id, account_id=account_id)
+                    return LikeOut(
+                        id=id, status_id=status_id, account_id=account_id
+                    )
                 else:
                     # insert a new like record
                     db.execute(
@@ -91,7 +92,9 @@ class LikeRepository:
                     # check if one row was affected
                     if db.rowcount == 1:
                         id, status_id, account_id = db.fetchone()
-                        return LikeOut(id=id, status_id=status_id, account_id=account_id)
+                        return LikeOut(
+                            id=id, status_id=status_id, account_id=account_id
+                        )
                     else:
                         return {"detail": "Failed to create like record"}
 
@@ -119,7 +122,7 @@ class LikeRepository:
                         like = LikeOut(
                             id=record[0],
                             status_id=record[1],
-                            account_id=record[2]
+                            account_id=record[2],
                         )
                         result.append(like)
                     return result
