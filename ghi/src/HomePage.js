@@ -24,6 +24,9 @@ function HomePage() {
   const [events, setEvents] = useState([]);
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState([]);
+  const [isLiking, setIsLiking] = useState(false);
+  const [likedStatusIds, setLikedStatusIds] = useState([]);
+  const currentLikedStatusIds = likes.map((like) => like.status_id.toString());
 
 
   const handleAccountClick = (id) => {
@@ -40,7 +43,19 @@ function HomePage() {
     const data = {};
     data.status_id = statusId;
     data.account_id = userId;
-    const eventUrl = `${process.env.REACT_APP_FACEBARK_API_HOST}/likes`; // insert api call here
+    const eventUrl = `${process.env.REACT_APP_FACEBARK_API_HOST}/likes`;
+
+    // Fetch the list of likes for the given status ID
+    const likesUrl = `${process.env.REACT_APP_FACEBARK_API_HOST}/likes/${statusId}`;
+    const likesResponse = await fetch(likesUrl);
+    const likesData = await likesResponse.json();
+
+    // Check if the current user has already liked the status
+    if (likesData.some((like) => like.account_id === parseInt(userId))) {
+      // Disable the like button
+      return;
+    }
+
     const fetchConfig = {
       method: "post",
       body: JSON.stringify(data),
@@ -53,16 +68,14 @@ function HomePage() {
       if (response.ok) {
         const updatedStatuses = statuses.map((status) => {
           if (status.id === parseInt(statusId)) {
-            return { ...status, likes: status.likes + 1 };
+            return { ...status, likes: status.likes + 1, liked: true };
           } else {
             return status;
           }
         });
         setStatuses(updatedStatuses);
-        setLiked(true);
       } else {
         await response.json();
-        setLiked(false);
       }
     } catch (error) {
       console.log(error);
