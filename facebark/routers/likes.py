@@ -1,7 +1,5 @@
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends, Response, status
 from typing import Union, List
-from queries.likes import LikeOut
-
 from queries.likes import (
     Error,
     LikeIn,
