@@ -51,10 +51,14 @@ function HomePage() {
     try {
       const response = await fetch(eventUrl, fetchConfig);
       if (response.ok) {
-        fetch(`${process.env.REACT_APP_FACEBARK_API_HOST}/likes/${statusId}`)
-          .then((response) => response.json())
-          .then((data) => setLikes(data.likes))
-          .catch((error) => console.log(error));
+        const updatedStatuses = statuses.map((status) => {
+          if (status.id === parseInt(statusId)) {
+            return { ...status, likes: status.likes + 1 };
+          } else {
+            return status;
+          }
+        });
+        setStatuses(updatedStatuses);
         setLiked(true);
       } else {
         await response.json();
@@ -63,7 +67,7 @@ function HomePage() {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
     const fetchToken = async () => {
