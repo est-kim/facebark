@@ -26,7 +26,6 @@ function HomePage() {
   const [likes, setLikes] = useState([]);
 
 
-
   const handleAccountClick = (id) => {
     if (!setIsLoggedIn) {
       navigate("/signup");
@@ -65,7 +64,6 @@ function HomePage() {
       console.log(error);
     }
   }
-
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -166,7 +164,7 @@ function HomePage() {
     paddingBottom: "0px",
     textAlign: "left",
   };
-  console.log(NewStatuses)
+
   return (
     <>
       <MDBRow>
@@ -222,7 +220,7 @@ function HomePage() {
                             }}
                           >
                             <MDBCardImage
-                              src={status.account_image_url}
+                              src={status.account_image_url === "0" ? status.account_new_image : status.account_image_url}
                               className="img-thumbnail profile pic"
                               style={{
                                 width: "150px",
@@ -286,7 +284,7 @@ function HomePage() {
                         <MDBCardText style={{ textAlign: "start" }}>
                           {status.status_text}
                         </MDBCardText>
-                            {
+                           {
                               status.status_image_url && /^http/.test(status.status_image_url) && (
                                 /\.(gif|jpe?g|tiff|png|webp|bmp)$/i.test(status.status_image_url) ? (
                                   <img
