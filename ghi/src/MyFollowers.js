@@ -38,7 +38,6 @@ function FollowingList() {
       });
       if (response.ok) {
         const data = await response.json();
-        // console.log("this should be the accountdsf array  id:", data);
         setAccountId(data);
       }
     }
