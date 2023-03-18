@@ -462,7 +462,7 @@ function SignUpForm() {
                               marginTop: "10px",
                               marginBottom: "35px",
                             }}
-                            isRequired
+                            isRequired // Keep this line for making the field required
                           />
                         </MDBCol>
                       </MDBRow>

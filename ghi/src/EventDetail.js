@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Spinner from "./Spinner";
 import { useAuthContext, useToken, getTokenInternal } from "./Authentication";
 import {
@@ -15,7 +15,6 @@ import {
   MDBCardImage,
   MDBRipple,
 } from "mdb-react-ui-kit";
-import { useNavigate } from "react-router-dom";
 
 function EventDetailPage() {
   const { eventId } = useParams();
@@ -29,6 +28,21 @@ function EventDetailPage() {
   const navigate = useNavigate();
   const [attendeeIds, setAttendeeIds] = useState([]);
 
+  useEffect(() => {
+    const checkAuthAndNavigate = async () => {
+      const token = await getTokenInternal();
+      if (token) {
+        navigate(-1);
+      } else {
+        navigate("/login");
+      }
+    };
+
+    if (!getTokenInternal()) {
+      checkAuthAndNavigate();
+    }
+  }, [navigate]);
+  
   const handleAccountClick = (id) => {
       if (!setIsLoggedIn) {
           navigate("/signup");

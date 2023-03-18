@@ -32,6 +32,21 @@ function HomePage() {
   const [likedStatuses, setLikedStatuses] = useState([]);
   const [liked, setLiked] = useState(false);
 
+  useEffect(() => {
+    const checkAuthAndNavigate = async () => {
+      const token = await getTokenInternal();
+      if (token) {
+        navigate(-1);
+      } else {
+        navigate("/login");
+      }
+    };
+
+    if (!getTokenInternal()) {
+      checkAuthAndNavigate();
+    }
+  }, [navigate]);
+
   let NewStatuses = [];
   for (let s of statuses) {
     if (!s["status_text"].startsWith("<")) {
@@ -123,7 +138,6 @@ function HomePage() {
       console.log(error);
     }
   };
-
 
   const getStatusesOfAccountsFollowing = useCallback(async () => {
     if (userId) {

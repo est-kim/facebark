@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Spinner from "./Spinner";
 import { useAuthContext, useToken, getTokenInternal } from "./Authentication";
 import {
@@ -36,6 +36,22 @@ function AccountDetailPage() {
   const defaultLabelRef = useRef();
   const [resetInput, setResetInput] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAuthAndNavigate = async () => {
+      const token = await getTokenInternal();
+      if (token) {
+        navigate(-1);
+      } else {
+        navigate("/login");
+      }
+    };
+
+    if (!getTokenInternal()) {
+      checkAuthAndNavigate();
+    }
+  }, [navigate]);
 
   const isVideo = (url) => {
     const videoExtensions = [
@@ -265,8 +281,8 @@ function AccountDetailPage() {
     imageData.append("file", image);
     imageData.append("new_image", image.name);
 
-    console.log("Image type:", image.type);
-    console.log("Image name:", image.name);
+    // console.log("Image type:", image.type);
+    // console.log("Image name:", image.name);
     const imageResponse = await fetch(
       `${process.env.REACT_APP_FACEBARK_API_HOST}/accounts/image`,
       {

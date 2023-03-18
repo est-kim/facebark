@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { MDBIcon } from "mdb-react-ui-kit";
 
-const CustomFileInputSignup = ({ onChange, reset, showSuccessMessage }) => {
+const CustomFileInputSignup = ({ onChange, reset, showSuccessMessage, isRequired }) => {
   const [fileName, setFileName] = useState("");
   const fileInputRef = useRef(null);
 
@@ -29,7 +29,8 @@ const CustomFileInputSignup = ({ onChange, reset, showSuccessMessage }) => {
           className="hidden-file-input"
           onChange={handleFileChange}
           ref={fileInputRef}
-          accept="image/*,video/*" // Add this line to accept both image and video files
+          accept="image/*,video/*"
+          required={isRequired} // Add this line
         />
         <label htmlFor="new_image" className="custom-file-label">
           <MDBIcon icon="cloud-upload-alt" /> Choose Profile Picture

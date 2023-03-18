@@ -161,25 +161,15 @@ class FollowingRepository:
                 with conn.cursor() as db:
                     result = db.execute(
                         """
-                        SELECT s.id
-                            , s.status_text
-                            , s.time_stamp
-                            , s.account_id
-                            , a.name
-                            , a.image_url
-                            , s.image_url
-                            , a.new_image
-                            , COUNT(l.*)
+                        SELECT s.id, s.status_text, s.time_stamp, s.account_id, a.name, a.image_url, s.image_url, a.new_image, COUNT(l.*)
                         FROM following AS f
-                        LEFT JOIN statuses AS s
-                            ON (f.followee_id = s.account_id)
-                        LEFT JOIN likes AS l
-                            ON (l.status_id = s.id)
-                        INNER JOIN accounts AS a
-                            ON (a.id = f.followee_id)
+                        LEFT JOIN statuses AS s ON (f.followee_id = s.account_id) OR (f.follower_id = s.account_id)
+                        LEFT JOIN likes AS l ON (l.status_id = s.id)
+                        INNER JOIN accounts AS a ON (a.id = s.account_id)
                         WHERE f.follower_id = %s
                         GROUP BY s.id, a.name, a.image_url, a.new_image
                         ORDER BY s.time_stamp DESC;
+
                         """,
                         [account_id],
                     )

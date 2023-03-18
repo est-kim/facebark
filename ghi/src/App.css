@@ -76,3 +76,7 @@
 .input-wrapper:hover .custom-file-label {
   color: #3C96FE;
 }
+
+.custom-file-label.error {
+  border-color: #dc3545;
+}
