@@ -80,3 +80,51 @@
 .custom-file-label.error {
   border-color: #dc3545;
 }
+
+Nav.css
+.mobile-nav-link {
+  display: none;
+}
+
+.mobile-nav-link {
+  font-size: 16px;
+}
+
+.custom-card {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .custom-card {
+    width: 50%;
+  }
+}
+
+@media (max-width: 992px) {
+  .mobile-nav-link {
+    font-size: 16px;
+    padding: 8px 12px;
+  }
+}
+
+.container-padding {
+  padding-left: 50px;
+}
+
+@media (max-width: 992px) {
+  .container-padding {
+    padding-left: 10px;
+  }
+}
+
+.shoes {
+  width: auto;
+  height: 300px;
+  margin-top: 0;
+}
+
+@media (max-width: 767px) {
+  .shoes {
+    height: 200px;
+  }
+}

@@ -75,7 +75,7 @@ function LoginForm() {
                 <MDBCol className="two p-0 m-0">
                   <MDBCardBody>
                     <MDBCardTitle className="text-center fw-bold pt-5">
-                      Welcome back!
+                      Welcome! Time to sign in and unleash the fun!
                     </MDBCardTitle>
                     <form onSubmit={handleSubmit}>
                       <MDBContainer>

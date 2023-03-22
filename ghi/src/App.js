@@ -15,6 +15,8 @@ import EventDetailPage from "./EventDetail.js";
 import AccountDetailPage from "./AccountDetail.js";
 import FollowingList from './FollowingList.js';
 import MyFollowers from './MyFollowers.js';
+import AboutUs from './AboutUs';
+import "./App.css";
 
 function App() {
   const domain = /https:\/\/[^/]+/;
@@ -51,6 +53,7 @@ function App() {
             <Route path="/accounts" element={<AccountList />} />
             <Route path="/events/:eventId" element={<EventDetailPage />} />
             <Route path="/accounts/:accountId" element={<AccountDetailPage />} />
+            <Route path="/aboutus" element={<AboutUs />} />
             <Route path="/followinglist" element={<FollowingList />}
             />
             <Route path="/followers" element={<MyFollowers />}

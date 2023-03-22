@@ -31,24 +31,23 @@ function Footer() {
                 Pawsome connections, one bark at a time.
               </p>
               <div>
-                <a href="/" className="me-4 text-reset">
-                  <MDBIcon fab icon="facebook-f" />
-                </a>
-                <a href="/" className="me-4 text-reset">
+                <a href="https://twitter.com/BarkFacebark" className="me-4 text-reset">
                   <MDBIcon fab icon="twitter" />
                 </a>
-                <a href="/" className="me-4 text-reset">
-                  <MDBIcon fab icon="google" />
-                </a>
-                <a href="/" className="me-4 text-reset">
+                <a href="https://www.instagram.com/face_bark/" className="me-4 text-reset">
                   <MDBIcon fab icon="instagram" />
                 </a>
-                <a href="/" className="me-4 text-reset">
-                  <MDBIcon fab icon="linkedin" />
-                </a>
               </div>
+              <p className="my-2">
+                <Link
+                  to="/aboutus"
+                  className="text-reset"
+                  style={{ fontSize: "13px", textDecoration: "none" }}
+                >
+                  About Us
+                </Link>
+              </p>
             </MDBCol>
-
             <MDBCol
               md="2"
               lg="2"
@@ -57,6 +56,15 @@ function Footer() {
               style={{ color: "#FFFFFF" }}
             >
               <h6 className="fw-bold mb-2">Furiends</h6>
+              <p className="mb-1">
+                <Link
+                  to="/accounts"
+                  className="text-reset"
+                  style={{ fontSize: "13px", textDecoration: "none" }}
+                >
+                  All Dogs
+                </Link>
+              </p>
               <p className="mb-1">
                 <Link
                   to="/followinglist"
@@ -91,7 +99,7 @@ function Footer() {
                   className="text-reset"
                   style={{ fontSize: "13px", textDecoration: "none" }}
                 >
-                  Events Near Me
+                  All Events
                 </Link>
               </p>
               <p className="mb-1">
@@ -125,7 +133,7 @@ function Footer() {
               </p>
               <p style={{ fontSize: "13px" }} className="mb-2">
                 <MDBIcon fas icon="fax" />
-                &nbsp; info@facebark.com
+                &nbsp; facebark123@gmail.com
               </p>
             </MDBCol>
           </MDBRow>

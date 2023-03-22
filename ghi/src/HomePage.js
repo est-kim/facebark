@@ -265,8 +265,8 @@ function HomePage() {
                 >
                   {NewStatuses.map((status) => (
                     <MDBCard
+                    className="custom-card"
                       style={{
-                        width: "80%",
                         margin: "5px",
                         padding: "5px",
                         boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
@@ -306,16 +306,16 @@ function HomePage() {
                                   ? status.account_new_image
                                   : status.account_image_url
                               }
-                              className="img-thumbnail profile pic"
-                              style={{
-                                width: "150px",
-                                margin: "0 auto",
-                                overflow: "hidden",
-                                height: "150px",
-                                objectFit: "cover",
-                                objectPosition: "center",
-                              }}
-                              alt="dog profile picture"
+                            className="img-thumbnail profile pic"
+                            style={{
+                              height: "150px",
+                              margin: "0 auto",
+                              overflow: "hidden",
+                              width: "150px",
+                              objectFit: "cover",
+                              objectPosition: "center",
+                            }}
+                            alt="dog profile picture"
                             />
                             <span>
                               <div
@@ -329,13 +329,14 @@ function HomePage() {
                         )}
                       </div>
                       <div
+                        className="container-padding"
                         style={{
                           width: "80%",
                           display: "flex",
                           flexDirection: "column",
                           justifyContent: "center",
                           alignItems: "start",
-                          padding: "10px",
+                          padding: "1px",
                           margin: "10px",
                         }}
                       >
@@ -377,12 +378,7 @@ function HomePage() {
                             <img
                               src={status.status_image_url}
                               className="img-thumbnail shoes"
-                              style={{
-                                width: "auto",
-                                height: "200px",
-                                marginTop: "0",
-                              }}
-                              alt=""
+                              alt="shoes"
                             />
                           ) : /\.(mp4|webm|ogg|avi|mkv|mpg|mov)$/i.test(
                               status.status_image_url
