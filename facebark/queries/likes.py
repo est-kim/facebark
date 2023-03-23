@@ -139,3 +139,19 @@ class LikeRepository:
             status_id=record[1],
             account_id=record[2],
         )
+
+    def get_like_count(self, status_id: int) -> int:
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    result = db.execute(
+                        """
+                        SELECT COUNT(*) FROM likes
+                        WHERE status_id = %s;
+                        """,
+                        [status_id],
+                    )
+                    count = result.fetchone()[0]
+                    return count
+        except Exception:
+            return 0

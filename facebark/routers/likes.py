@@ -40,6 +40,11 @@ def get_likes_by_status_id(
         return status.HTTP_404_NOT_FOUND
 
 
+@router.get("/likes/count/{status_id}", response_model=int)
+async def get_like_count(status_id: int, likes_repository: LikeRepository = Depends()):
+    return likes_repository.get_like_count(status_id)
+
+
 # @router.get(
 #     "/following/{account_id}", response_model=Union[List[AccountOut], Error]
 # )

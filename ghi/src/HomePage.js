@@ -107,33 +107,38 @@ function HomePage() {
       },
     };
     try {
-      const response = await fetch(eventUrl, fetchConfig);
-      if (response.ok) {
-        setLiked(true);
-        // Update the liked statuses in the state
-        const updatedLikedStatuses = [...likedStatuses];
-        updatedLikedStatuses.push(data);
+  const response = await fetch(eventUrl, fetchConfig);
+  if (response.ok) {
+    setLiked(true);
 
-        setLikedStatuses(updatedLikedStatuses);
-        const updatedStatuses = NewStatuses.map((status) => {
-          if (status.id === parseInt(statusId)) {
-            return {
-              ...status,
-              likes: status.likes + 1,
-              liked: true,
-              isLiked: true,
-            };
+    // Get the updated like count for the status
+    const likeCountResponse = await fetch(`${process.env.REACT_APP_FACEBARK_API_HOST}/likes/count/${statusId}`);
+    const likeCountData = await likeCountResponse.json();
+    const likeCount = likeCountData.count;
 
-          } else {
-            return status;
-          }
-        });
+    // Update the liked statuses in the state
+    const updatedLikedStatuses = [...likedStatuses];
+    updatedLikedStatuses.push(data);
 
-        setStatuses(updatedStatuses);
+    setLikedStatuses(updatedLikedStatuses);
+    const updatedStatuses = NewStatuses.map((status) => {
+      if (status.id === parseInt(statusId) && !status.isLiked) {
+        return {
+          ...status,
+          likes: likeCount, // Set the updated like count
+          liked: true,
+          isLiked: true,
+        };
       } else {
-        await response.json();
-        setLiked(false);
+        return status;
       }
+    });
+
+    setStatuses(updatedStatuses);
+  } else {
+    await response.json();
+    setLiked(false);
+  }
     } catch (error) {
       console.log(error);
     }
@@ -336,7 +341,6 @@ function HomePage() {
                           flexDirection: "column",
                           justifyContent: "center",
                           alignItems: "start",
-                          padding: "1px",
                           margin: "10px",
                         }}
                       >
@@ -370,30 +374,29 @@ function HomePage() {
                         <MDBCardText style={{ textAlign: "start" }}>
                           {status.status_text}
                         </MDBCardText>
-                        {status.status_image_url &&
-                          /^http/.test(status.status_image_url) &&
-                          (/\.(gif|jpe?g|tiff|png|webp|bmp)$/i.test(
-                            status.status_image_url
-                          ) ? (
-                            <img
-                              src={status.status_image_url}
-                              className="img-thumbnail shoes"
-                              alt="shoes"
-                            />
-                          ) : /\.(mp4|webm|ogg|avi|mkv|mpg|mov)$/i.test(
-                              status.status_image_url
-                            ) ? (
-                            <video
-                              src={status.status_image_url}
-                              className="img-thumbnail shoes"
-                              style={{
-                                width: "auto",
-                                height: "400px",
-                                marginTop: "0",
-                              }}
-                              controls
-                            />
-                          ) : null)}
+                          {status.status_image_url &&
+                            /^http/.test(status.status_image_url) &&
+                            ((/\.(gif|jpe?g|tiff|png|webp|bmp|jfif)$/i.test(status.status_image_url) && (
+                              <a href={status.status_image_url} target="_blank" rel="noopener noreferrer">
+                                <img
+                                  src={status.status_image_url}
+                                  className="img-thumbnail shoes"
+                                  alt="shoes"
+                                />
+                              </a>
+                            )) ||
+                              (/\.(mp4|webm|ogg|avi|mkv|mpg|mov)$/i.test(status.status_image_url) && (
+                                <video
+                                  src={status.status_image_url}
+                                  className="img-thumbnail shoes"
+                                  style={{
+                                    width: "auto",
+                                    height: "400px",
+                                    marginTop: "0",
+                                  }}
+                                  controls
+                                />
+                              )))}
                         <MDBCardFooter style={{ paddingLeft: "0px" }}>
                           <span
                             onClick={handleLikeClick}

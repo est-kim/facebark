@@ -65,3 +65,5 @@ imageio-ffmpeg
 moviepy
 ffmpeg-python==0.2.0
 imageio
+imageio[ffmpeg]
+av
