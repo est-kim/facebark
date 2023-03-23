@@ -114,6 +114,14 @@ function FollowingList() {
     paddingBottom: "4px",
   };
 
+  function extractFirstSentence(str) {
+    let sentenceEnd = str.search(/[.!]/);
+    if (sentenceEnd === -1) {
+      return str;
+    }
+    return str.substring(0, sentenceEnd + 1);
+  }
+
   return (
     <>
       <div
@@ -155,11 +163,15 @@ function FollowingList() {
                     }
                   }}
                 >
-                <MDBCardImage
-                  src={account.new_image !== '0' ? account.new_image : account.image_url}
-                  alt={account.name}
-                  style={imgStyle}
-                />
+                  <MDBCardImage
+                    src={
+                      account.new_image !== "0"
+                        ? account.new_image
+                        : account.image_url
+                    }
+                    alt={account.name}
+                    style={imgStyle}
+                  />
                   <a href={`${account.id}`}>
                     <div
                       className="mask"
@@ -181,7 +193,7 @@ function FollowingList() {
                     {account.breed}
                   </div>
                   <MDBCardText style={bodyStyle}>
-                    "{account.description}"
+                    "{extractFirstSentence(account.description)}"
                   </MDBCardText>
                 </MDBCardBody>
               </MDBCard>

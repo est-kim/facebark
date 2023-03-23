@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   MDBContainer,
   MDBInput,
@@ -116,7 +116,7 @@ function LoginForm() {
                         >
                           <p>
                             Don't have an account?{" "}
-                            <a href="/signup">Sign Up!</a>
+                            <Link to="/signup">Sign Up!</Link>
                           </p>
                         </div>
                       </MDBContainer>
